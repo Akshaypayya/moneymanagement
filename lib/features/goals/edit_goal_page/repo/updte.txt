@@ -1,0 +1,78 @@
+
+
+Future<dynamic> putUpdateGoalApi(String api, Map<String, String> headerData,
+      [XFile? imageFile, File? fileFormData]) async {
+    try {
+      final request = http.MultipartRequest('PUT', Uri.parse(api));
+      request.headers.addAll(headerData);
+
+      if (imageFile != null) {
+        final File file = File(imageFile.path);
+        if (file.existsSync()) {
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              'file',
+              file.path,
+              filename: 'image.jpg',
+              contentType: MediaType('image', 'jpeg'),
+            ),
+          );
+        }
+      }
+      if (fileFormData != null && fileFormData.existsSync()) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'data',
+            await fileFormData.readAsBytes(),
+            filename: 'blob.json',
+            contentType: MediaType('application', 'json'),
+          ),
+        );
+      }
+
+      final response = await request.send();
+      final responseData = await response.stream.bytesToString();
+
+      if (response.statusCode == 401) {
+        await _handle401();
+        headerData = await _updateHeaders(headerData);
+        final retryRequest = http.MultipartRequest('PUT', Uri.parse(api));
+        retryRequest.headers.addAll(headerData);
+
+        if (imageFile != null) {
+          final File file = File(imageFile.path);
+          if (file.existsSync()) {
+            retryRequest.files.add(
+              await http.MultipartFile.fromPath(
+                'file',
+                file.path,
+                filename: 'image.jpg',
+                contentType: MediaType('image', 'jpeg'),
+              ),
+            );
+          }
+        }
+        if (fileFormData != null && fileFormData.existsSync()) {
+          retryRequest.files.add(
+            http.MultipartFile.fromBytes(
+              'data',
+              await fileFormData.readAsBytes(),
+              filename: 'blob.json',
+              contentType: MediaType('application', 'json'),
+            ),
+          );
+        }
+        final retryResponse = await retryRequest.send();
+        final retryResponseData = await retryResponse.stream.bytesToString();
+        return jsonDecode(retryResponseData);
+      } else if (response.statusCode == 200) {
+        return jsonDecode(responseData);
+      } else {
+        print('Error status code: ${response.statusCode}');
+      }
+    } on SocketException {
+      throw InternetException();
+    } on TimeoutException {
+      throw RequestTimeOut();
+    }
+  }
