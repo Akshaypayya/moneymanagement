@@ -40,7 +40,6 @@ class UserDetailsModel {
     return map;
   }
 }
-
 class UserData {
   UserData({
     this.gender,
@@ -59,7 +58,6 @@ class UserData {
     this.savedAddress,
     this.proPicExtension,
   });
-
   // UserData.fromJson(dynamic json) {
   //   gender = json['gender'];
   //   profileCompletion = json['profileCompletion'];

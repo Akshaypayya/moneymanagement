@@ -49,7 +49,8 @@ class GoalDetailsGrid extends ConsumerWidget {
             children: [
               Expanded(
                 child: DetailItem(
-                  label: 'Flexible Investment Amount',
+                  // label: 'Flexible Investment Amount',
+                  label: 'Transaction Amount',
                   value: investmentAmount,
                   showSymbol: true,
                 ),

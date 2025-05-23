@@ -45,6 +45,7 @@ class DatePickerUtils {
   }
 
   static String formatDate(DateTime date) {
-    return DateFormat('yyyy-MM-dd').format(date);
+    final normalizedDate = DateTime.utc(date.year, date.month, date.day);
+    return DateFormat('yyyy-MM-dd').format(normalizedDate);
   }
 }

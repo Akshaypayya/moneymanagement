@@ -60,7 +60,8 @@ dependencies:
   intl: ^0.20.2
   mime: ^2.0.0
   flutter_image_compress: ^2.4.0
-
+  webview_flutter: ^4.13.0
+  image_cropper: ^9.1.0
 
 dev_dependencies:
   flutter_test:
@@ -89,7 +90,7 @@ flutter:
     - assets/
     - assets/logo1.png
 
-  #   - images/a_dot_ham.jpeg
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -116,10 +117,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-  flutter_native_splash:
+flutter_native_splash:
   color: "#FFFFFF"
   image: assets/growk_splash_ready.png
   android: true
   ios: true
   fullscreen: true
-

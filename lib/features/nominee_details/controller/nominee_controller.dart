@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../../views.dart';
 import 'package:money_mangmnt/features/nominee_details/use_case/nominee_use_case.dart';
 
@@ -17,8 +19,16 @@ class NomineeDetailsController {
     );
 
     if (pickedDate != null) {
-      final formatted = DatePickerUtils.formatDate(pickedDate);
+      final formatted =
+          DatePickerUtils.formatDate(pickedDate); // e.g., 'yyyy-MM-dd'
+      final uiFormatted = DateFormat('dd/MM/yyyy').format(pickedDate);
+      debugPrint('📅 UI DOB format: $uiFormatted');
+      debugPrint('🛠 pickedDate raw: $pickedDate'); // Shows full datetime
+      debugPrint(
+          '🛠 normalizedDate: ${DateTime.utc(pickedDate.year, pickedDate.month, pickedDate.day)}');
+      debugPrint('📅 Backend DOB format: $formatted');
       ref.read(nomineeDobProvider.notifier).state = formatted;
+      ref.read(nomineeDobUIProvider.notifier).state = uiFormatted;
       ref.read(nomineeDobErrorProvider.notifier).state = null;
     }
   }
@@ -52,6 +62,7 @@ class NomineeDetailsController {
   void clearFields() {
     ref.read(nomineeNameControllerProvider).clear();
     ref.read(nomineeDobProvider.notifier).state = '';
+    ref.read(nomineeDobUIProvider.notifier).state = '';
     ref.read(nomineeRelationProvider.notifier).state = 'Father';
 
     ref.read(nomineeNameErrorProvider.notifier).state = null;

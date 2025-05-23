@@ -37,6 +37,7 @@ class GoalSummary extends ConsumerWidget {
                 height: 20,
                 color: AppColors.current(isDark).primary,
               ),
+              const SizedBox(width: 5),
               ReusableText(
                 text: '$amount',
                 style: AppTextStyle(textColor: textColor).titleMedium,

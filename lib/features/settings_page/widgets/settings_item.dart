@@ -33,7 +33,7 @@ class SettingsItem extends ConsumerWidget {
     if (title == 'Notification') {
       iconSpacing = 22.0;
     } else if (title == 'Language') {
-      iconSpacing = 10.0;
+      iconSpacing = 13.0;
     } else if (title == 'Theme') {
       iconSpacing = 13.0;
     } else if (title == 'Help') {
@@ -90,8 +90,8 @@ class SettingsItem extends ConsumerWidget {
                 onChanged: (value) {
                   ref.read(notificationEnabledProvider.notifier).state = value;
                 },
-                activeColor: Colors.green,
-                activeTrackColor: Colors.green.withOpacity(0.5),
+                activeColor: Colors.teal,
+                activeTrackColor: Colors.teal.withOpacity(0.5),
               )
             else if (trailing != null)
               trailing!,

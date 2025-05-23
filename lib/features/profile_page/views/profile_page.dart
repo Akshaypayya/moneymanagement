@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
 import 'package:money_mangmnt/core/theme/app_theme.dart';
 import 'package:money_mangmnt/features/profile_page/provider/user_details_provider.dart';
+import 'package:money_mangmnt/features/profile_page/views/widget/edit_profile_header_body.dart';
 import 'package:money_mangmnt/features/profile_page/views/widget/profile_appbar.dart';
 import 'package:money_mangmnt/features/profile_page/views/widget/profile_header.dart';
 import 'package:money_mangmnt/features/profile_page/views/widget/user_header_details.dart';
@@ -29,7 +30,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     return ScalingFactor(
       child: Scaffold(
         backgroundColor: AppColors.current(isDark).scaffoldBackground,
-        appBar: profileAppBar(ref: ref),
+        // appBar: profileAppBar(ref: ref),
         body: RefreshIndicator(
           key: _refreshKey,
           onRefresh: _refreshProfile,
@@ -41,6 +42,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const EditProfileHeaderBody(),
                     const ProfilePicture(),
                     UserHeaderDetails(),
                     UserOtherDetails(),

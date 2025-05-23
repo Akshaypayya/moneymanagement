@@ -77,11 +77,18 @@ class CreateGoalRepository {
     }
   }
 
+  // Future<File> _createMinimalJpegFile(String iconName) async {
+  //   try {
+  //     final tempDir = await Directory.systemTemp.createTemp();
+  //     final imageFile =
+  //         File('${tempDir.path}/${iconName.replaceAll('.png', '.jpg')}');
   Future<File> _createMinimalJpegFile(String iconName) async {
     try {
+      final safeIconName = iconName.isEmpty ? "customgoals.png" : iconName;
+
       final tempDir = await Directory.systemTemp.createTemp();
       final imageFile =
-          File('${tempDir.path}/${iconName.replaceAll('.png', '.jpg')}');
+          File('${tempDir.path}/${safeIconName.replaceAll('.png', '.jpg')}');
 
       final List<int> minimalJpeg = [
         // JPEG header

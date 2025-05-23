@@ -1,4 +1,5 @@
 import 'package:money_mangmnt/views.dart';
+import 'package:intl/intl.dart';
 
 final editUserControllerProvider = Provider<EditUserController>((ref) {
   return const EditUserController();
@@ -14,7 +15,7 @@ class EditUserController {
       ref.read(emailControllerProvider);
 
   void showDateOfBirthPicker(BuildContext context, WidgetRef ref) async {
-    FocusScope.of(context).unfocus(); // 👈 Remove keyboard
+    FocusScope.of(context).unfocus();
 
     final pickedDate = await DatePickerUtils.showThemedDatePicker(
       context: context,
@@ -24,8 +25,11 @@ class EditUserController {
     );
 
     if (pickedDate != null) {
-      final formatted = DatePickerUtils.formatDate(pickedDate);
-      ref.read(dobProvider.notifier).state = formatted;
+      final backendFormatted = DateFormat('yyyy-MM-dd').format(pickedDate);
+      final uiFormatted = DateFormat('dd/MM/yyyy').format(pickedDate);
+
+      ref.read(dobProvider.notifier).state = backendFormatted;
+      ref.read(dobUiProvider.notifier).state = uiFormatted;
       ref.read(dobErrorProvider.notifier).state = null;
     }
   }
@@ -69,7 +73,21 @@ class EditUserController {
       };
       ref.read(genderProvider.notifier).state = genderText;
 
-      ref.read(dobProvider.notifier).state = userData.dob ?? '';
+      final dob = userData.dob ?? '';
+      ref.read(dobProvider.notifier).state = dob;
+
+      if (dob.isNotEmpty) {
+        try {
+          final parsedDate = DateFormat('yyyy-MM-dd').parse(dob);
+          final formattedUiDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+          ref.read(dobUiProvider.notifier).state = formattedUiDate;
+        } catch (e) {
+          debugPrint('❌ Failed to parse DOB: $e');
+          ref.read(dobUiProvider.notifier).state = '';
+        }
+      } else {
+        ref.read(dobUiProvider.notifier).state = '';
+      }
     }
   }
 
@@ -123,12 +141,12 @@ class EditUserController {
       isValid = false;
     }
 
-    if (imageFile == null) {
-      const msg = 'Please upload a profile picture';
-      ref.read(imageErrorProvider.notifier).state = msg;
-      debugPrint('❌ Validation: $msg');
-      isValid = false;
-    }
+    // if (imageFile == null) {
+    //   const msg = 'Please upload a profile picture';
+    //   ref.read(imageErrorProvider.notifier).state = msg;
+    //   debugPrint('❌ Validation: $msg');
+    //   isValid = false;
+    // }
 
     return isValid;
   }
@@ -146,7 +164,7 @@ class EditUserController {
       return;
     }
 
-    final imageFile = ref.read(profilePictureFileProvider);
+    final imageFile = ref.read(profilePictureFileProvider); // read once here
 
     if (imageFile != null) {
       ref.read(profilePictureUploadStateProvider.notifier).setLoading();
@@ -220,11 +238,9 @@ class EditUserController {
         message: 'Something went wrong while updating user.',
         type: SnackType.error,
       );
+    } finally {
       ref.read(isButtonLoadingProvider.notifier).state = false;
-      return;
     }
-
-    ref.read(isButtonLoadingProvider.notifier).state = false;
 
     final profile = ref.read(userProfileProvider);
     final hasProfileData = profile != null && profile.dob.isNotEmpty;

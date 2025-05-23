@@ -1,5 +1,4 @@
 import 'package:money_mangmnt/views.dart';
-
 class BankDetailsForm extends ConsumerWidget {
   const BankDetailsForm({super.key});
 

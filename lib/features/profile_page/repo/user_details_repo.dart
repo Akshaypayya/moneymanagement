@@ -1,4 +1,5 @@
 import 'package:money_mangmnt/features/profile_page/model/user_details_model.dart';
+import 'package:intl/intl.dart';
 
 import '../../../views.dart';
 
@@ -73,8 +74,14 @@ class UserDetailRepository {
 
           final rawDob = nominee['nomineeDob'];
           if (rawDob != null && rawDob.isNotEmpty) {
-            final formattedDob = rawDob.split('T').first;
+            final date = DateTime.parse(rawDob); // Safely parse ISO date
+            final formattedDob =
+                DateFormat('yyyy-MM-dd').format(date); // backend format
+            final uiFormatted =
+                DateFormat('dd/MM/yyyy').format(date); // UI format
+
             ref.read(nomineeDobProvider.notifier).state = formattedDob;
+            ref.read(nomineeDobUIProvider.notifier).state = uiFormatted;
           }
 
 // ✅ Saved Address details

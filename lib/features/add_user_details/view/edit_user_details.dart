@@ -1,4 +1,3 @@
-import 'package:money_mangmnt/features/add_user_details/provider/update_user_provider.dart';
 import 'package:money_mangmnt/views.dart';
 
 class EditUserDetails extends ConsumerStatefulWidget {
@@ -39,184 +38,200 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
     final profile = ref.watch(userProfileProvider);
     final hasProfileData = (profile?.dob ?? '').isNotEmpty;
 
-    debugPrint('PROFILE CHECK: ${hasProfileData ? "Has Data ✅" : "No Data ❌"}');
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          ref.invalidate(profilePictureFileProvider);
+          ref.read(userProfileControllerProvider).refreshUserProfile(ref);
+        }
+      },
+      child: ScalingFactor(
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: CustomScaffold(
+            appBar: GrowkAppBar(
+              title: 'Edit User Details',
+              isBackBtnNeeded: hasProfileData,
+            ),
+            body: SingleChildScrollView(
+              child: ReusablePadding(
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 40),
 
-    return ScalingFactor(
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: CustomScaffold(
-          appBar: GrowkAppBar(
-            title: 'Edit User Details',
-            isBackBtnNeeded: hasProfileData,
-          ),
-          body: SingleChildScrollView(
-            child: ReusablePadding(
-              padding: const EdgeInsets.symmetric(horizontal: 22),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 40),
-                  Center(
-                    child: Column(
-                      children: [
-                        GestureDetector(
-                          onTap: isUploading
-                              ? null
-                              : () => controller.showImageSourceActionSheet(
-                                  context, ref),
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: 140,
-                                height: 140,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey[200],
-                                  image: imageFile != null
-                                      ? DecorationImage(
-                                          image: FileImage(imageFile),
-                                          fit: BoxFit.cover,
+                    /// Profile Picture Section
+                    Center(
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: isUploading
+                                ? null
+                                : () => controller.showImageSourceActionSheet(
+                                    context, ref),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: 140,
+                                  height: 140,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey[200],
+                                    image: imageFile != null
+                                        ? DecorationImage(
+                                            image: FileImage(imageFile),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : hasProfilePictureFromApi
+                                            ? DecorationImage(
+                                                image: MemoryImage(
+                                                  base64Decode(userData!
+                                                      .profilePicture!),
+                                                ),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
+                                  ),
+                                  // Replace blank Icon with default asset image:
+                                  child: (imageFile == null &&
+                                          !hasProfilePictureFromApi)
+                                      ? ClipOval(
+                                          child: Image.asset(
+                                            AppImages.profileDefaultImage,
+                                            width: 140,
+                                            height: 140,
+                                            fit: BoxFit.cover,
+                                          ),
                                         )
-                                      : hasProfilePictureFromApi
-                                          ? DecorationImage(
-                                              image: MemoryImage(
-                                                base64Decode(
-                                                    userData!.profilePicture!),
+                                      : (isUploading && !isSaving)
+                                          ? Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.black
+                                                    .withOpacity(0.5),
                                               ),
-                                              fit: BoxFit.cover,
+                                              child: const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        color: Colors.white),
+                                              ),
                                             )
                                           : null,
                                 ),
-                                child: (imageFile == null &&
-                                        !hasProfilePictureFromApi)
-                                    ? const Icon(Icons.person,
-                                        size: 60, color: Colors.grey)
-                                    : (isUploading && !isSaving)
-                                        ? Container(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color:
-                                                  Colors.black.withOpacity(0.5),
-                                            ),
-                                            child: const Center(
-                                              child: CircularProgressIndicator(
-                                                  color: Colors.white),
-                                            ),
-                                          )
-                                        : null,
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                        color: Colors.white, width: 2),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: Colors.white, width: 2),
+                                    ),
+                                    child: isUploading
+                                        ? const SizedBox()
+                                        : const Icon(Icons.camera_alt,
+                                            color: Colors.white, size: 20),
                                   ),
-                                  child: isUploading
-                                      ? const SizedBox()
-                                      : const Icon(Icons.camera_alt,
-                                          color: Colors.white, size: 20),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (imageError != null && imageError.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              imageError,
-                              style: AppTextStyle(textColor: Colors.red)
-                                  .labelSmall,
+                              ],
                             ),
                           ),
-                      ],
+                          if (imageError != null && imageError.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                imageError,
+                                style: AppTextStyle(textColor: Colors.red)
+                                    .labelSmall,
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  /// Name
-                  ReusableTextField(
-                    isMandatory: true,
-                    label: 'Name',
-                    icon: Icons.person,
-                    inputFormatters: AppInputFormatters.nameFormatter(),
-                    controller: controller.nameController(ref),
-                    hintText: 'Enter your full name',
-                    errorText: ref.watch(nameErrorProvider),
-                    onChanged: (value) {
-                      if (ref.read(nameErrorProvider) != null) {
-                        ref.read(nameErrorProvider.notifier).state = null;
-                      }
-                    },
-                  ),
+                    /// Name Field
+                    ReusableTextField(
+                      isMandatory: true,
+                      label: 'Name',
+                      icon: Icons.person,
+                      inputFormatters: AppInputFormatters.nameFormatter(),
+                      controller: controller.nameController(ref),
+                      hintText: 'Enter your full name',
+                      errorText: ref.watch(nameErrorProvider),
+                      onChanged: (value) {
+                        if (ref.read(nameErrorProvider) != null) {
+                          ref.read(nameErrorProvider.notifier).state = null;
+                        }
+                      },
+                    ),
 
-                  /// Email
-                  ReusableTextField(
-                    isMandatory: true,
-                    label: 'Email',
-                    icon: Icons.email,
-                    inputFormatters: AppInputFormatters.emailFormatter(),
-                    controller: controller.emailController(ref),
-                    hintText: 'Enter your email address',
-                    errorText: ref.watch(emailErrorProvider),
-                    onChanged: (value) {
-                      if (ref.read(emailErrorProvider) != null) {
-                        ref.read(emailErrorProvider.notifier).state = null;
-                      }
-                    },
-                  ),
+                    /// Email Field
+                    ReusableTextField(
+                      isMandatory: true,
+                      label: 'Email',
+                      icon: Icons.email,
+                      inputFormatters: AppInputFormatters.emailFormatter(),
+                      controller: controller.emailController(ref),
+                      hintText: 'Enter your email address',
+                      errorText: ref.watch(emailErrorProvider),
+                      onChanged: (value) {
+                        if (ref.read(emailErrorProvider) != null) {
+                          ref.read(emailErrorProvider.notifier).state = null;
+                        }
+                      },
+                    ),
 
-                  /// Gender
-                  GrowkBottomSheetNavigator(
-                    isMandatory: true,
-                    label: 'Gender',
-                    icon: Icons.male,
-                    valueText: ref.watch(genderProvider).isEmpty
-                        ? 'Select gender'
-                        : ref.watch(genderProvider),
-                    onTap: () {
-                      if (ref.read(genderErrorProvider) != null) {
-                        ref.read(genderErrorProvider.notifier).state = null;
-                      }
-                      controller.showGenderSheet(context, ref);
-                    },
-                    // onClear: () => ref.read(genderProvider.notifier).state = '', // 👈 Reset on cancel
-                    errorText: genderError,
-                  ),
+                    /// Gender Selector
+                    GrowkBottomSheetNavigator(
+                      isMandatory: true,
+                      label: 'Gender',
+                      icon: Icons.male,
+                      valueText: ref.watch(genderProvider).isEmpty
+                          ? 'Select gender'
+                          : ref.watch(genderProvider),
+                      onTap: () {
+                        if (ref.read(genderErrorProvider) != null) {
+                          ref.read(genderErrorProvider.notifier).state = null;
+                        }
+                        controller.showGenderSheet(context, ref);
+                      },
+                      errorText: genderError,
+                    ),
 
-                  /// DOB
-                  GrowkBottomSheetNavigator(
-                    isMandatory: true,
-                    label: 'Date of Birth',
-                    icon: Icons.cake,
-                    valueText: ref.watch(dobProvider).isEmpty
-                        ? 'Select your date of birth'
-                        : ref.watch(dobProvider),
-                    onTap: () {
-                      if (ref.read(dobErrorProvider) != null) {
-                        ref.read(dobErrorProvider.notifier).state = null;
-                      }
-                      controller.showDateOfBirthPicker(context, ref);
-                    },
-                    errorText: dobError,
-                  ),
+                    /// DOB Selector
+                    GrowkBottomSheetNavigator(
+                      isMandatory: true,
+                      label: 'Date of Birth',
+                      icon: Icons.cake,
+                      valueText: ref.watch(dobUiProvider).isEmpty
+                          ? 'Select your date of birth'
+                          : ref.watch(dobUiProvider),
+                      onTap: () {
+                        if (ref.read(dobErrorProvider) != null) {
+                          ref.read(dobErrorProvider.notifier).state = null;
+                        }
+                        controller.showDateOfBirthPicker(context, ref);
+                      },
+                      errorText: dobError,
+                    ),
 
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.25),
 
-                  GrowkButton(
-                    title: 'Save',
-                    onTap: () => controller.saveUserDetails(context, ref),
-                  ),
-                  const SizedBox(height: 40),
-                ],
+                    /// Save Button
+                    GrowkButton(
+                      title: 'Save',
+                      onTap: () => controller.saveUserDetails(context, ref),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
               ),
             ),
           ),

@@ -14,3 +14,4 @@ final emailControllerProvider = Provider<TextEditingController>((ref) {
 
 final genderProvider = StateProvider<String>((ref) => 'Male');
 final dobProvider = StateProvider<String>((ref) => '');
+final dobUiProvider = StateProvider<String>((ref) => '');

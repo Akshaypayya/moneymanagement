@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:local_auth/local_auth.dart';
+import 'package:money_mangmnt/core/biometric/biometric_service.dart';
 import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:local_auth/local_auth.dart';
 
 final biometricServiceProvider = Provider<BiometricService>((ref) {
   return BiometricService();
@@ -22,37 +22,44 @@ class BiometricEnabledNotifier extends StateNotifier<bool> {
   }
 }
 
-class BiometricService {
-  final LocalAuthentication _auth = LocalAuthentication();
+final biometricTypesProvider = FutureProvider<List<String>>((ref) async {
+  final biometricService = ref.watch(biometricServiceProvider);
 
-  Future<bool> isBiometricsAvailable() async {
-    try {
-      final canCheckBiometric = await _auth.canCheckBiometrics;
-      final isDeviceSupported = await _auth.isDeviceSupported();
-      return canCheckBiometric && isDeviceSupported;
-    } catch (e) {
-      debugPrint('Error checking biometrics availability: $e');
-      return false;
-    }
-  }
-
-  Future<List<BiometricType>> getAvailableBiometrics() async {
-    try {
-      return await _auth.getAvailableBiometrics();
-    } catch (e) {
-      debugPrint('Error getting available biometrics: $e');
+  try {
+    final isAvailable = await biometricService.isBiometricsAvailable();
+    if (!isAvailable) {
       return [];
     }
-  }
 
-  Future<bool> authenticate() async {
-    try {
-      return await _auth.authenticate(
-        localizedReason: 'Authenticate to access your account',
-      );
-    } catch (e) {
-      debugPrint('Error authenticating: $e');
-      return false;
-    }
+    final types = await biometricService.getAvailableBiometrics();
+    return types.map((type) {
+      switch (type) {
+        case BiometricType.face:
+          return 'Face ID';
+        case BiometricType.fingerprint:
+          return 'Fingerprint';
+        case BiometricType.iris:
+          return 'Iris';
+        case BiometricType.strong:
+          // return 'Strong biometric';
+          return 'Fingerprint';
+        case BiometricType.weak:
+          // return 'Weak biometric';
+          return 'Fingerprint';
+        default:
+          return 'Biometric';
+      }
+    }).toList();
+  } catch (e) {
+    return [];
   }
-}
+});
+
+final biometricSupportedProvider = FutureProvider<bool>((ref) async {
+  final biometricService = ref.watch(biometricServiceProvider);
+  return await biometricService.isBiometricsAvailable();
+});
+
+final biometricAuthenticatingProvider = StateProvider<bool>((ref) => false);
+
+final biometricResultProvider = StateProvider<BiometricResult?>((ref) => null);

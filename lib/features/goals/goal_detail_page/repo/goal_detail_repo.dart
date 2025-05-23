@@ -42,11 +42,28 @@ class GoalDetailRepository {
           debugPrint(
               'GOAL DETAIL: Successfully retrieved goal data for: $goalName');
           if (goalViewModel.data != null) {
-            debugPrint('Goal Name: ${goalViewModel.data!.goalName}');
+            final goalData = goalViewModel.data!;
+
+            debugPrint('Goal Name: ${goalData.goalName}');
+            debugPrint('Target Amount: ${goalData.formattedTargetAmount}');
             debugPrint(
-                'Target Amount: ${goalViewModel.data!.formattedTargetAmount}');
+                'Available Balance: ${goalData.formattedAvailableBalance}');
+
             debugPrint(
-                'Available Balance: ${goalViewModel.data!.formattedAvailableBalance}');
+                'GOAL DETAIL: Goal image provided = ${goalData.goalPic != null && goalData.goalPic!.isNotEmpty}');
+            if (goalData.goalPic != null && goalData.goalPic!.isNotEmpty) {
+              debugPrint(
+                  'GOAL DETAIL: Goal image base64 length = ${goalData.goalPic!.length}');
+            }
+            debugPrint('GOAL DETAIL: Goal icon asset = ${goalData.iconAsset}');
+            debugPrint(
+                'GOAL DETAIL: Goal pic extension = ${goalData.goalPicExtension}');
+
+            if (response['data']?['goalPicContentType'] != null &&
+                (goalData.goalPic == null || goalData.goalPic!.isEmpty)) {
+              debugPrint(
+                  'GOAL DETAIL: Has goalPicContentType but no image data. Type: ${response['data']['goalPicContentType']}');
+            }
           }
         } else {
           debugPrint('GOAL DETAIL: Failed to get goal data');

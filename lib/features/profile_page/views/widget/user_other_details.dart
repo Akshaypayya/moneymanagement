@@ -1,3 +1,4 @@
+import 'package:money_mangmnt/core/constants/app_space.dart';
 import 'package:money_mangmnt/features/profile_page/views/widget/bank_details.dart';
 import 'package:money_mangmnt/features/profile_page/views/widget/kyc_details.dart';
 import 'package:money_mangmnt/features/profile_page/views/widget/nominee_details.dart';
@@ -24,21 +25,25 @@ class _UserOtherDetailsState extends ConsumerState<UserOtherDetails> {
       padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 30,
         children: [
           ProfileDetailItem(
             label: 'Gender',
             value: profileFormatGender(userData?.gender),
             isSuffixIconNeeded: false,
           ),
+          GapSpace.height30,
           ProfileDetailItem(
             label: 'Date of Birth',
             value: profileFormatDate(userData?.dob),
             isSuffixIconNeeded: false,
           ),
+          GapSpace.height20,
           kycDetails(ref: ref, context: context),
+          GapSpace.height20,
           nomineeDetails(ref: ref, context: context),
+          GapSpace.height20,
           savedAddress(ref: ref, context: context),
+          GapSpace.height10,
           bankDetails(ref: ref, context: context)
         ],
       ),

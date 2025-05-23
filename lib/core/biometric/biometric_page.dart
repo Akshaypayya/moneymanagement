@@ -6,108 +6,103 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
 import 'package:money_mangmnt/core/constants/app_images.dart';
 import 'package:money_mangmnt/core/theme/app_theme.dart';
+import 'package:money_mangmnt/core/biometric/biometric_provider.dart';
+import 'package:money_mangmnt/core/biometric/biometric_service.dart';
+import 'package:money_mangmnt/core/widgets/custom_scaffold.dart';
+import 'package:money_mangmnt/core/widgets/reusable_padding.dart';
 import 'package:money_mangmnt/routes/app_router.dart';
-import 'package:local_auth/local_auth.dart';
 
-class BiometricPage extends ConsumerStatefulWidget {
-  const BiometricPage({Key? key}) : super(key: key);
+class BiometricAuthPage extends ConsumerStatefulWidget {
+  const BiometricAuthPage({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<BiometricPage> createState() => _BiometricPageState();
+  ConsumerState<BiometricAuthPage> createState() => _BiometricAuthPageState();
 }
 
-enum SupportState {
-  unknown,
-  supported,
-  unSupported,
-}
-
-class _BiometricPageState extends ConsumerState<BiometricPage> {
-  final LocalAuthentication auth = LocalAuthentication();
-  SupportState supportState = SupportState.unknown;
-  List<BiometricType>? availableBiometrics;
-  bool isAuthenticating = false;
-  bool showVerifiedAnimation = false;
+class _BiometricAuthPageState extends ConsumerState<BiometricAuthPage> {
+  String _statusMessage = '';
 
   @override
   void initState() {
     super.initState();
-    checkBiometricSupport();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkBiometricSupport();
+    });
   }
 
-  Future<void> checkBiometricSupport() async {
+  Future<void> _checkBiometricSupport() async {
+    final biometricService = ref.read(biometricServiceProvider);
+    final isBiometricEnabled = ref.read(biometricEnabledProvider);
+
+    if (!isBiometricEnabled) {
+      _navigateToMainScreen();
+      return;
+    }
+
     try {
-      final canCheckBiometric = await auth.canCheckBiometrics;
-      final isDeviceSupported = await auth.isDeviceSupported();
+      final isSupported = await biometricService.isBiometricsAvailable();
+      final biometricTypes = await biometricService.getAvailableBiometrics();
 
-      final biometricTypes = await auth.getAvailableBiometrics();
-
-      setState(() {
-        availableBiometrics = biometricTypes;
-        supportState = (canCheckBiometric &&
-                isDeviceSupported &&
-                biometricTypes.isNotEmpty)
-            ? SupportState.supported
-            : SupportState.unSupported;
-      });
-
-      if (supportState == SupportState.supported) {
-        authenticateWithBiometrics();
+      if (isSupported && biometricTypes.isNotEmpty) {
+        _authenticateWithBiometrics();
       } else {
-        Future.delayed(Duration(milliseconds: 500), () {
-          if (mounted) {
-            Navigator.pushReplacementNamed(context, AppRouter.mainScreen);
-          }
+        setState(() {
+          _statusMessage = 'Biometrics not available on this device';
         });
+
+        if (mounted) {
+          _navigateToMainScreen();
+        }
       }
     } catch (e) {
       debugPrint('Error checking biometric support: $e');
+      _navigateToMainScreen();
+    }
+  }
+
+  Future<void> _authenticateWithBiometrics() async {
+    ref.read(biometricAuthenticatingProvider.notifier).state = true;
+
+    final biometricService = ref.read(biometricServiceProvider);
+    final result = await biometricService
+        .authenticate('Authenticate to access your account');
+
+    ref.read(biometricAuthenticatingProvider.notifier).state = false;
+    ref.read(biometricResultProvider.notifier).state = result;
+
+    if (result.success) {
       setState(() {
-        supportState = SupportState.unSupported;
+        _statusMessage = 'Authentication successful';
       });
 
-      Future.delayed(Duration(milliseconds: 500), () {
-        if (mounted) {
-          Navigator.pushReplacementNamed(context, AppRouter.mainScreen);
-        }
-      });
-    }
-  }
-
-  Future<void> authenticateWithBiometrics() async {
-    setState(() {
-      isAuthenticating = true;
-    });
-
-    try {
-      final authenticated = await auth.authenticate(
-        localizedReason: 'Authenticate with fingerprint or Face ID to continue',
-      );
-
-      if (authenticated) {
-        setState(() {
-          showVerifiedAnimation = true;
-          isAuthenticating = false;
-        });
-
-        Future.delayed(
-          Duration(milliseconds: 500),
-          () {
-            if (mounted) {
-              Navigator.pushReplacementNamed(context, AppRouter.mainScreen);
-            }
-          },
-        );
-      } else {
-        closeApp();
+      if (mounted) {
+        _navigateToMainScreen();
       }
-    } catch (e) {
-      debugPrint('Authentication error: $e');
-      closeApp();
+    } else {
+      setState(() {
+        _statusMessage = result.message ?? 'Authentication failed';
+      });
+
+      if (result.errorCode != BiometricErrorCode.notAvailable &&
+          result.errorCode != BiometricErrorCode.notEnrolled) {
+        Future.delayed(const Duration(seconds: 2), () {
+          _exitApp();
+        });
+      } else {
+        if (mounted) {
+          _navigateToMainScreen();
+        }
+      }
     }
   }
 
-  void closeApp() {
+  void _navigateToMainScreen() {
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, AppRouter.mainScreen);
+    }
+  }
+
+  void _exitApp() {
     if (Platform.isAndroid) {
       SystemNavigator.pop();
     } else if (Platform.isIOS) {
@@ -117,65 +112,27 @@ class _BiometricPageState extends ConsumerState<BiometricPage> {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     final isDark = ref.watch(isDarkProvider);
     final logoPath = isDark ? AppImages.appLogoWhite : AppImages.appLogoBlack;
+    final isAuthenticating = ref.watch(biometricAuthenticatingProvider);
 
     return WillPopScope(
       onWillPop: () async {
-        closeApp();
+        _exitApp();
         return false;
       },
       child: ScalingFactor(
-        child: Scaffold(
+        child: CustomScaffold(
           backgroundColor: AppColors.current(isDark).background,
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Container(
-                  height: height * 0.1,
-                  width: width * 0.25,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    image: DecorationImage(
-                      image: AssetImage(logoPath),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: height * 0.01),
-              Center(
-                child: Text(
-                  'GrowK',
-                  style: TextStyle(
-                    color: isDark ? Colors.white : Colors.black,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                  ),
-                ),
-              ),
-              SizedBox(height: height * 0.03),
-              if (supportState == SupportState.supported &&
-                  !showVerifiedAnimation)
-                Text(
-                  'Please authenticate to continue',
-                  style: TextStyle(
-                    color: isDark ? Colors.white : Colors.black,
-                    fontSize: 16,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                  ),
-                ),
-              if (showVerifiedAnimation)
-                Icon(
-                  Icons.check_circle_outline,
-                  color: Colors.green,
-                  size: 40,
-                ),
-            ],
+          body: Center(
+            child:
+                //  !isAuthenticating ? CircularProgressIndicator() :
+                ReusablePadding(
+              padding: const EdgeInsets.symmetric(horizontal: 120),
+              child: Image(image: AssetImage(logoPath)),
+            ),
           ),
         ),
       ),

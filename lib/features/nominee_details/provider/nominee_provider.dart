@@ -18,6 +18,7 @@ final nomineeRelationErrorProvider = StateProvider<String?>((ref) => null);
 
 // StateProviders for bottom sheet controlled fields
 final nomineeDobProvider = StateProvider<String>((ref) => '');
+final nomineeDobUIProvider = StateProvider<String>((ref) => ''); // For UI
 final nomineeRelationProvider =
     StateProvider<String>((ref) => 'Father'); // ✅ Default set
 

@@ -5,6 +5,8 @@ class ProviderResetService {
     ref.invalidate(userProfileProvider);
     ref.invalidate(genderProvider);
     ref.invalidate(dobProvider);
+    ref.invalidate(dobUiProvider);
+    ref.invalidate(nomineeDobUIProvider);
     ref.invalidate(nameErrorProvider);
     ref.invalidate(emailErrorProvider);
     ref.invalidate(genderErrorProvider);

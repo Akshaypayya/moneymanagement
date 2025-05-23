@@ -80,7 +80,12 @@ class _ProfileHeaderState extends ConsumerState<ProfilePicture> {
                     ? AssetImage(
                         'assets/profile_image.png',
                       )
-                    : MemoryImage(base64Decode(userData.profilePicture ?? "")),
+                    : userData.profilePicture == null
+                        ? AssetImage(
+                            'assets/profile_default_image.png',
+                          )
+                        : MemoryImage(
+                            base64Decode(userData.profilePicture ?? "")),
                 fit: BoxFit.cover,
               ),
               boxShadow: [

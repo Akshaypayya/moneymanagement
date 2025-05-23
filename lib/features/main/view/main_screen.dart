@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/features/goals/goal_page_checker/goal_page_checker.dart';
+import 'package:money_mangmnt/features/goals/goal_page_checker/view/goal_page_checker.dart';
 import 'package:money_mangmnt/features/profile_page/views/profile_page.dart';
 import 'package:money_mangmnt/features/settings_page/settings_page.dart';
 import 'package:money_mangmnt/features/transaction_page/transactions_page.dart';

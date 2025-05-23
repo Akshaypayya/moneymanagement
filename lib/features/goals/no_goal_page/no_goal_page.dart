@@ -6,7 +6,10 @@ import 'package:money_mangmnt/features/goals/no_goal_page/components/no_goal_ima
 import 'package:money_mangmnt/views.dart';
 
 class NoGoalPage extends ConsumerStatefulWidget {
-  const NoGoalPage({super.key});
+  final VoidCallback? onGoalCreated;
+
+  const NoGoalPage({super.key, this.onGoalCreated});
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NoGoalPageState();
 }
@@ -40,6 +43,7 @@ class _NoGoalPageState extends ConsumerState<NoGoalPage> {
               createGoalButton(
                 ref: ref,
                 context: context,
+                onGoalCreated: widget.onGoalCreated,
               ),
             ],
           ),

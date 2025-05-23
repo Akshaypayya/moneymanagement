@@ -22,14 +22,6 @@ class SavedAddressTextFields extends ConsumerWidget {
         const ReusableSizedBox(height: 20),
         ReusableTextField(
           isMandatory: true,
-          label: 'Pin Code',
-          hintText: 'Enter your area pin code',
-          inputFormatters: AppInputFormatters.saudiZipCode(),
-          controller: zipCtrl,
-          errorText: zipError,
-        ),
-        ReusableTextField(
-          isMandatory: true,
           label: 'Address Line 1',
           hintText: 'Enter house number, building, etc.',
           inputFormatters: AppInputFormatters.addressFormatter(),
@@ -59,6 +51,14 @@ class SavedAddressTextFields extends ConsumerWidget {
           inputFormatters: AppInputFormatters.nameFormatter(),
           controller: stateCtrl,
           errorText: stateError,
+        ),
+        ReusableTextField(
+          isMandatory: true,
+          label: 'Pin Code',
+          hintText: 'Enter your area pin code',
+          inputFormatters: AppInputFormatters.saudiZipCode(),
+          controller: zipCtrl,
+          errorText: zipError,
         ),
       ]),
     );

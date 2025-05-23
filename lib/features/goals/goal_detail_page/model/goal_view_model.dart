@@ -38,6 +38,7 @@ class GoalData {
   final String goldInvestment;
   final String? goalPic;
   final String? goalPicExtension;
+  final String? goalPicContentType;
   final String createdDate;
   final double availableBalance;
   final double buyPrice;
@@ -56,6 +57,7 @@ class GoalData {
     required this.goldInvestment,
     this.goalPic,
     this.goalPicExtension,
+    this.goalPicContentType,
     required this.createdDate,
     required this.availableBalance,
     required this.buyPrice,
@@ -76,6 +78,7 @@ class GoalData {
       goldInvestment: json['goldInvestment'] ?? '',
       goalPic: json['goalPic'],
       goalPicExtension: json['goalPicExtension'],
+      goalPicContentType: json['goalPicContentType'], // Parse new field
       createdDate: json['createdDate'] ?? '',
       availableBalance: (json['availableBalance'] ?? 0).toDouble(),
       buyPrice: (json['buyPrice'] ?? 0).toDouble(),
@@ -85,7 +88,6 @@ class GoalData {
       linkedVA: json['linkedVA'] ?? '',
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'goalName': goalName,
@@ -128,6 +130,16 @@ class GoalData {
   }
 
   String get iconAsset {
+    if (goalPicContentType != null && (goalPic == null || goalPic!.isEmpty)) {
+      if (goalPicExtension != null && goalPicExtension!.isNotEmpty) {
+        final ext = goalPicExtension!.toLowerCase();
+        if (ext.contains('home')) return 'assets/home.png';
+        if (ext.contains('education')) return 'assets/education.png';
+        if (ext.contains('wedding')) return 'assets/wedding.png';
+        if (ext.contains('trip')) return 'assets/trip.png';
+      }
+    }
+
     final lowercaseName = goalName.toLowerCase();
 
     if (lowercaseName.contains('home') || lowercaseName.contains('house')) {
@@ -157,6 +169,7 @@ class GoalData {
             height: height,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
+              debugPrint('Error loading goal image: $error');
               return Image.asset(
                 iconAsset,
                 width: width,
@@ -166,6 +179,7 @@ class GoalData {
           ),
         );
       } catch (e) {
+        debugPrint('Error decoding goal image: $e');
         return Image.asset(
           iconAsset,
           width: width,
@@ -177,6 +191,14 @@ class GoalData {
         iconAsset,
         width: width,
         height: height,
+        errorBuilder: (context, error, stackTrace) {
+          debugPrint('Error loading asset image: $error');
+          return Image.asset(
+            'assets/customgoals.png',
+            width: width,
+            height: height,
+          );
+        },
       );
     }
   }

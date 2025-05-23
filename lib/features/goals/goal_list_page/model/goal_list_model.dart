@@ -154,10 +154,15 @@ class GoalListItem {
     }
   }
 
-  Widget getIconWidget({double width = 35, double height = 35}) {
+  Widget getIconWidget({double width = 60, double height = 60}) {
+    print('GOAL ICON: Checking goal pic for ${goalName}');
+    print('GOAL ICON: Has goalPic: ${goalPic != null && goalPic!.isNotEmpty}');
+
     if (goalPic != null && goalPic!.isNotEmpty) {
       try {
         final bytes = base64Decode(goalPic!);
+        print('GOAL ICON: Successfully decoded base64 image for ${goalName}');
+
         return ClipOval(
           child: Image.memory(
             bytes,
@@ -165,27 +170,34 @@ class GoalListItem {
             height: height,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              return Image.asset(
-                iconAsset,
-                width: width,
-                height: height,
-              );
+              print('GOAL ICON ERROR: Failed to render memory image: $error');
+              return _getFallbackIcon(width, height);
             },
           ),
         );
       } catch (e) {
+        print('GOAL ICON ERROR: Failed to decode base64 image: $e');
+        return _getFallbackIcon(width, height);
+      }
+    } else {
+      print('GOAL ICON: No image data, using fallback icon');
+      return _getFallbackIcon(width, height);
+    }
+  }
+
+  Widget _getFallbackIcon(double width, double height) {
+    return Image.asset(
+      iconAsset,
+      width: width,
+      height: height,
+      errorBuilder: (context, error, stackTrace) {
+        print('GOAL ICON ERROR: Failed to load asset image: $error');
         return Image.asset(
-          iconAsset,
+          'assets/customgoals.png',
           width: width,
           height: height,
         );
-      }
-    } else {
-      return Image.asset(
-        iconAsset,
-        width: width,
-        height: height,
-      );
-    }
+      },
+    );
   }
 }

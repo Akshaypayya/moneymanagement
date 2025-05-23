@@ -1,7 +1,10 @@
 import 'package:money_mangmnt/views.dart';
 
-Widget createGoalButton(
-    {required BuildContext context, required WidgetRef ref}) {
+Widget createGoalButton({
+  required BuildContext context,
+  required WidgetRef ref,
+  VoidCallback? onGoalCreated,
+}) {
   final profileState = ref.watch(userProfileStateProvider);
   final userData = profileState.userData;
   return GrowkButton(
@@ -14,17 +17,13 @@ Widget createGoalButton(
 
             Navigator.pushNamed(context, AppRouter.kycVerificationScreen);
           }
-        : () => Navigator.pushNamed(context, AppRouter.addGoalPage),
-    // () async {
-    //   await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => const CreateGoalPage(),
-    //     ),
-    //   );
-    //   if (context.mounted) {
-    //     ref.read(goalListStateProvider.notifier).refreshGoals();
-    //   }
-    // },
+        : () async {
+            await Navigator.pushNamed(context, AppRouter.addGoalPage);
+
+            // Trigger refresh when returning from goal creation
+            if (onGoalCreated != null) {
+              onGoalCreated();
+            }
+          },
   );
 }

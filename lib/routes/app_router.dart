@@ -1,3 +1,4 @@
+import 'package:money_mangmnt/core/biometric/biometric_page.dart';
 import 'package:money_mangmnt/features/add_user_details/view/edit_user_details.dart';
 import 'package:money_mangmnt/features/bank_details/views/bank_details_screen.dart';
 import 'package:money_mangmnt/features/goals/add_goal_page/view/add_goal_page.dart';
@@ -31,6 +32,7 @@ class AppRouter {
   static const String createGoalScreen = '/createGoalScreen';
   static const String editGoalPage = '/editGoalPage';
   static const String addGoalPage = '/addGoalPage';
+  static const String biometricAuth = '/biometricAuth';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -100,6 +102,9 @@ class AppRouter {
       case addGoalPage:
         return MaterialPageRoute(
             builder: (_) => const CreateGoalPage(), settings: RouteSettings());
+      case biometricAuth:
+        return MaterialPageRoute(
+            builder: (_) => const BiometricAuthPage(), settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

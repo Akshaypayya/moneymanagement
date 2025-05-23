@@ -13,6 +13,7 @@ class NomineeDetailsForm extends ConsumerWidget {
     final dobError = ref.watch(nomineeDobErrorProvider) ?? '';
     final relation = ref.watch(nomineeRelationProvider);
     final relationError = ref.watch(nomineeRelationErrorProvider) ?? '';
+    final dobUI = ref.watch(nomineeDobUIProvider);
 
     return ReusableColumn(
       children: [
@@ -27,7 +28,7 @@ class NomineeDetailsForm extends ConsumerWidget {
         GrowkBottomSheetNavigator(
           isMandatory: true,
           label: 'Date of Birth',
-          valueText: dob.isEmpty ? 'Select date of birth' : dob,
+          valueText: dobUI.isEmpty ? 'Select date of birth' : dobUI,
           errorText: dobError.isEmpty ? null : dobError,
           onTap: () => controller.showDateOfBirthPicker(context),
           // onClear: () {

@@ -17,19 +17,19 @@ class GoalIconPicker extends ConsumerWidget {
     return Center(
       child: Stack(
         children: [
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isDark ? Colors.white : Colors.black,
-                width: 1,
+          GestureDetector(
+            onTap: () => controller.pickGoalImageActionSheet(context, ref),
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isDark ? Colors.white : Colors.black,
+                  width: 1,
+                ),
+                color: isDark ? Colors.grey[800] : Colors.grey[100],
               ),
-              color: isDark ? Colors.grey[800] : Colors.grey[100],
-            ),
-            child: GestureDetector(
-              onTap: () => controller.pickGoalImageActionSheet(context, ref),
               child: Center(
                 child: _buildIconOrImage(selectedIcon, selectedImage, isDark),
               ),
