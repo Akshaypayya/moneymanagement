@@ -20,6 +20,10 @@ class _EditGoalIconPickerState extends ConsumerState<EditGoalIconPicker> {
     final controller = ref.read(editGoalControllerProvider);
     final selectedIcon = ref.watch(editSelectedGoalIconProvider);
     final selectedImage = ref.watch(editSelectedImageFileProvider);
+
+    print('ICON PICKER: Selected icon: $selectedIcon');
+    print('ICON PICKER: Has custom image: ${selectedImage != null}');
+
     return Center(
       child: Stack(
         children: [
@@ -68,7 +72,11 @@ class _EditGoalIconPickerState extends ConsumerState<EditGoalIconPicker> {
 
   Widget _buildIconOrImage(
       String selectedIcon, XFile? selectedImage, GoalData goalData) {
+    print('BUILD ICON: selectedIcon = "$selectedIcon"');
+    print('BUILD ICON: selectedImage = ${selectedImage?.path}');
+
     if (selectedImage != null) {
+      print('BUILD ICON: Using custom uploaded image');
       return ClipOval(
         child: Image.file(
           File(selectedImage.path),
@@ -76,21 +84,32 @@ class _EditGoalIconPickerState extends ConsumerState<EditGoalIconPicker> {
           height: 60,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
+            print(
+                'BUILD ICON ERROR: Failed to load custom image, falling back to goal data widget');
             return goalData.getIconWidget(width: 60, height: 60);
           },
         ),
       );
-    } else if (selectedIcon.isNotEmpty) {
-      return Image.asset(
-        'assets/$selectedIcon',
-        width: 60,
-        height: 60,
-        errorBuilder: (context, error, stackTrace) {
-          return goalData.getIconWidget(width: 60, height: 60);
-        },
-      );
-    } else {
-      return goalData.getIconWidget(width: 60, height: 60);
     }
+
+    if (selectedIcon.isNotEmpty) {
+      print('BUILD ICON: Using selected preset icon: assets/$selectedIcon');
+      return ClipOval(
+        child: Image.asset(
+          'assets/$selectedIcon',
+          width: 60,
+          height: 60,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            print(
+                'BUILD ICON ERROR: Failed to load asset $selectedIcon, falling back to goal data widget');
+            return goalData.getIconWidget(width: 60, height: 60);
+          },
+        ),
+      );
+    }
+
+    print('BUILD ICON: Using goal data widget as fallback');
+    return goalData.getIconWidget(width: 60, height: 60);
   }
 }

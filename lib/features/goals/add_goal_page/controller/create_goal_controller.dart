@@ -7,9 +7,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:money_mangmnt/core/constants/app_space.dart';
+import 'package:money_mangmnt/features/goals/goal_detail_page/controller/img_mpng.dart';
 import 'package:money_mangmnt/views.dart';
-import 'package:money_mangmnt/features/goals/add_goal_page/provider/add_goal_provider.dart';
-import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:money_mangmnt/features/goals/edit_goal_page/repo/edit_goal_repo.dart';
+import 'package:money_mangmnt/features/goals/goal_detail_page/model/goal_view_model.dart';
 
 class CreateGoalController {
   final Ref ref;
@@ -134,7 +135,13 @@ class CreateGoalController {
     );
   }
 
+  // void _selectPresetIcon(String iconName) {
+  //   ref.read(selectedGoalIconProvider.notifier).state = iconName;
+  //   ref.read(selectedImageFileProvider.notifier).state = null;
+  // }
+
   void _selectPresetIcon(String iconName) {
+    print('CREATE CONTROLLER: Selecting preset icon: $iconName');
     ref.read(selectedGoalIconProvider.notifier).state = iconName;
     ref.read(selectedImageFileProvider.notifier).state = null;
   }
@@ -232,6 +239,17 @@ class CreateGoalController {
         return;
       }
 
+      // final Map<String, dynamic> goalData = {
+      //   "goalName": goalName,
+      //   "targetYear": targetYear,
+      //   "targetAmount": targetAmount,
+      //   "duration": duration,
+      //   "debitDate": debitDate,
+      //   "transactionAmount": transactionAmount.round(),
+      //   "goldInvestment": autoDeposit ? "N" : "Y",
+      //   "frequency": selectedFrequency,
+      //   if (selectedIcon.isNotEmpty) "iconName": selectedIcon,
+      // };
       final Map<String, dynamic> goalData = {
         "goalName": goalName,
         "targetYear": targetYear,
@@ -239,9 +257,10 @@ class CreateGoalController {
         "duration": duration,
         "debitDate": debitDate,
         "transactionAmount": transactionAmount.round(),
-        "goldInvestment": autoDeposit ? "Y" : "N",
+        "goldInvestment": autoDeposit ? "N" : "Y",
         "frequency": selectedFrequency,
-        if (selectedIcon.isNotEmpty) "iconName": selectedIcon,
+        if (selectedIcon.isNotEmpty && selectedImage == null)
+          "iconName": selectedIcon,
       };
 
       print('CONTROLLER: Goal data prepared: $goalData');
@@ -284,6 +303,12 @@ class CreateGoalController {
 
       if (result.isSuccess) {
         print('CONTROLLER: Goal created successfully');
+        // Store the icon mapping for later retrieval
+        final selectedIcon = ref.read(selectedGoalIconProvider);
+        if (selectedIcon.isNotEmpty) {
+          IconMappingService.storeGoalIcon(goalName, selectedIcon);
+          print('CONTROLLER: Stored icon mapping - $goalName -> $selectedIcon');
+        }
 
         resetFormState();
         print('CONTROLLER: Form reset completed - all fields back to default');

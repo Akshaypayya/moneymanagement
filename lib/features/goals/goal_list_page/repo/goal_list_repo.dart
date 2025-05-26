@@ -34,6 +34,25 @@ class GoalListRepository {
       debugPrint('GOAL LIST RESPONSE: $response');
 
       if (response != null && response is Map<String, dynamic>) {
+        debugPrint('GOAL LIST RESPONSE TYPE: ${response.runtimeType}');
+        debugPrint('GOAL LIST RESPONSE KEYS: ${response.keys.toList()}');
+
+        if (response['data'] != null && response['data'] is List) {
+          final dataList = response['data'] as List;
+          debugPrint('GOAL LIST DATA COUNT: ${dataList.length}');
+
+          for (int i = 0; i < dataList.length; i++) {
+            final goalItem = dataList[i];
+            debugPrint('GOAL $i DEBUG:');
+            debugPrint('  - goalName: ${goalItem['goalName']}');
+            debugPrint('  - goalPic: ${goalItem['goalPic']}');
+            debugPrint('  - goalPicExtension: ${goalItem['goalPicExtension']}');
+            debugPrint(
+                '  - goalPicContentType: ${goalItem['goalPicContentType']}');
+            debugPrint('  - All keys: ${goalItem.keys.toList()}');
+          }
+        }
+
         final goalListModel = GoalListModel.fromJson(response);
 
         if (goalListModel.isSuccess) {
@@ -41,8 +60,14 @@ class GoalListRepository {
               'GOAL LIST: Successfully retrieved ${goalListModel.data.length} goals');
 
           for (var goal in goalListModel.data) {
+            debugPrint('Goal: ${goal.goalName}');
             debugPrint(
-                'Goal: ${goal.goalName} - ${goal.formattedAvailableBalance}');
+                '  - Available Balance: ${goal.formattedAvailableBalance}');
+            debugPrint('  - Goal Pic: ${goal.goalPic}');
+            debugPrint('  - Goal Pic Extension: ${goal.goalPicExtension}');
+            debugPrint('  - Icon Asset: ${goal.iconAsset}');
+            debugPrint(
+                '  - Has Goal Pic Data: ${goal.goalPic != null && goal.goalPic!.isNotEmpty}');
           }
 
           if (goalListModel.data.isEmpty) {

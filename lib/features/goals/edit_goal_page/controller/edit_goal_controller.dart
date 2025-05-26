@@ -60,19 +60,20 @@ class EditGoalController {
     ref.read(editAutoDepositProvider.notifier).state =
         goalData.goldInvestment == 'Y';
 
-    String iconName = 'customgoals.png';
-    final lowercaseName = goalData.goalName.toLowerCase();
-    if (lowercaseName.contains('home') || lowercaseName.contains('house')) {
-      iconName = 'home.png';
-    } else if (lowercaseName.contains('education') ||
-        lowercaseName.contains('study')) {
-      iconName = 'education.png';
-    } else if (lowercaseName.contains('wedding') ||
-        lowercaseName.contains('marriage')) {
-      iconName = 'wedding.png';
-    } else if (lowercaseName.contains('trip') ||
-        lowercaseName.contains('travel')) {
-      iconName = 'trip.png';
+    String iconName = '';
+
+    if (goalData.iconName != null && goalData.iconName!.isNotEmpty) {
+      iconName = goalData.iconName!;
+      print('EDIT CONTROLLER: Using iconName from goal data: $iconName');
+    } else {
+      final storedIcon = IconMappingService.getStoredIcon(goalData.goalName);
+      if (storedIcon != null) {
+        iconName = storedIcon;
+        print('EDIT CONTROLLER: Using stored icon mapping: $iconName');
+      } else {
+        iconName = _getIconFromGoalName(goalData.goalName);
+        print('EDIT CONTROLLER: Using name-based detection: $iconName');
+      }
     }
 
     ref.read(editSelectedGoalIconProvider.notifier).state = iconName;
@@ -86,7 +87,25 @@ class EditGoalController {
         'EDIT CONTROLLER: Target amount: ${goalData.targetAmount} (slider: $amountSliderValue)');
     print('EDIT CONTROLLER: Frequency: $frequency');
     print('EDIT CONTROLLER: Auto deposit: ${goalData.goldInvestment == 'Y'}');
-    print('EDIT CONTROLLER: Icon: $iconName');
+    print('EDIT CONTROLLER: Selected icon: $iconName');
+  }
+
+  String _getIconFromGoalName(String goalName) {
+    final lowercaseName = goalName.toLowerCase();
+    if (lowercaseName.contains('home') || lowercaseName.contains('house')) {
+      return 'home.png';
+    } else if (lowercaseName.contains('education') ||
+        lowercaseName.contains('study')) {
+      return 'education.png';
+    } else if (lowercaseName.contains('wedding') ||
+        lowercaseName.contains('marriage')) {
+      return 'wedding.png';
+    } else if (lowercaseName.contains('trip') ||
+        lowercaseName.contains('travel')) {
+      return 'trip.png';
+    } else {
+      return 'customgoals.png';
+    }
   }
 
   void pickGoalImageActionSheet(BuildContext context, WidgetRef widgetRef) {
@@ -208,6 +227,7 @@ class EditGoalController {
   }
 
   void _selectPresetIcon(String iconName) {
+    print('EDIT CONTROLLER: Selecting preset icon: $iconName');
     ref.read(editSelectedGoalIconProvider.notifier).state = iconName;
     ref.read(editSelectedImageFileProvider.notifier).state = null;
   }
@@ -317,7 +337,8 @@ class EditGoalController {
         "debitDate": debitDate,
         "transactionAmount": transactionAmount.round(),
         "goldInvestment": autoDeposit ? "Y" : "N",
-        if (selectedIcon.isNotEmpty) "iconName": selectedIcon,
+        if (selectedIcon.isNotEmpty && selectedImage == null)
+          "iconName": selectedIcon,
       };
 
       print('EDIT CONTROLLER: Goal data prepared: $goalData');
@@ -361,6 +382,28 @@ class EditGoalController {
 
       if (result.isSuccess) {
         print('EDIT CONTROLLER: Goal updated successfully');
+
+        if (selectedIcon.isNotEmpty && selectedImage == null) {
+          IconMappingService.storeGoalIcon(goalName, selectedIcon);
+          print(
+              'EDIT CONTROLLER: Stored icon mapping - $goalName -> $selectedIcon');
+        } else if (selectedImage != null) {
+          IconMappingService.clearMapping(goalName);
+          print(
+              'EDIT CONTROLLER: Cleared icon mapping for custom image - $goalName');
+        }
+
+        if (originalGoalName != goalName) {
+          final storedIcon = IconMappingService.getStoredIcon(originalGoalName);
+          if (storedIcon != null) {
+            IconMappingService.clearMapping(originalGoalName);
+            if (selectedIcon.isNotEmpty && selectedImage == null) {
+              IconMappingService.storeGoalIcon(goalName, selectedIcon);
+            }
+            print(
+                'EDIT CONTROLLER: Updated mapping due to name change: $originalGoalName -> $goalName');
+          }
+        }
 
         _showSnackBar(context, 'Goal updated successfully!');
 

@@ -46,6 +46,8 @@ class GoalListItem {
   final String goldInvestment;
   final String? goalPic;
   final String? goalPicExtension;
+  final String? goalPicContentType;
+  final String? iconName;
   final String createdDate;
   final double availableBalance;
   final double buyPrice;
@@ -64,6 +66,8 @@ class GoalListItem {
     required this.goldInvestment,
     this.goalPic,
     this.goalPicExtension,
+    this.goalPicContentType,
+    this.iconName,
     required this.createdDate,
     required this.availableBalance,
     required this.buyPrice,
@@ -74,6 +78,14 @@ class GoalListItem {
   });
 
   factory GoalListItem.fromJson(Map<String, dynamic> json) {
+    print('PARSING GOAL: ${json['goalName']}');
+    print('Available fields: ${json.keys.toList()}');
+    print(
+        'goalPic: ${json['goalPic'] != null ? "HAS_DATA(${json['goalPic'].toString().length} chars)" : "NULL"}');
+    print('goalPicExtension: ${json['goalPicExtension']}');
+    print('goalPicContentType: ${json['goalPicContentType']}');
+    print('iconName: ${json['iconName']}');
+
     return GoalListItem(
       goalName: json['goalName'] ?? '',
       targetYear: json['targetYear'] ?? 0,
@@ -84,6 +96,8 @@ class GoalListItem {
       goldInvestment: json['goldInvestment'] ?? '',
       goalPic: json['goalPic'],
       goalPicExtension: json['goalPicExtension'],
+      goalPicContentType: json['goalPicContentType'],
+      iconName: json['iconName'],
       createdDate: json['createdDate'] ?? '',
       availableBalance: (json['availableBalance'] ?? 0).toDouble(),
       buyPrice: (json['buyPrice'] ?? 0).toDouble(),
@@ -105,6 +119,8 @@ class GoalListItem {
       'goldInvestment': goldInvestment,
       'goalPic': goalPic,
       'goalPicExtension': goalPicExtension,
+      'goalPicContentType': goalPicContentType,
+      'iconName': iconName,
       'createdDate': createdDate,
       'availableBalance': availableBalance,
       'buyPrice': buyPrice,
@@ -136,33 +152,43 @@ class GoalListItem {
   }
 
   String get iconAsset {
-    final lowercaseName = goalName.toLowerCase();
+    print('ICON ASSET for goal: $goalName');
+    print('  - iconName: $iconName');
+    print('  - goalPicContentType: $goalPicContentType');
+    print('  - has goalPic: ${goalPic != null && goalPic!.isNotEmpty}');
 
-    if (lowercaseName.contains('home') || lowercaseName.contains('house')) {
-      return 'assets/home.png';
-    } else if (lowercaseName.contains('education') ||
-        lowercaseName.contains('edu')) {
-      return 'assets/education.png';
-    } else if (lowercaseName.contains('wedding') ||
-        lowercaseName.contains('marriage')) {
-      return 'assets/wedding.png';
-    } else if (lowercaseName.contains('trip') ||
-        lowercaseName.contains('travel')) {
-      return 'assets/trip.png';
-    } else {
-      return 'assets/customgoals.png';
+    if (iconName != null && iconName!.isNotEmpty) {
+      final assetPath = 'assets/$iconName';
+      print('  - Using iconName: $assetPath');
+      return assetPath;
     }
+
+    if (goalPicContentType != null &&
+        goalPicContentType!.isNotEmpty &&
+        (goalPic == null || goalPic!.isEmpty)) {
+      print('  - Preset icon detected but no iconName field');
+      final storedIcon = IconMappingService.getStoredIcon(goalName);
+      if (storedIcon != null) {
+        final assetPath = 'assets/$storedIcon';
+        print('  - Using stored icon: $assetPath');
+        return assetPath;
+      }
+    }
+
+    print('  - Using default icon: assets/customgoals.png');
+    return 'assets/customgoals.png';
   }
 
   Widget getIconWidget({double width = 60, double height = 60}) {
-    print('GOAL ICON: Checking goal pic for ${goalName}');
-    print('GOAL ICON: Has goalPic: ${goalPic != null && goalPic!.isNotEmpty}');
+    print('GET ICON WIDGET for: $goalName');
+    print('  - Has goalPic: ${goalPic != null && goalPic!.isNotEmpty}');
+    print('  - iconName: $iconName');
+    print('  - goalPicContentType: $goalPicContentType');
 
     if (goalPic != null && goalPic!.isNotEmpty) {
+      print('  - Using base64 image from goalPic');
       try {
         final bytes = base64Decode(goalPic!);
-        print('GOAL ICON: Successfully decoded base64 image for ${goalName}');
-
         return ClipOval(
           child: Image.memory(
             bytes,
@@ -170,28 +196,31 @@ class GoalListItem {
             height: height,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              print('GOAL ICON ERROR: Failed to render memory image: $error');
-              return _getFallbackIcon(width, height);
+              print('  - ERROR loading base64 image: $error');
+              return _buildAssetIcon(width, height);
             },
           ),
         );
       } catch (e) {
-        print('GOAL ICON ERROR: Failed to decode base64 image: $e');
-        return _getFallbackIcon(width, height);
+        print('  - ERROR decoding base64: $e');
+        return _buildAssetIcon(width, height);
       }
-    } else {
-      print('GOAL ICON: No image data, using fallback icon');
-      return _getFallbackIcon(width, height);
     }
+
+    print('  - Using asset icon');
+    return _buildAssetIcon(width, height);
   }
 
-  Widget _getFallbackIcon(double width, double height) {
+  Widget _buildAssetIcon(double width, double height) {
+    final assetPath = iconAsset;
+    print('  - Building asset icon: $assetPath');
+
     return Image.asset(
-      iconAsset,
+      assetPath,
       width: width,
       height: height,
       errorBuilder: (context, error, stackTrace) {
-        print('GOAL ICON ERROR: Failed to load asset image: $error');
+        print('  - ERROR loading asset $assetPath: $error');
         return Image.asset(
           'assets/customgoals.png',
           width: width,
@@ -199,5 +228,42 @@ class GoalListItem {
         );
       },
     );
+  }
+
+  Widget _getFallbackIcon(double width, double height) {
+    return Image.asset(
+      'assets/customgoals.png',
+      width: width,
+      height: height,
+    );
+  }
+}
+
+class IconMappingService {
+  static Map<String, String> _goalIconMapping = {};
+
+  static void storeGoalIcon(String goalName, String iconName) {
+    _goalIconMapping[goalName] = iconName;
+    print('ICON MAPPING: Stored $goalName -> $iconName');
+  }
+
+  static String? getStoredIcon(String goalName) {
+    final icon = _goalIconMapping[goalName];
+    print('ICON MAPPING: Retrieved $goalName -> $icon');
+    return icon;
+  }
+
+  static void clearMapping(String goalName) {
+    _goalIconMapping.remove(goalName);
+    print('ICON MAPPING: Cleared mapping for $goalName');
+  }
+
+  static void clearAllMappings() {
+    _goalIconMapping.clear();
+    print('ICON MAPPING: Cleared all mappings');
+  }
+
+  static Map<String, String> getAllMappings() {
+    return Map.from(_goalIconMapping);
   }
 }
