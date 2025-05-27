@@ -1,3 +1,47 @@
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:growk_v2/features/logout/provider/logout_provider.dart';
+// import 'package:growk_v2/features/settings_page/widgets/settings_item.dart';
+// import 'package:growk_v2/views.dart';
+
+// class SettingsPage extends ConsumerWidget {
+//   const SettingsPage({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final isDark = ref.watch(isDarkProvider);
+//     final isLoggingOut = ref.watch(isLogoutLoadingProvider);
+
+// return ScalingFactor(
+//   child: Scaffold(
+//     backgroundColor: AppColors.current(isDark).scaffoldBackground,
+//     appBar: GrowkAppBar(title: 'Settings', isBackBtnNeeded: false),
+//     body: Container(
+//       color: isDark ? Colors.black : Colors.white,
+//       child: SafeArea(
+//         child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+
+// SettingsItem(
+//   onTap: () {},
+//   img: !isDark
+//       ? 'settings_theme_light.png'
+//       : 'settings_theme_dark.png',
+//   title: 'Theme',
+//   subtitle: 'Customize the app\'s look to\nmatch your style.',
+//   trailing: Text(
+//     'Light',
+//     style: TextStyle(
+//       fontFamily: GoogleFonts.poppins().fontFamily,
+//       fontSize: 14,
+//       fontWeight: FontWeight.w700,
+//       color: isDark ? Colors.white : Colors.black,
+//     ),
+//   ),
+// ),
+
+// }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -103,16 +147,6 @@ class SettingsPage extends ConsumerWidget {
                     subtitle:
                         'Review the guidelines and policies of using this app.',
                   ),
-                  SettingsItem(
-                    onTap: isLoggingOut
-                        ? null
-                        : () => _showLogoutConfirmation(context, ref),
-                    img: !isDark
-                        ? 'settings_logout_light.png'
-                        : 'settings_logout_dark.png',
-                    title: 'Logout',
-                    subtitle: 'Sign out securely from your account.',
-                  ),
                   _buildNavigationTile(
                     context,
                     icon: Icons.info_outline,
@@ -122,6 +156,16 @@ class SettingsPage extends ConsumerWidget {
                       _showAboutDialog(context, isDark);
                     },
                     isDark: isDark,
+                  ),
+                  SettingsItem(
+                    onTap: isLoggingOut
+                        ? null
+                        : () => _showLogoutConfirmation(context, ref),
+                    img: !isDark
+                        ? 'settings_logout_light.png'
+                        : 'settings_logout_dark.png',
+                    title: 'Logout',
+                    subtitle: 'Sign out securely from your account.',
                   ),
                   const SizedBox(height: 130),
                 ],
