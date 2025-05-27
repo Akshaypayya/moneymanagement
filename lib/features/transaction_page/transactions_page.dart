@@ -1,14 +1,97 @@
+// import 'package:flutter/material.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+// import 'package:growk_v2/core/theme/app_theme.dart';
+// import 'package:growk_v2/core/widgets/growk_app_bar.dart';
+// import 'package:growk_v2/core/widgets/reusable_sized_box.dart';
+// import 'package:growk_v2/features/transaction_page/widgets/month_header.dart';
+// import 'package:growk_v2/features/transaction_page/widgets/transaction_item.dart';
+
+// class TransactionsPage extends ConsumerWidget {
+//   const TransactionsPage({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final isDark = ref.watch(isDarkProvider);
+
+//     return ScalingFactor(
+//       child: Scaffold(
+//         backgroundColor: AppColors.current(isDark).scaffoldBackground,
+//         appBar: GrowkAppBar(
+//           title: 'Transactions',
+//           isBackBtnNeeded: false,
+//         ),
+//         body: Container(
+//           // color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
+//           color: AppColors.current(isDark).background,
+//           child: SingleChildScrollView(
+//             child: Column(
+//               children: [
+//                 MonthHeader(year: '2025', month: 'February'),
+//                 TransactionItem(
+//                   img: 'education.png',
+//                   category: 'Education',
+//                   amount: '3,500.00',
+//                   date: '22 February 15:30 PM',
+//                 ),
+//                 TransactionItem(
+//                   img: 'home.png',
+//                   category: 'Home',
+//                   amount: '3,500.00',
+//                   date: '22 February 15:30 PM',
+//                 ),
+//                 TransactionItem(
+//                   img: 'wedding.png',
+//                   category: 'Wedding',
+//                   amount: '3,500.00',
+//                   date: '22 February 15:30 PM',
+//                 ),
+//                 TransactionItem(
+//                   img: 'education.png',
+//                   category: 'Education',
+//                   amount: '3,500.00',
+//                   date: '22 February 15:30 PM',
+//                 ),
+//                 MonthHeader(year: '2025', month: 'January'),
+//                 TransactionItem(
+//                   img: 'home.png',
+//                   category: 'Education',
+//                   amount: '3,500.00',
+//                   date: '22 February 15:30 PM',
+//                 ),
+//                 TransactionItem(
+//                   img: 'home.png',
+//                   category: 'Home',
+//                   amount: '3,500.00',
+//                   date: '22 February 15:30 PM',
+//                 ),
+//                 TransactionItem(
+//                   img: 'education.png',
+//                   category: 'Education',
+//                   amount: '3,500.00',
+//                   date: '22 February 15:30 PM',
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
-import 'package:money_mangmnt/core/widgets/reusable_sized_box.dart';
-import 'package:money_mangmnt/features/transaction_page/widgets/month_header.dart';
-import 'package:money_mangmnt/features/transaction_page/widgets/transaction_item.dart';
-import 'package:money_mangmnt/features/transaction_page/provider/transaction_provider.dart';
-import 'package:money_mangmnt/features/transaction_page/model/transaction_model.dart';
+import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/widgets/growk_app_bar.dart';
+import 'package:growk_v2/core/widgets/reusable_sized_box.dart';
+import 'package:growk_v2/features/transaction_page/widgets/month_header.dart';
+import 'package:growk_v2/features/transaction_page/widgets/transaction_item.dart';
+import 'package:growk_v2/features/transaction_page/provider/transaction_provider.dart';
+import 'package:growk_v2/features/transaction_page/model/transaction_model.dart';
 
 class TransactionsPage extends ConsumerStatefulWidget {
   const TransactionsPage({Key? key}) : super(key: key);
@@ -149,7 +232,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.7,
+        height: MediaQuery.of(context).size.height,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -172,16 +255,16 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  'Your transaction history will appear here',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    color: isDark ? Colors.grey[300] : Colors.grey[600],
-                  ),
-                ),
+                const SizedBox(height: 100),
+                // Text(
+                //   'Your transaction history will appear here',
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //     fontSize: 14,
+                //     fontFamily: GoogleFonts.poppins().fontFamily,
+                //     color: isDark ? Colors.grey[300] : Colors.grey[600],
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -269,15 +352,15 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
               const CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Loading more transactions...',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                ),
-              ),
+              // const SizedBox(height: 8),
+              // Text(
+              //   'Loading more transactions...',
+              //   style: TextStyle(
+              //     fontSize: 14,
+              //     fontFamily: GoogleFonts.poppins().fontFamily,
+              //     color: isDark ? Colors.grey[400] : Colors.grey[600],
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -323,7 +406,6 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
       List<TransactionApiModel> transactions) {
     final Map<Map<String, String>, List<TransactionApiModel>> grouped = {};
 
-    // Sort transactions by date (newest first)
     final sortedTransactions = List<TransactionApiModel>.from(transactions);
     sortedTransactions.sort((a, b) {
       try {
@@ -343,7 +425,6 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
           'month': _getMonthName(date.month),
         };
 
-        // Find existing key or create new one
         Map<String, String>? existingKey;
         for (final key in grouped.keys) {
           if (key['year'] == monthYear['year'] &&
@@ -361,10 +442,9 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
       } catch (e) {
         debugPrint(
             'Error parsing transaction date: ${transaction.transactionDate}');
-        // If date parsing fails, group under "Unknown"
+
         final unknownKey = {'year': 'Unknown', 'month': 'Unknown'};
 
-        // Find existing unknown key
         Map<String, String>? existingUnknownKey;
         for (final key in grouped.keys) {
           if (key['year'] == 'Unknown' && key['month'] == 'Unknown') {
@@ -381,13 +461,12 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
       }
     }
 
-    // Sort each month's transactions by date (newest first within each month)
     for (final entry in grouped.entries) {
       entry.value.sort((a, b) {
         try {
           final dateA = DateTime.parse(a.transactionDate);
           final dateB = DateTime.parse(b.transactionDate);
-          return dateB.compareTo(dateA); // Newest first
+          return dateB.compareTo(dateA);
         } catch (e) {
           return 0;
         }

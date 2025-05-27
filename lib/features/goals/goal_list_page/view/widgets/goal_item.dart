@@ -22,7 +22,7 @@ class GoalItem extends ConsumerWidget {
   final bool isLast;
   final Widget? iconWidget;
 
-  const GoalItem({
+  GoalItem({
     Key? key,
     this.iconAsset,
     required this.title,
@@ -36,6 +36,17 @@ class GoalItem extends ConsumerWidget {
     this.isLast = false,
     this.iconWidget,
   }) : super(key: key);
+
+  // String profitVal = '';
+
+  double getProfitVal(String amount, String invested) {
+    double val1 = double.tryParse(amount) ?? 0;
+    double val2 = double.tryParse(invested) ?? 0;
+    double profitVal = val1 - val2;
+    // this.profitVal = profitVal.toString();
+    debugPrint("profit value : $profitVal");
+    return profitVal;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -122,15 +133,23 @@ class GoalItem extends ConsumerWidget {
                               style: AppTextStyle(textColor: textColor)
                                   .bodyRegular,
                             ),
-                            Image.asset(AppImages.sarSymbol,
-                                height: 13, color: Colors.green),
+                            Image.asset(
+                              AppImages.sarSymbol,
+                              height: 13,
+                              color: getProfitVal(amount, invested) < 0
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
                             ReusableSizedBox(
                               width: 3,
                             ),
                             ReusableText(
-                              text: profit,
+                              text: getProfitVal(amount, invested)
+                                  .toStringAsFixed(2),
                               style: AppTextStyle(
-                                textColor: Colors.green,
+                                textColor: getProfitVal(amount, invested) < 0
+                                    ? Colors.red
+                                    : Colors.green,
                               ).titleSmall,
                             ),
                             ReusableText(
@@ -174,7 +193,7 @@ class GoalItem extends ConsumerWidget {
                     Row(
                       children: [
                         Text(
-                          'Invested: ',
+                          'Invested Amount: ',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,

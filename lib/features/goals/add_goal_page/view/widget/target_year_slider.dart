@@ -9,7 +9,6 @@ class TargetYearSlider extends ConsumerWidget {
   const TargetYearSlider({
     Key? key,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);

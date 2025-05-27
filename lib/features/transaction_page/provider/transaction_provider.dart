@@ -1,11 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/network/network_service.dart';
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/features/transaction_page/model/transaction_model.dart';
-import 'package:money_mangmnt/features/transaction_page/repo/transaction_repo.dart';
-import 'package:money_mangmnt/features/transaction_page/controller/transaction_controller.dart';
+import 'package:growk_v2/core/network/network_service.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/features/transaction_page/model/transaction_model.dart';
+import 'package:growk_v2/features/transaction_page/repo/transaction_repo.dart';
+import 'package:growk_v2/features/transaction_page/controller/transaction_controller.dart';
 
-// Network service provider
 final transactionNetworkServiceProvider = Provider<NetworkService>((ref) {
   return NetworkService(
     client: createUnsafeClient(),
@@ -13,19 +12,16 @@ final transactionNetworkServiceProvider = Provider<NetworkService>((ref) {
   );
 });
 
-// Repository provider
 final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
   final networkService = ref.watch(transactionNetworkServiceProvider);
   return TransactionRepository(networkService, ref);
 });
 
-// Paginated transaction state notifier provider
 final paginatedTransactionProvider = StateNotifierProvider<
     PaginatedTransactionNotifier, TransactionPaginationState>((ref) {
   return PaginatedTransactionNotifier(ref);
 });
 
-// Transaction pagination state class
 class TransactionPaginationState {
   final int currentPage;
   final int itemsPerPage;

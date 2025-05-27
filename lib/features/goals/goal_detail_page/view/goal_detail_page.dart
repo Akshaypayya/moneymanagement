@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:money_mangmnt/core/constants/app_space.dart';
 import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
 import 'package:money_mangmnt/core/theme/app_theme.dart';
 import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
@@ -12,6 +13,7 @@ import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_
 import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_summary.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_transaction_list.dart';
 import 'package:money_mangmnt/features/goals/edit_goal_page/view/edit_goal_page.dart';
+import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_transaction.dart';
 
 class GoalDetailPage extends ConsumerWidget {
   final String goalName;
@@ -99,8 +101,8 @@ class GoalDetailPage extends ConsumerWidget {
           children: [
             CircularProgressIndicator(
                 color: isDark ? Colors.white : Colors.black),
-            SizedBox(height: 16),
-            Text('Loading goal details...'),
+            // SizedBox(height: 16),
+            // Text('Loading goal details...'),
           ],
         ),
       ),
@@ -164,7 +166,6 @@ class GoalDetailPage extends ConsumerWidget {
 
     final goalData = goalViewModel.data!;
 
-    // Debug the image data
     print('GOAL DETAIL: Goal name = ${goalData.goalName}');
     print(
         'GOAL DETAIL: Goal image provided = ${goalData.goalPic != null && goalData.goalPic!.isNotEmpty}');
@@ -174,38 +175,11 @@ class GoalDetailPage extends ConsumerWidget {
     }
     print('GOAL DETAIL: Goal icon asset = ${goalData.iconAsset}');
 
-    final transactions = [
-      {
-        'icon': 'assets/bhim.png',
-        'title': 'My Dream Home',
-        'description':
-            'The amount is auto-debited from your account and added to your Gold savings.',
-        'amount': '3,500.00',
-        'date': '22 February 15:30 PM',
-      },
-      {
-        'icon': 'assets/bank.jpg',
-        'title': 'My Dream Home',
-        'description':
-            'The amount is auto-debited from your account and added to your Gold savings.',
-        'amount': '3,500.00',
-        'date': '22 February 15:30 PM',
-      },
-      {
-        'icon': 'assets/goldbsct.png',
-        'title': 'My Dream Home',
-        'description':
-            'The amount is auto-debited from your account and added to your Gold savings.',
-        'amount': '3,500.00',
-        'date': '22 February 15:30 PM',
-      },
-    ];
-
     return Column(
       children: [
         GoalHeader(
           goalName: goalData.goalName,
-          goalIcon: goalIcon, // Pass the goal icon from navigation
+          goalIcon: goalIcon,
           goalImageWidget: goalData.getIconWidget(width: 60, height: 60),
         ),
         Container(
@@ -213,14 +187,15 @@ class GoalDetailPage extends ConsumerWidget {
           height: 10,
         ),
         GoalSummary(
-          amount: goalData.formattedAvailableBalance,
-          profit: goalData.formattedProfit,
-          currentGold: '${goalData.formattedGoldBalance} gm',
-          virttualAccountNbr: goalData.linkedVA,
-        ),
+            amount: goalData.formattedAvailableBalance,
+            profit: goalData.formattedProfit,
+            currentGold: '${goalData.formattedGoldBalance} gm',
+            currentGoldPrice: goalData.currentPrice.toString(),
+            virtualAccountNbr: goalData.linkedVA,
+            invested: goalData.investedAmount.toString()),
         GoalProgress(
           progress: goalData.progressText,
-          invested: goalData.formattedWalletBalance,
+          invested: goalData.investedAmount.toString(),
           target: goalData.formattedTargetAmount,
           progressPercent: goalData.progressPercent,
         ),
@@ -236,23 +211,8 @@ class GoalDetailPage extends ConsumerWidget {
           color: AppColors.current(isDark).scaffoldBackground,
           height: 10,
         ),
-        const SizedBox(height: 30),
-        Padding(
-          padding: const EdgeInsets.only(left: 16.0, bottom: 10.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Transactions',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                color: isDark ? Colors.white : Colors.black,
-              ),
-            ),
-          ),
-        ),
-        TransactionList(transactions: transactions),
+        GoalTransactionListWidget(goalName: goalName),
+        GapSpace.height20
       ],
     );
   }

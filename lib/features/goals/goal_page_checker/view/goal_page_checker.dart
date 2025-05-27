@@ -24,7 +24,7 @@ class _GoalPageWrapperState extends ConsumerState<GoalPageWrapper>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(goalListStateProvider.notifier).getGoalsList();
+      ref.watch(goalListStateProvider.notifier).getGoalsList();
     });
   }
 
@@ -36,9 +36,8 @@ class _GoalPageWrapperState extends ConsumerState<GoalPageWrapper>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Refresh when app comes to foreground
     if (state == AppLifecycleState.resumed) {
-      ref.read(goalListStateProvider.notifier).refreshGoals();
+      ref.watch(goalListStateProvider.notifier).refreshGoals();
     }
   }
 
@@ -47,7 +46,7 @@ class _GoalPageWrapperState extends ConsumerState<GoalPageWrapper>
     // Listen to refresh trigger
     ref.listen(goalsRefreshTriggerProvider, (previous, current) {
       if (previous != current) {
-        ref.read(goalListStateProvider.notifier).refreshGoals();
+        ref.watch(goalListStateProvider.notifier).refreshGoals();
       }
     });
 
@@ -78,8 +77,8 @@ class _GoalPageWrapperState extends ConsumerState<GoalPageWrapper>
                 children: [
                   CircularProgressIndicator(
                       color: isDark ? Colors.white : Colors.black),
-                  SizedBox(height: 16),
-                  Text('Loading your goals...'),
+                  // SizedBox(height: 16),
+                  // Text('Loading your goals...'),
                 ],
               ),
             ),
@@ -160,7 +159,7 @@ class _GoalPageWrapperState extends ConsumerState<GoalPageWrapper>
                           TextButton(
                             onPressed: () {
                               ref
-                                  .read(goalListStateProvider.notifier)
+                                  .watch(goalListStateProvider.notifier)
                                   .refreshGoals();
                             },
                             child: const Text('Refresh'),
@@ -171,7 +170,7 @@ class _GoalPageWrapperState extends ConsumerState<GoalPageWrapper>
                       ElevatedButton(
                         onPressed: () {
                           ref
-                              .read(goalListStateProvider.notifier)
+                              .watch(goalListStateProvider.notifier)
                               .refreshGoals();
                         },
                         style: ElevatedButton.styleFrom(
@@ -194,8 +193,7 @@ class _GoalPageWrapperState extends ConsumerState<GoalPageWrapper>
     if (goalListModel.data.isEmpty) {
       return NoGoalPage(
         onGoalCreated: () {
-          // Trigger a refresh when a goal is created
-          ref.read(goalListStateProvider.notifier).refreshGoals();
+          ref.watch(goalListStateProvider.notifier).refreshGoals();
         },
       );
     } else {

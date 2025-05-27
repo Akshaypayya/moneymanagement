@@ -80,13 +80,16 @@ class SettingsPage extends ConsumerWidget {
                     subtitle: 'Customize the app\'s look to\nmatch your style.',
                     isEnabled: isDark,
                     onChanged: (value) {
-                      // ref.read(isDarkProvider.notifier).state = value;
+                      ref.read(isDarkProvider.notifier).state = value;
+                      debugPrint('theme is:$value');
                     },
                     isDark: isDark,
                   ),
                   const BiometricSettingsTile(),
                   SettingsItem(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRouter.help);
+                    },
                     img: !isDark
                         ? 'settings_help_light.png'
                         : 'settings_help_dark.png',
@@ -95,7 +98,10 @@ class SettingsPage extends ConsumerWidget {
                         'Need assistance? Find answers to your questions here.',
                   ),
                   SettingsItem(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(
+                          context, AppRouter.termsAndConditions);
+                    },
                     img: !isDark
                         ? 'settings_terms_light.png'
                         : 'settings_terms_dark.png',

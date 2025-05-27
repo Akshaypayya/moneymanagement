@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/theme/app_text_styles.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/core/widgets/reusable_row.dart';
-import 'package:money_mangmnt/core/widgets/reusable_sized_box.dart';
-import 'package:money_mangmnt/core/widgets/reusable_text.dart';
-import 'package:money_mangmnt/features/transaction_page/model/transaction_model.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/theme/app_text_styles.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/widgets/reusable_row.dart';
+import 'package:growk_v2/core/widgets/reusable_sized_box.dart';
+import 'package:growk_v2/core/widgets/reusable_text.dart';
+import 'package:growk_v2/features/transaction_page/model/transaction_model.dart';
 
 class TransactionItem extends ConsumerWidget {
   final TransactionApiModel transactionData;
@@ -24,14 +24,14 @@ class TransactionItem extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-            width: 1,
-          ),
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   border: Border(
+      //     bottom: BorderSide(
+      //       color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+      //       width: 1,
+      //     ),
+      //   ),
+      // ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -72,7 +72,7 @@ class TransactionItem extends ConsumerWidget {
                   text: _formatTransactionDate(),
                   style: AppTextStyle(
                     textColor:
-                        isDark ? Colors.grey.shade500 : Colors.grey.shade400,
+                        isDark ? Colors.grey.shade500 : Colors.grey.shade700,
                   ).labelSmall,
                 ),
               ],

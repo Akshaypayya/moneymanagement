@@ -109,6 +109,11 @@ class PaginatedGoalListNotifier extends StateNotifier<GoalListPaginatedState> {
     }
   }
 
+  void getProfitVal(double val1, double val2) {
+    double profit = val1 - val2;
+    debugPrint('Profit Value: $profit');
+  }
+
   Future<void> loadMoreGoals() async {
     if (state.isLoading || !state.hasMoreGoals) {
       debugPrint(

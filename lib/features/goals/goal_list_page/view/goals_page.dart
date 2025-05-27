@@ -93,7 +93,7 @@ class GoalsPage extends ConsumerWidget {
           amount: goal.formattedAvailableBalance,
           profit: goal.formattedProfit,
           currentGold: '${goal.formattedGoldBalance} gm',
-          invested: goal.formattedWalletBalance,
+          invested: goal.investedAmount.toString(),
           target: goal.formattedTargetAmount,
           progress: goal.progressText,
           progressPercent: goal.progressPercent,

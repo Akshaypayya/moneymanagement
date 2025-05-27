@@ -21,7 +21,16 @@ class AppUrl {
     return '/user-service/goals?goalName=$encodedName';
   }
 
+  static String goalTransactionByNameUrl(
+      String goalName, String iDisplayStart, String iDisplayLength) {
+    final encodedName = goalName.replaceAll(' ', '+');
+    return '/user-service/goals/getAllTransaction?iDisplayStart=$iDisplayStart&iDisplayLength=$iDisplayLength&goalName=$encodedName';
+  }
+
   static const String goalListUrl = "/user-service/goals";
   static const String applyRefCodeUrl = "/user-service/user/referralCode/apply";
   static const String updateGoalUrl = "/user-service/goals";
+  static const String getRefferalHistoryUrl = "/user-service/user/referralHistory";
+  static const String getAllTransactionUrl =
+      "/user-service/goals/getAllTransaction";
 }

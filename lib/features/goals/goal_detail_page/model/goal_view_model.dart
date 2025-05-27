@@ -52,6 +52,7 @@ class GoalData {
   final double goldBalance;
   final double walletBalance;
   final String linkedVA;
+  final double investedAmount;
 
   GoalData({
     required this.goalName,
@@ -72,6 +73,7 @@ class GoalData {
     required this.goldBalance,
     required this.walletBalance,
     required this.linkedVA,
+    required this.investedAmount,
   });
 
   factory GoalData.fromJson(Map<String, dynamic> json) {
@@ -102,6 +104,7 @@ class GoalData {
       goldBalance: (json['goldBalance'] ?? 0).toDouble(),
       walletBalance: (json['walletBalance'] ?? 0).toDouble(),
       linkedVA: json['linkedVA'] ?? '',
+      investedAmount: (json['investedAmount'] ?? 0).toDouble(),
     );
   }
 
@@ -125,6 +128,7 @@ class GoalData {
       'goldBalance': goldBalance,
       'walletBalance': walletBalance,
       'linkedVA': linkedVA,
+      'investedAmount': investedAmount,
     };
   }
 
@@ -133,7 +137,7 @@ class GoalData {
   String get formattedCurrentPrice => currentPrice.toStringAsFixed(2);
   String get formattedGoldBalance => goldBalance.toStringAsFixed(3);
   String get formattedWalletBalance => walletBalance.toStringAsFixed(2);
-
+  String get formattedInvestedAmount => investedAmount.toStringAsFixed(2);
   double get profit => availableBalance - walletBalance;
   String get formattedProfit => profit.toStringAsFixed(2);
 

@@ -38,20 +38,23 @@ class GoalIconPicker extends ConsumerWidget {
           Positioned(
             right: 0,
             bottom: 0,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isDark ? Colors.black : Colors.white,
-                  width: 2,
+            child: GestureDetector(
+              onTap: () => controller.pickGoalImageActionSheet(context, ref),
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isDark ? Colors.black : Colors.white,
+                    width: 2,
+                  ),
                 ),
-              ),
-              child: const Icon(
-                Icons.camera_alt,
-                color: Colors.white,
-                size: 16,
+                child: const Icon(
+                  Icons.camera_alt,
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
             ),
           ),

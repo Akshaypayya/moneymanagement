@@ -57,7 +57,7 @@ class GoalProgress extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    'Invested: ',
+                    'Invested Amount: ',
                     style: TextStyle(
                       fontSize: 12,
                       fontFamily: GoogleFonts.poppins().fontFamily,

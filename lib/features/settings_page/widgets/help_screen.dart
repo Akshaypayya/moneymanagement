@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class TermsWebView extends StatefulWidget {
-  const TermsWebView({super.key});
+class HelpScreenWeb extends StatefulWidget {
+  const HelpScreenWeb({super.key});
 
   @override
-  State<TermsWebView> createState() => _TermsWebViewState();
+  State<HelpScreenWeb> createState() => _HelpScreenWebState();
 }
 
-class _TermsWebViewState extends State<TermsWebView> {
+class _HelpScreenWebState extends State<HelpScreenWeb> {
   late final WebViewController _controller;
   int _progress = 0;
 
@@ -37,13 +37,14 @@ class _TermsWebViewState extends State<TermsWebView> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://growk.io/terms_m.html'));
+      ..loadRequest(Uri.parse('https://growk.io/faq_m.html'));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GrowkAppBar(title: 'Terms and Conditions', isBackBtnNeeded: true),
+      appBar: GrowkAppBar(
+          title: 'Frequently asked Questions', isBackBtnNeeded: true),
       body: Column(
         children: [
           if (_progress < 100) LinearProgressIndicator(value: _progress / 100),

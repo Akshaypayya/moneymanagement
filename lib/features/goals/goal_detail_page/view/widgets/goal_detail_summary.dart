@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:money_mangmnt/core/constants/app_images.dart';
+import 'package:money_mangmnt/core/constants/app_space.dart';
 import 'package:money_mangmnt/core/theme/app_text_styles.dart';
 import 'package:money_mangmnt/core/theme/app_theme.dart';
 import 'package:money_mangmnt/core/widgets/reusable_text.dart';
@@ -10,17 +11,30 @@ class GoalSummary extends ConsumerWidget {
   final String amount;
   final String profit;
   final String currentGold;
-  final String virttualAccountNbr;
+  final String virtualAccountNbr;
+  final String currentGoldPrice;
+  final String invested;
 
   const GoalSummary({
     Key? key,
     required this.amount,
     required this.profit,
     required this.currentGold,
-    required this.virttualAccountNbr,
+    required this.virtualAccountNbr,
+    required this.currentGoldPrice,
+    required this.invested,
   }) : super(key: key);
 
   @override
+  double getProfitVal(String amount, String invested) {
+    double val1 = double.tryParse(amount) ?? 0;
+    double val2 = double.tryParse(invested) ?? 0;
+    double profitVal = val1 - val2;
+    // this.profitVal = profitVal.toString();
+    debugPrint("profit value : $profitVal");
+    return profitVal;
+  }
+
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
     final textColor = AppColors.current(isDark).text;
@@ -56,15 +70,22 @@ class GoalSummary extends ConsumerWidget {
                   Image.asset(
                     AppImages.sarSymbol,
                     height: 13,
-                    color: Colors.green,
+                    color: getProfitVal(amount, invested) < 0
+                        ? Colors.red
+                        : Colors.green,
                   ),
+                  getProfitVal(amount, invested) < 0
+                      ? GapSpace.width5
+                      : const SizedBox(),
                   Text(
-                    ' $profit',
+                    getProfitVal(amount, invested).toStringAsFixed(2),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       fontFamily: GoogleFonts.poppins().fontFamily,
-                      color: Colors.green,
+                      color: getProfitVal(amount, invested) < 0
+                          ? Colors.red
+                          : Colors.green,
                     ),
                   ),
                   Text(
@@ -101,6 +122,34 @@ class GoalSummary extends ConsumerWidget {
                   color: isDark ? Colors.white : Colors.black,
                 ),
               ),
+              GapSpace.width5,
+              Row(
+                children: [
+                  Text(
+                    '(',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  Image.asset(
+                    AppImages.sarSymbol,
+                    height: 13,
+                  ),
+                  GapSpace.width5,
+                  Text(
+                    '$currentGoldPrice)',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -117,7 +166,7 @@ class GoalSummary extends ConsumerWidget {
                 ),
               ),
               Text(
-                virttualAccountNbr,
+                virtualAccountNbr,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

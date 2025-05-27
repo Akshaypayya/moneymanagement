@@ -56,6 +56,7 @@ class GoalListItem {
   final double goldBalance;
   final double walletBalance;
   final String linkedVA;
+  final double investedAmount;
 
   GoalListItem({
     required this.goalName,
@@ -76,6 +77,7 @@ class GoalListItem {
     required this.goldBalance,
     required this.walletBalance,
     required this.linkedVA,
+    required this.investedAmount,
   });
 
   factory GoalListItem.fromJson(Map<String, dynamic> json) {
@@ -106,6 +108,7 @@ class GoalListItem {
       goldBalance: (json['goldBalance'] ?? 0).toDouble(),
       walletBalance: (json['walletBalance'] ?? 0).toDouble(),
       linkedVA: json['linkedVA'] ?? '',
+      investedAmount: (json['investedAmount'] ?? 0).toDouble(),
     );
   }
 
@@ -129,6 +132,7 @@ class GoalListItem {
       'goldBalance': goldBalance,
       'walletBalance': walletBalance,
       'linkedVA': linkedVA,
+      'investedAmount': investedAmount,
     };
   }
 
@@ -140,7 +144,7 @@ class GoalListItem {
 
   double get profit => availableBalance - walletBalance;
   String get formattedProfit => profit.toStringAsFixed(2);
-
+  // String get formattedInvestedAmount => investedAmount.toStringAsFixed(2);
   double get progressPercent =>
       targetAmount > 0 ? (availableBalance / targetAmount) : 0.0;
 
