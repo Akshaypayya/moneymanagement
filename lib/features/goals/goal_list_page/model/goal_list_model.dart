@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:money_mangmnt/core/services/icon_mapping_service.dart';
 
 class GoalListModel {
   final List<GoalListItem> data;
@@ -236,34 +237,5 @@ class GoalListItem {
       width: width,
       height: height,
     );
-  }
-}
-
-class IconMappingService {
-  static Map<String, String> _goalIconMapping = {};
-
-  static void storeGoalIcon(String goalName, String iconName) {
-    _goalIconMapping[goalName] = iconName;
-    print('ICON MAPPING: Stored $goalName -> $iconName');
-  }
-
-  static String? getStoredIcon(String goalName) {
-    final icon = _goalIconMapping[goalName];
-    print('ICON MAPPING: Retrieved $goalName -> $icon');
-    return icon;
-  }
-
-  static void clearMapping(String goalName) {
-    _goalIconMapping.remove(goalName);
-    print('ICON MAPPING: Cleared mapping for $goalName');
-  }
-
-  static void clearAllMappings() {
-    _goalIconMapping.clear();
-    print('ICON MAPPING: Cleared all mappings');
-  }
-
-  static Map<String, String> getAllMappings() {
-    return Map.from(_goalIconMapping);
   }
 }

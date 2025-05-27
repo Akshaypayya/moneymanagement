@@ -106,3 +106,4 @@ export 'package:money_mangmnt/features/home/view/widget/home_header.dart';
 export 'package:money_mangmnt/features/home/view/widget/home_savings_overview_widget.dart';
 export 'package:money_mangmnt/features/home/view/widget/track_your_savings_widget.dart';
 export 'package:money_mangmnt/core/widgets/reusable_snackbar.dart';
+export 'package:money_mangmnt/core/services/icon_mapping_service.dart';

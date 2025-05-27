@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:money_mangmnt/features/goals/add_goal_page/provider/add_goal_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:money_mangmnt/core/constants/app_space.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/controller/img_mpng.dart';
+import 'package:money_mangmnt/core/services/icon_mapping_service.dart';
 import 'package:money_mangmnt/views.dart';
 import 'package:money_mangmnt/features/goals/edit_goal_page/repo/edit_goal_repo.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/model/goal_view_model.dart';
@@ -135,11 +136,6 @@ class CreateGoalController {
     );
   }
 
-  // void _selectPresetIcon(String iconName) {
-  //   ref.read(selectedGoalIconProvider.notifier).state = iconName;
-  //   ref.read(selectedImageFileProvider.notifier).state = null;
-  // }
-
   void _selectPresetIcon(String iconName) {
     print('CREATE CONTROLLER: Selecting preset icon: $iconName');
     ref.read(selectedGoalIconProvider.notifier).state = iconName;
@@ -239,17 +235,6 @@ class CreateGoalController {
         return;
       }
 
-      // final Map<String, dynamic> goalData = {
-      //   "goalName": goalName,
-      //   "targetYear": targetYear,
-      //   "targetAmount": targetAmount,
-      //   "duration": duration,
-      //   "debitDate": debitDate,
-      //   "transactionAmount": transactionAmount.round(),
-      //   "goldInvestment": autoDeposit ? "N" : "Y",
-      //   "frequency": selectedFrequency,
-      //   if (selectedIcon.isNotEmpty) "iconName": selectedIcon,
-      // };
       final Map<String, dynamic> goalData = {
         "goalName": goalName,
         "targetYear": targetYear,
