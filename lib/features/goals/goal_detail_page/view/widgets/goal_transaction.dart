@@ -185,7 +185,8 @@ class _GoalTransactionListWidgetState
               title: transaction.transactionType,
               description: transaction.description,
               amount: transaction.displayAmount,
-              date: transaction.formattedDate,
+              // date: transaction.formattedDate,
+              date: transaction.getFormattedDate(),
             );
           },
         ),

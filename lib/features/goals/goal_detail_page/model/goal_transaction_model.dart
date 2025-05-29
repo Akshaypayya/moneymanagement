@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class GoalTransactionModel {
   final GoalTransactionData? data;
   final String status;
@@ -146,32 +148,38 @@ class TransactionItem {
     }
   }
 
-  String get formattedDate {
-    try {
-      final dateTime = DateTime.parse(transactionDate);
-      return '${dateTime.day.toString().padLeft(2, '0')} ${_getMonthName(dateTime.month)} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} ${dateTime.hour >= 12 ? 'PM' : 'AM'}';
-    } catch (e) {
-      return transactionDate;
-    }
+  // String get formattedDate {
+  //   try {
+  //     final dateTime = DateTime.parse(transactionDate);
+  //     return '${dateTime.day.toString().padLeft(2, '0')} ${_getMonthName(dateTime.month)} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} ${dateTime.hour >= 12 ? 'PM' : 'AM'}';
+  //   } catch (e) {
+  //     return transactionDate;
+  //   }
+  // }
+  getFormattedDate() {
+    String dateStr = transactionDate;
+    DateTime utcTime = DateTime.parse(dateStr);
+    DateTime localTime = utcTime.toLocal();
+    String formatted = DateFormat('dd MMM yyyy – hh:mm a').format(localTime);
+    return formatted;
   }
-
-  String _getMonthName(int month) {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ];
-    return months[month - 1];
-  }
+  // String _getMonthName(int month) {
+  //   const months = [
+  //     'January',
+  //     'February',
+  //     'March',
+  //     'April',
+  //     'May',
+  //     'June',
+  //     'July',
+  //     'August',
+  //     'September',
+  //     'October',
+  //     'November',
+  //     'December'
+  //   ];
+  //   return months[month - 1];
+  // }
 
   String get description {
     switch (transactionType) {

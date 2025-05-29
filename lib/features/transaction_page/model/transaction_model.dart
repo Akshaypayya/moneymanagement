@@ -10,10 +10,8 @@ class TransactionModel {
     required this.status,
     this.message,
   });
-
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
     debugPrint('PARSING TransactionModel from: ${json.keys.toList()}');
-
     return TransactionModel(
       data:
           json['data'] != null ? TransactionData.fromJson(json['data']) : null,
@@ -21,7 +19,6 @@ class TransactionModel {
       message: json['message']?.toString(),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'data': data?.toJson(),
@@ -207,7 +204,7 @@ class TransactionApiModel {
 
   String get formattedAmount {
     try {
-      final displayAmount = amount / 100.0;
+      final displayAmount = amount;
       return displayAmount.toStringAsFixed(2).replaceAllMapped(
             RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
             (Match m) => '${m[1]},',

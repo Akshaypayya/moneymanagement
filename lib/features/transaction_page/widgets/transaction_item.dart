@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:growk_v2/core/constants/app_images.dart';
-import 'package:growk_v2/core/theme/app_text_styles.dart';
-import 'package:growk_v2/core/theme/app_theme.dart';
-import 'package:growk_v2/core/widgets/reusable_row.dart';
-import 'package:growk_v2/core/widgets/reusable_sized_box.dart';
-import 'package:growk_v2/core/widgets/reusable_text.dart';
-import 'package:growk_v2/features/transaction_page/model/transaction_model.dart';
+import 'package:money_mangmnt/core/constants/app_images.dart';
+import 'package:money_mangmnt/core/theme/app_text_styles.dart';
+import 'package:money_mangmnt/core/theme/app_theme.dart';
+import 'package:money_mangmnt/core/widgets/reusable_row.dart';
+import 'package:money_mangmnt/core/widgets/reusable_sized_box.dart';
+import 'package:money_mangmnt/core/widgets/reusable_text.dart';
+import 'package:money_mangmnt/features/transaction_page/model/transaction_model.dart';
+import 'package:intl/intl.dart';
 
 class TransactionItem extends ConsumerWidget {
   final TransactionApiModel transactionData;
@@ -69,7 +70,8 @@ class TransactionItem extends ConsumerWidget {
                 ),
                 const SizedBox(height: 4),
                 ReusableText(
-                  text: _formatTransactionDate(),
+                  text: getFormattedDate(),
+                  // text: _formatTransactionDate(),
                   style: AppTextStyle(
                     textColor:
                         isDark ? Colors.grey.shade500 : Colors.grey.shade700,
@@ -189,34 +191,41 @@ class TransactionItem extends ConsumerWidget {
     }
   }
 
-  String _formatTransactionDate() {
-    try {
-      final date = DateTime.parse(transactionData.transactionDate);
-      final months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ];
-
-      final day = date.day;
-      final month = months[date.month - 1];
-      final hour = date.hour;
-      final minute = date.minute.toString().padLeft(2, '0');
-      final period = hour >= 12 ? 'PM' : 'AM';
-      final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-
-      return '$day $month $displayHour:$minute $period';
-    } catch (e) {
-      return transactionData.transactionDate;
-    }
+  getFormattedDate() {
+    String dateStr = transactionData.transactionDate;
+    DateTime utcTime = DateTime.parse(dateStr);
+    DateTime localTime = utcTime.toLocal();
+    String formatted = DateFormat('dd MMM yyyy – hh:mm a').format(localTime);
+    return formatted;
   }
+  // String _formatTransactionDate() {
+  //   try {
+  //     final date = DateTime.parse(transactionData.transactionDate);
+  //     final months = [
+  //       'January',
+  //       'February',
+  //       'March',
+  //       'April',
+  //       'May',
+  //       'June',
+  //       'July',
+  //       'August',
+  //       'September',
+  //       'October',
+  //       'November',
+  //       'December'
+  //     ];
+
+  //     final day = date.day;
+  //     final month = months[date.month - 1];
+  //     final hour = date.hour;
+  //     final minute = date.minute.toString().padLeft(2, '0');
+  //     final period = hour >= 12 ? 'PM' : 'AM';
+  //     final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+
+  //     return '$day $month $displayHour:$minute $period';
+  //   } catch (e) {
+  //     return transactionData.transactionDate;
+  //   }
+  // }
 }

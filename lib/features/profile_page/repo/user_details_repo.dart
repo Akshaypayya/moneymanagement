@@ -2,6 +2,7 @@ import 'package:money_mangmnt/features/profile_page/model/user_details_model.dar
 import 'package:intl/intl.dart';
 
 import '../../../views.dart';
+import '../../wallet_page/wallet_page.dart';
 
 class UserDetailRepository {
   final NetworkService _networkService;
@@ -64,6 +65,8 @@ class UserDetailRepository {
               userDetails.bankDetails['accNo'] ?? '';
           ref.read(bankReIbanControllerProvider).text =
               userDetails.bankDetails['accNo'] ?? '';
+          ref.read(showWalletBalanceProvider.notifier).state =
+              userDetails.walletVA ?? '';
 
 // ✅ Nominee details
           final nominee = userDetails.nomineeDetails;

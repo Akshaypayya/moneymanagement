@@ -6,14 +6,18 @@ import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
 import 'package:money_mangmnt/core/theme/app_theme.dart';
 import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/controller/goal_detail_controller.dart';
+import 'package:money_mangmnt/features/goals/goal_detail_page/controller/goals_funds_controller.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/model/goal_view_model.dart';
+import 'package:money_mangmnt/features/goals/goal_detail_page/provider/goal_transaction_provider.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_deail_progress.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_grid.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_header.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_summary.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_transaction_list.dart';
 import 'package:money_mangmnt/features/goals/edit_goal_page/view/edit_goal_page.dart';
+import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_load_amnt_botm_sheet.dart';
 import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_transaction.dart';
+import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/standing_intructions.dart';
 
 class GoalDetailPage extends ConsumerWidget {
   final String goalName;
@@ -37,32 +41,65 @@ class GoalDetailPage extends ConsumerWidget {
           title: 'Goal Details',
           isBackBtnNeeded: true,
           isActionBtnNeeded: true,
-          actionWidget: IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              if (goalDetailState.value != null &&
-                  goalDetailState.value!.data != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditGoalPage(
-                      goalData: goalDetailState.value!.data!,
+          actionWidget: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  if (goalDetailState.value != null &&
+                      goalDetailState.value!.data != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditGoalPage(
+                          goalData: goalDetailState.value!.data!,
+                        ),
+                      ),
+                    ).then((_) {
+                      ref
+                          .read(goalDetailStateProvider(goalName).notifier)
+                          .refreshGoalDetail();
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Goal data not available'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.wallet,
+                  size: 26,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(16)),
                     ),
-                  ),
-                ).then((_) {
-                  ref
-                      .read(goalDetailStateProvider(goalName).notifier)
-                      .refreshGoalDetail();
-                });
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Goal data not available'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            },
+                    builder: (context) => LoadFundsBottomSheet(
+                      goalName: goalName,
+                      onSuccess: () {
+                        ref
+                            .read(goalDetailStateProvider(goalName).notifier)
+                            .refreshGoalDetail();
+                        ref
+                            .read(
+                                goalTransactionStateProvider(goalName).notifier)
+                            .refreshTransactions();
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
         body: SafeArea(
@@ -71,6 +108,9 @@ class GoalDetailPage extends ConsumerWidget {
               await ref
                   .read(goalDetailStateProvider(goalName).notifier)
                   .refreshGoalDetail();
+              await ref
+                  .read(goalTransactionStateProvider(goalName).notifier)
+                  .refreshTransactions();
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -206,7 +246,19 @@ class GoalDetailPage extends ConsumerWidget {
           investmentAmount: goalData.transactionAmount.toString(),
           investmentFrequency: _getFrequencyText(goalData.debitDate),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: 20),
+        Container(
+          color: AppColors.current(isDark).scaffoldBackground,
+          height: 10,
+        ),
+        StandingInstructions(
+          bankId: 'Arab National Bank',
+          iBanAcntNbr: goalData.linkedVA,
+          acntName: 'Nexus Global Limited',
+          emiAmnt: goalData.transactionAmount.toString(),
+          duration: goalData.duration.toString(),
+          goalName: goalData.goalName,
+        ),
         Container(
           color: AppColors.current(isDark).scaffoldBackground,
           height: 10,

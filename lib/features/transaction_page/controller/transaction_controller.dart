@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
-import 'package:growk_v2/features/transaction_page/model/transaction_model.dart';
-import 'package:growk_v2/features/transaction_page/provider/transaction_provider.dart';
+import 'package:money_mangmnt/features/transaction_page/model/transaction_model.dart';
+import 'package:money_mangmnt/features/transaction_page/provider/transaction_provider.dart';
 
 class PaginatedTransactionNotifier
     extends StateNotifier<TransactionPaginationState> {

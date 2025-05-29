@@ -30,7 +30,11 @@ class AppUrl {
   static const String goalListUrl = "/user-service/goals";
   static const String applyRefCodeUrl = "/user-service/user/referralCode/apply";
   static const String updateGoalUrl = "/user-service/goals";
-  static const String getRefferalHistoryUrl = "/user-service/user/referralHistory";
+  static const String getRefferalHistoryUrl =
+      "/user-service/user/referralHistory";
+  static const String loadAmountToWallet = "/user-service/user/loadAmount";
+  static const String getWalletBalance = "/user-service/user/getWalletBalance";
   static const String getAllTransactionUrl =
       "/user-service/goals/getAllTransaction";
+  static const String transferAmountUrl = "/user-service/goals/transferAmount";
 }

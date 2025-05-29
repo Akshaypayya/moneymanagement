@@ -63,7 +63,7 @@ class GoalTransactionRepository {
               debugPrint('  - Currency: ${transaction.currencyCode}');
               debugPrint('  - Type: ${transaction.transactionType}');
               debugPrint('  - Payment Mode: ${transaction.paymentMode}');
-              debugPrint('  - Date: ${transaction.formattedDate}');
+              debugPrint('  - Date: ${transaction.getFormattedDate()}');
             }
           }
         } else {

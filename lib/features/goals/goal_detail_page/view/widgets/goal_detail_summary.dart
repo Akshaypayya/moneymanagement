@@ -6,6 +6,7 @@ import 'package:money_mangmnt/core/constants/app_space.dart';
 import 'package:money_mangmnt/core/theme/app_text_styles.dart';
 import 'package:money_mangmnt/core/theme/app_theme.dart';
 import 'package:money_mangmnt/core/widgets/reusable_text.dart';
+import 'package:money_mangmnt/features/goals/goal_detail_page/controller/goal_summary_controller.dart';
 
 class GoalSummary extends ConsumerWidget {
   final String amount;
@@ -26,18 +27,15 @@ class GoalSummary extends ConsumerWidget {
   }) : super(key: key);
 
   @override
-  double getProfitVal(String amount, String invested) {
-    double val1 = double.tryParse(amount) ?? 0;
-    double val2 = double.tryParse(invested) ?? 0;
-    double profitVal = val1 - val2;
-    // this.profitVal = profitVal.toString();
-    debugPrint("profit value : $profitVal");
-    return profitVal;
-  }
-
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
     final textColor = AppColors.current(isDark).text;
+    final controller = ref.read(goalSummaryControllerProvider);
+
+    final profitValue = controller.getProfitValue(amount, invested);
+    final formattedProfit = controller.getFormattedProfit(profitValue);
+    final isProfitNegative = controller.isProfitNegative(profitValue);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
@@ -53,131 +51,152 @@ class GoalSummary extends ConsumerWidget {
               ),
               const SizedBox(width: 5),
               ReusableText(
-                text: '$amount',
+                text: amount,
                 style: AppTextStyle(textColor: textColor).titleMedium,
               ),
               const SizedBox(width: 8),
-              Row(
-                children: [
-                  Text(
-                    '(Profit: ',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      color: isDark ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  Image.asset(
-                    AppImages.sarSymbol,
-                    height: 13,
-                    color: getProfitVal(amount, invested) < 0
-                        ? Colors.red
-                        : Colors.green,
-                  ),
-                  getProfitVal(amount, invested) < 0
-                      ? GapSpace.width5
-                      : const SizedBox(),
-                  Text(
-                    getProfitVal(amount, invested).toStringAsFixed(2),
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      color: getProfitVal(amount, invested) < 0
-                          ? Colors.red
-                          : Colors.green,
-                    ),
-                  ),
-                  Text(
-                    ')',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      color: isDark ? Colors.white : Colors.black,
-                    ),
-                  ),
-                ],
-              ),
+              _buildProfitSection(isDark, formattedProfit, isProfitNegative),
             ],
           ),
           const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Current Gold Holdings: ',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.grey[300] : Colors.grey[800],
-                ),
-              ),
-              Text(
-                '$currentGold',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.white : Colors.black,
-                ),
-              ),
-              GapSpace.width5,
-              Row(
-                children: [
-                  Text(
-                    '(',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      color: isDark ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  Image.asset(
-                    AppImages.sarSymbol,
-                    height: 13,
-                  ),
-                  GapSpace.width5,
-                  Text(
-                    '$currentGoldPrice)',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      color: isDark ? Colors.white : Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Virtual Account: ',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.grey[300] : Colors.grey[800],
-                ),
-              ),
-              Text(
-                virtualAccountNbr,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.white : Colors.black,
-                ),
-              ),
-            ],
-          ),
+          _buildGoldHoldingsSection(isDark),
+          // const SizedBox(height: 8),
+          // _buildVirtualAccountSection(context, ref, isDark, controller),
         ],
       ),
     );
   }
+
+  Widget _buildProfitSection(
+      bool isDark, String formattedProfit, bool isProfitNegative) {
+    final profitColor = isProfitNegative ? Colors.red : Colors.green;
+
+    return Row(
+      children: [
+        Text(
+          '(Profit: ',
+          style: TextStyle(
+            fontSize: 12,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            color: isDark ? Colors.white : Colors.black,
+          ),
+        ),
+        Image.asset(
+          AppImages.sarSymbol,
+          height: 13,
+          color: profitColor,
+        ),
+        if (isProfitNegative) GapSpace.width5,
+        Text(
+          formattedProfit,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            color: profitColor,
+          ),
+        ),
+        Text(
+          ')',
+          style: TextStyle(
+            fontSize: 12,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            color: isDark ? Colors.white : Colors.black,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGoldHoldingsSection(bool isDark) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Current Gold Holdings: ',
+          style: TextStyle(
+            fontSize: 14,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            color: isDark ? Colors.grey[300] : Colors.grey[800],
+          ),
+        ),
+        Text(
+          currentGold,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            color: isDark ? Colors.white : Colors.black,
+          ),
+        ),
+        GapSpace.width5,
+        Row(
+          children: [
+            Text(
+              '(',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                color: isDark ? Colors.white : Colors.black,
+              ),
+            ),
+            Image.asset(
+              AppImages.sarSymbol,
+              height: 13,
+            ),
+            GapSpace.width5,
+            Text(
+              '${double.tryParse(currentGoldPrice)?.toStringAsFixed(2) ?? currentGoldPrice})',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                color: isDark ? Colors.white : Colors.black,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // Widget _buildVirtualAccountSection(BuildContext context, WidgetRef ref,
+  //     bool isDark, GoalSummaryController controller) {
+  //   return GestureDetector(
+  //     onTap: () => controller.copyVirtualAccountToClipboard(
+  //         context, virtualAccountNbr, ref),
+  //     child: Row(
+  //       mainAxisSize: MainAxisSize.min,
+  //       crossAxisAlignment: CrossAxisAlignment.center,
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Text(
+  //           'Virtual Account: ',
+  //           style: TextStyle(
+  //             fontSize: 14,
+  //             fontFamily: GoogleFonts.poppins().fontFamily,
+  //             color: isDark ? Colors.grey[300] : Colors.grey[800],
+  //           ),
+  //         ),
+  //         Text(
+  //           virtualAccountNbr,
+  //           style: TextStyle(
+  //             fontSize: 14,
+  //             fontWeight: FontWeight.bold,
+  //             fontFamily: GoogleFonts.poppins().fontFamily,
+  //             color: isDark ? Colors.white : Colors.black,
+  //           ),
+  //         ),
+  //         const SizedBox(width: 5),
+  //         Icon(
+  //           Icons.copy,
+  //           size: 16,
+  //           color: isDark ? Colors.grey[400] : Colors.grey[600],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }

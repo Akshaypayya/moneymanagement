@@ -29,7 +29,9 @@ class _SavingsAmountSliderState extends ConsumerState<SavingsAmountSlider> {
     super.initState();
     _focusNode = FocusNode();
 
-    _controller = TextEditingController(text: _formatNumber(minAmount.round()));
+    // _controller = TextEditingController(text: _formatNumber(minAmount.round()));
+    _controller = TextEditingController(
+        text: _sliderValueToAmount(ref.read(amountSliderProvider)).toString());
 
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus && _isUserTyping) {

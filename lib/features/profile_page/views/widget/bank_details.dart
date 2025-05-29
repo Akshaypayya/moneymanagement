@@ -1,3 +1,4 @@
+import 'package:money_mangmnt/core/constants/app_space.dart';
 import 'package:money_mangmnt/features/profile_page/views/widget/profile_info_section.dart';
 import 'package:money_mangmnt/views.dart';
 
@@ -16,13 +17,20 @@ Widget bankDetails({required WidgetRef ref, required BuildContext context}) {
                   content: Text('Please verify your KYC details first')))
               : () => Navigator.pushNamed(context, AppRouter.bankDetailsScreen),
         )
-      : ProfileNavigationItem(
-          label: 'Bank Details',
-          value1: '${bankData.nameOnAcc}, ${bankData.accNo.toString()}',
-          value2: '${bankData.ifsc}, ${bankData.nameOnAcc}, ${bankData.status}',
-          onTap: userData?.kycVerified == false
-              ? () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Please verify your KYC details first')))
-              : () => Navigator.pushNamed(context, AppRouter.bankDetailsScreen),
+      : Column(
+          children: [
+            GapSpace.height10,
+            ProfileNavigationItem(
+              label: 'Bank Details',
+              value1: '${bankData.nameOnAcc}, ${bankData.accNo.toString()}',
+              value2:
+                  '${bankData.ifsc}, ${bankData.nameOnAcc}, ${bankData.status}',
+              onTap: userData?.kycVerified == false
+                  ? () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Please verify your KYC details first')))
+                  : () =>
+                      Navigator.pushNamed(context, AppRouter.bankDetailsScreen),
+            ),
+          ],
         );
 }

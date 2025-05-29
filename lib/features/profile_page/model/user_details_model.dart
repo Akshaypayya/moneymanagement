@@ -58,6 +58,7 @@ class UserData {
     this.savedAddress,
     this.proPicExtension,
   });
+
   // UserData.fromJson(dynamic json) {
   //   gender = json['gender'];
   //   profileCompletion = json['profileCompletion'];
@@ -115,7 +116,6 @@ class UserData {
   String? referralCode;
   SavedAddress? savedAddress;
   String? proPicExtension;
-
   UserData copyWith({
     String? gender,
     num? profileCompletion,

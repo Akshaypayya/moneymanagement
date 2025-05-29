@@ -9,6 +9,8 @@ import 'package:money_mangmnt/features/nominee_details/views/nominee_details_scr
 import 'package:money_mangmnt/features/notifcation_page/notification_page.dart';
 import 'package:money_mangmnt/features/referral_rewards/view/referral_rewards_screen.dart';
 import 'package:money_mangmnt/features/saved_address/view/saved_address_screen.dart';
+import 'package:money_mangmnt/features/settings_page/widgets/help_screen.dart';
+import 'package:money_mangmnt/features/settings_page/widgets/terms_and_condition.dart';
 import 'package:money_mangmnt/features/wallet_page/wallet_page.dart';
 import 'package:money_mangmnt/views.dart';
 
@@ -33,6 +35,8 @@ class AppRouter {
   static const String editGoalPage = '/editGoalPage';
   static const String addGoalPage = '/addGoalPage';
   static const String biometricAuth = '/biometricAuth';
+  static const String termsAndConditions = '/termsAndConditions';
+  static const String help = '/help';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -105,6 +109,12 @@ class AppRouter {
       case biometricAuth:
         return MaterialPageRoute(
             builder: (_) => const BiometricAuthPage(), settings: settings);
+      case termsAndConditions:
+        return MaterialPageRoute(
+            builder: (_) => const TermsWebView(), settings: settings);
+      case help:
+        return MaterialPageRoute(
+            builder: (_) => const HelpScreenWeb(), settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

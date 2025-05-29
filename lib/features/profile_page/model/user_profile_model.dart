@@ -10,6 +10,8 @@ class UserProfileModel {
   final String referralCode;
   final String? appliedReferralCode;
   final String proPicExtension;
+  final int profileCompletion;
+  final String? walletVA;
 
   final Map<String, String?> savedAddress;
   final Map<String, String?> bankDetails;
@@ -25,8 +27,10 @@ class UserProfileModel {
     required this.kycVerified,
     required this.dob,
     required this.referralCode,
-    required this.proPicExtension,
     required this.appliedReferralCode,
+    required this.proPicExtension,
+    required this.profileCompletion,
+    required this.walletVA,
     required this.savedAddress,
     required this.bankDetails,
     required this.nomineeDetails,
@@ -44,8 +48,10 @@ class UserProfileModel {
       kycVerified: data['KycVerified'] ?? false,
       dob: data['dob'] ?? '',
       referralCode: data['referralCode'] ?? '',
-      proPicExtension: data['proPicExtension'] ?? '',
       appliedReferralCode: data['appliedReferralCode'],
+      proPicExtension: data['proPicExtension'] ?? '',
+      profileCompletion: data['profileCompletion'] ?? 0,
+      walletVA: data['walletVA'],
       savedAddress: Map<String, String?>.from(data['savedAddress'] ?? {}),
       bankDetails: Map<String, String?>.from(data['bankDetails'] ?? {}),
       nomineeDetails: Map<String, String?>.from(data['nomineeDetails'] ?? {}),
@@ -66,6 +72,8 @@ class UserProfileModel {
         'appliedReferralCode: $appliedReferralCode, '
         'profilePicture: ${profilePicture.isNotEmpty ? "Available (Base64 - ${profilePicture.length} chars)" : "Not available"}, '
         'proPicExtension: $proPicExtension, '
+        'profileCompletion: $profileCompletion, '
+        'walletVA: $walletVA, '
         'savedAddress: $savedAddress, '
         'bankDetails: $bankDetails, '
         'nomineeDetails: $nomineeDetails'
