@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:money_mangmnt/core/services/icon_mapping_service.dart';
+import 'package:growk_v2/core/services/icon_mapping_service.dart';
 
 class GoalListModel {
   final List<GoalListItem> data;
@@ -139,22 +139,51 @@ class GoalListItem {
   String get formattedTargetAmount => targetAmount.toStringAsFixed(2);
   String get formattedAvailableBalance => availableBalance.toStringAsFixed(2);
   String get formattedCurrentPrice => currentPrice.toStringAsFixed(2);
-  String get formattedGoldBalance => goldBalance.toStringAsFixed(3);
+  String get formattedGoldBalance => goldBalance.toStringAsFixed(2);
   String get formattedWalletBalance => walletBalance.toStringAsFixed(2);
 
   double get profit => availableBalance - walletBalance;
   String get formattedProfit => profit.toStringAsFixed(2);
-  // String get formattedInvestedAmount => investedAmount.toStringAsFixed(2);
-  double get progressPercent =>
-      targetAmount > 0 ? (availableBalance / targetAmount) : 0.0;
+
+  int get totalExpectedTransactions {
+    final totalMonths = duration * 12;
+
+    switch (debitDate) {
+      case 1:
+        return totalMonths * 30;
+      case 7:
+        return totalMonths * 4;
+      case 5:
+      default:
+        return totalMonths;
+    }
+  }
+
+  int get currentCompletedTransactions {
+    if (transactionAmount <= 0) return 0;
+    return (investedAmount / transactionAmount).round();
+  }
 
   String get progressText {
-    final totalMonths = duration * 12;
-    final currentMonths =
-        (availableBalance / (transactionAmount > 0 ? transactionAmount : 1))
-            .round();
-    return '$currentMonths/$totalMonths';
+    return '$currentCompletedTransactions/$totalExpectedTransactions';
   }
+
+  double get progressPercent {
+    if (totalExpectedTransactions <= 0) return 0.0;
+    return (currentCompletedTransactions / totalExpectedTransactions)
+        .clamp(0.0, 1.0);
+  }
+
+  // double get progressPercent =>
+  //     targetAmount > 0 ? (availableBalance / targetAmount) : 0.0;
+
+  // String get progressText {
+  //   final totalMonths = duration * 12;
+  //   final currentMonths =
+  //       (availableBalance / (transactionAmount > 0 ? transactionAmount : 1))
+  //           .round();
+  //   return '$currentMonths/$totalMonths';
+  // }
 
   String get iconAsset {
     print('ICON ASSET for goal: $goalName');

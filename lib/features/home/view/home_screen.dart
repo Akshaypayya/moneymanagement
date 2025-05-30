@@ -1,3 +1,5 @@
+import 'package:growk_v2/features/wallet_page/provider/wallet_screen_providers.dart';
+
 import '../../../views.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -14,9 +16,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_isFirstLoad) {
-      // 👇 Trigger refresh once
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.refresh(homeDetailsProvider);
+        ref.refresh(getNewWalletBalanceProvider);
+
       });
       _isFirstLoad = false;
     }

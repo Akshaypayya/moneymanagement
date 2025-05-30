@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_space.dart';
-import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/controller/goal_detail_controller.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/controller/goals_funds_controller.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/model/goal_view_model.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/provider/goal_transaction_provider.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_deail_progress.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_grid.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_header.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_summary.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_transaction_list.dart';
-import 'package:money_mangmnt/features/goals/edit_goal_page/view/edit_goal_page.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_load_amnt_botm_sheet.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_transaction.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/standing_intructions.dart';
+import 'package:growk_v2/core/constants/app_space.dart';
+import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/widgets/growk_app_bar.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/controller/goal_detail_controller.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/controller/goals_funds_controller.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/provider/goal_transaction_provider.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_deail_progress.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_grid.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_header.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_summary.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_transaction_list.dart';
+import 'package:growk_v2/features/goals/edit_goal_page/view/edit_goal_page.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_load_amnt_botm_sheet.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_transaction.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/standing_intructions.dart';
 
 class GoalDetailPage extends ConsumerWidget {
   final String goalName;
@@ -94,6 +94,7 @@ class GoalDetailPage extends ConsumerWidget {
                             .read(
                                 goalTransactionStateProvider(goalName).notifier)
                             .refreshTransactions();
+                        //  ref.read(goalsDetailRefreshTriggerProvider.notifier).state++;
                       },
                     ),
                   );
@@ -256,7 +257,7 @@ class GoalDetailPage extends ConsumerWidget {
           iBanAcntNbr: goalData.linkedVA,
           acntName: 'Nexus Global Limited',
           emiAmnt: goalData.transactionAmount.toString(),
-          duration: goalData.duration.toString(),
+          duration: _getFrequencyText(goalData.debitDate),
           goalName: goalData.goalName,
         ),
         Container(

@@ -1,5 +1,5 @@
-import 'package:money_mangmnt/features/wallet_page/model/load_wallet_amount_model.dart';
-import 'package:money_mangmnt/features/wallet_page/use_case/load_wallet_amount_use_case.dart';
+import 'package:growk_v2/features/wallet_page/model/load_wallet_amount_model.dart';
+import 'package:growk_v2/features/wallet_page/use_case/load_wallet_amount_use_case.dart';
 
 import '../../../views.dart';
 
@@ -18,6 +18,7 @@ class LoadWalletAmountNotifier extends StateNotifier<LoadWalletAmountState> {
     }
   }
 }
+
 
 @immutable
 class LoadWalletAmountState {
@@ -43,3 +44,4 @@ class LoadWalletAmountState {
     );
   }
 }
+

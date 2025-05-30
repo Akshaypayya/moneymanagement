@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/network/network_service.dart';
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/features/goals/edit_goal_page/model/edit_goal_model.dart';
-import 'package:money_mangmnt/features/goals/edit_goal_page/repo/edit_goal_repo.dart';
-import 'package:money_mangmnt/features/goals/edit_goal_page/controller/edit_goal_controller.dart';
+import 'package:growk_v2/core/network/network_service.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/features/goals/edit_goal_page/model/edit_goal_model.dart';
+import 'package:growk_v2/features/goals/edit_goal_page/repo/edit_goal_repo.dart';
+import 'package:growk_v2/features/goals/edit_goal_page/controller/edit_goal_controller.dart';
 
 final editGoalRepositoryProvider = Provider<EditGoalRepository>((ref) {
   final networkService = ref.watch(networkServiceProvider);

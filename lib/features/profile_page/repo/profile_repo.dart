@@ -2,11 +2,11 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/features/profile_page/model/update_prof_pic_model.dart';
-import 'package:money_mangmnt/core/utils/app_permission.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/features/profile_page/model/update_prof_pic_model.dart';
+import 'package:growk_v2/core/utils/app_permission.dart';
 import 'package:http/http.dart' as http;
-import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -33,7 +33,6 @@ class ProfilePictureRepository {
       final streamedResponse = await request.send();
       return http.Response.fromStream(streamedResponse);
     }
-
     try {
       String? token = SharedPreferencesHelper.getString("access_token");
       if (token == null) {

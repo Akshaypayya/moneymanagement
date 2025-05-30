@@ -1,5 +1,4 @@
-import 'package:money_mangmnt/views.dart';
-
+import 'package:growk_v2/views.dart';
 class SharedPreferencesHelper {
   static late SharedPreferences _prefs;
 
@@ -83,7 +82,6 @@ class SharedPreferencesHelper {
     await _prefs.clear();
   }
 }
-
 final sharedPreferencesProvider = Provider<SharedPreferencesHelper>((ref) {
   final service = SharedPreferencesHelper();
   SharedPreferencesHelper.init(); // Ensure initialization

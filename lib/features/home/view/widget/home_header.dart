@@ -1,3 +1,5 @@
+import 'package:growk_v2/features/wallet_page/provider/wallet_screen_providers.dart';
+
 import '../../../../views.dart';
 import 'package:intl/intl.dart';
 class HomeHeader extends ConsumerWidget {
@@ -8,6 +10,8 @@ class HomeHeader extends ConsumerWidget {
     final isDark = ref.watch(isDarkProvider);
     final totalSavings = ref.watch(totalSavingsProvider) ?? '0.00';
     final goldWeight = ref.watch(goldWeightProvider) ?? '0.000';
+    // final walletBalance = ref.watch(walletBalanceProvider) ?? '0.000';
+    final walletAsync = ref.watch(getNewWalletBalanceProvider);
 
     final savingsDate = DateFormat('d MMM yyyy').format(DateTime.now());
 
@@ -97,6 +101,64 @@ class HomeHeader extends ConsumerWidget {
                   style: AppTextStyle(textColor: AppColors.current(isDark).text).titleSmall,
                 ),
               ],
+            ),
+            ReusableSizedBox(
+              height: 5,
+            ),
+            GestureDetector(
+              onTap: () async {
+                try {
+                  final result =
+                      await ref.refresh(homeDetailsProvider.future);
+                  Navigator.pushNamed(context, AppRouter.walletPage);
+                } catch (e) {
+                  final errorMessage = e
+                      .toString()
+                      .contains('KYC not completed')
+                      ? 'KYC not verified. Please complete KYC to access this feature.'
+                      : 'Something went wrong. Please try again later.';
+
+                  showGrowkSnackBar(
+                    context: context,
+                    ref: ref,
+                    message: errorMessage,
+                    type: SnackType.error,
+                  );
+                  await  Navigator.pushNamed(
+                      context, AppRouter.kycVerificationScreen);
+                }
+              },
+              child: Container(
+                child: ReusableRow(
+                  children: [
+                    ReusableText(
+                      text: 'Wallet balance is:',
+                      style: AppTextStyle(textColor: AppColors.current(isDark).text).labelSmall,
+                    ),
+                    const ReusableSizedBox(width: 5),
+                    isKycIncomplete
+                        ? ReusableText(
+                      text: '0',
+                      style: AppTextStyle(
+                        textColor: AppColors.current(isDark).text,
+                      ).titleSmall,
+                    )
+                        :
+                    walletAsync.when(
+                      data: (walletData) =>
+                          ReusableText(
+                            text:"${walletData.data!.walletBalance}",
+                            style: AppTextStyle(textColor: AppColors.current(isDark).text).titleSmall,
+                          ),
+                      loading: () => ReusableText(
+                        text:"0.0",
+                        style: AppTextStyle(textColor: AppColors.current(isDark).text).titleSmall,
+                      ),
+                      error: (err, stack) => Text('Error: $err'),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

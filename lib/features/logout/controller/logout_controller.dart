@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/services/data_clearing_service.dart';
-import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/features/login/provider/user_data_provider.dart';
-import 'package:money_mangmnt/features/logout/provider/logout_provider.dart';
-import 'package:money_mangmnt/main.dart';
-import 'package:money_mangmnt/routes/app_router.dart';
+import 'package:growk_v2/core/services/data_clearing_service.dart';
+import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/features/login/provider/user_data_provider.dart';
+import 'package:growk_v2/features/logout/provider/logout_provider.dart';
+import 'package:growk_v2/main.dart';
+import 'package:growk_v2/routes/app_router.dart';
 
 class LogoutController {
   final Ref ref;
 
   LogoutController(this.ref);
 
-  Future<void> logout(BuildContext context, WidgetRef ref) async {
+  Future<void> logout(BuildContext context,WidgetRef ref) async {
     final navigator = Navigator.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final isDark = ref.watch(isDarkProvider);
@@ -93,6 +93,7 @@ class LogoutController {
   }
 
   void _clearUserData(WidgetRef ref) {
+
     try {
       ref.read(userDataProvider.notifier).clear();
       // logoutAndResetApp(context);

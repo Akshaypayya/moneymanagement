@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/features/login/model/otp_model.dart';
+import 'package:growk_v2/features/login/model/otp_model.dart';
 
 import '../repo/otp_repo.dart';
 

@@ -1,9 +1,8 @@
-import 'package:money_mangmnt/views.dart';
-
+import 'package:growk_v2/views.dart';
 class NotificationServices {
   final FirebaseMessaging messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
 
   Future<void> requestPermission() async {
     NotificationSettings settings = await messaging.requestPermission(

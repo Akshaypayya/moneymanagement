@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
-import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/core/biometric/biometric_provider.dart';
-import 'package:money_mangmnt/core/widgets/custom_scaffold.dart';
-import 'package:money_mangmnt/core/widgets/reusable_padding.dart';
-import 'package:money_mangmnt/features/splash/provider/splash_provider.dart';
-import 'package:money_mangmnt/routes/app_router.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/biometric/biometric_provider.dart';
+import 'package:growk_v2/core/widgets/custom_scaffold.dart';
+import 'package:growk_v2/core/widgets/reusable_padding.dart';
+import 'package:growk_v2/features/splash/provider/splash_provider.dart';
+import 'package:growk_v2/routes/app_router.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});

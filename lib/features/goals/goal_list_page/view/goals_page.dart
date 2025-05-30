@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
-import 'package:money_mangmnt/features/goals/add_goal_page/view/add_goal_page.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/controller/goal_list_controller.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/model/goal_list_model.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/provider/goal_list_page_provider.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/view/widgets/goal_item.dart';
-import 'package:money_mangmnt/features/goals/add_goal_page/view/widget/goals_header.dart';
+import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/widgets/growk_app_bar.dart';
+import 'package:growk_v2/features/goals/add_goal_page/view/add_goal_page.dart';
+import 'package:growk_v2/features/goals/goal_list_page/controller/goal_list_controller.dart';
+import 'package:growk_v2/features/goals/goal_list_page/model/goal_list_model.dart';
+import 'package:growk_v2/features/goals/goal_list_page/provider/goal_list_page_provider.dart';
+import 'package:growk_v2/features/goals/goal_list_page/view/widgets/goal_item.dart';
+import 'package:growk_v2/features/goals/add_goal_page/view/widget/goals_header.dart';
 
 class GoalsPage extends ConsumerWidget {
   const GoalsPage({Key? key}) : super(key: key);

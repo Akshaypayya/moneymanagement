@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class ApplyRefCodeTopText extends ConsumerWidget {
   const ApplyRefCodeTopText({super.key});

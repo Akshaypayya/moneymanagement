@@ -1,18 +1,15 @@
-import 'package:money_mangmnt/features/bank_details/use_case/bank_use_case.dart';
-import 'package:money_mangmnt/features/bank_details/use_case/update_bank_details_use_case.dart';
-import 'package:money_mangmnt/features/bank_details/views/widgets/bank_otp_bottom_sheet.dart';
+import 'package:growk_v2/features/bank_details/use_case/bank_use_case.dart';
+import 'package:growk_v2/features/bank_details/use_case/update_bank_details_use_case.dart';
+import 'package:growk_v2/features/bank_details/views/widgets/bank_otp_bottom_sheet.dart';
 import '../../../views.dart';
-
 class BankDetailsController extends StateNotifier<bool> {
   BankDetailsController(this.ref) : super(false);
   final Ref ref;
 
   bool validateForm(WidgetRef ref, BuildContext context) {
     final name = ref.read(bankNameControllerProvider).text.trim();
-    final accNo =
-        ref.read(bankIbanControllerProvider).text.trim().toUpperCase();
-    final reAccNo =
-        ref.read(bankReIbanControllerProvider).text.trim().toUpperCase();
+    final accNo = ref.read(bankIbanControllerProvider).text.trim().toUpperCase();
+    final reAccNo = ref.read(bankReIbanControllerProvider).text.trim().toUpperCase();
 
     bool hasError = false;
 
@@ -34,8 +31,7 @@ class BankDetailsController extends StateNotifier<bool> {
 
     if (reAccNo != accNo) {
       ref.read(bankReIbanErrorProvider.notifier).state = 'IBANs do not match';
-      debugPrint(
-          "❌ Validation Failed: Re-entered IBAN does not match → $reAccNo ≠ $accNo");
+      debugPrint("❌ Validation Failed: Re-entered IBAN does not match → $reAccNo ≠ $accNo");
       hasError = true;
     } else {
       ref.read(bankReIbanErrorProvider.notifier).state = null;
@@ -48,6 +44,7 @@ class BankDetailsController extends StateNotifier<bool> {
     return !hasError;
   }
 
+
   bool isValidIBAN(String iban) {
     if (iban.isEmpty || iban.length < 15 || iban.length > 24) return false;
 
@@ -58,8 +55,7 @@ class BankDetailsController extends StateNotifier<bool> {
 
     final numeric = rearranged.split('').map((ch) {
       if (RegExp(r'\d').hasMatch(ch)) return ch;
-      if (RegExp(r'[A-Z]').hasMatch(ch))
-        return (ch.codeUnitAt(0) - 'A'.codeUnitAt(0) + 10).toString();
+      if (RegExp(r'[A-Z]').hasMatch(ch)) return (ch.codeUnitAt(0) - 'A'.codeUnitAt(0) + 10).toString();
       return '';
     }).join();
 
@@ -75,8 +71,7 @@ class BankDetailsController extends StateNotifier<bool> {
     return {
       "nameOnAcc": ref.read(bankNameControllerProvider).text.trim(),
       "accNo": ref.read(bankIbanControllerProvider).text.trim().toUpperCase(),
-      "reAccNo":
-          ref.read(bankReIbanControllerProvider).text.trim().toUpperCase(),
+      "reAccNo": ref.read(bankReIbanControllerProvider).text.trim().toUpperCase(),
     };
   }
 
@@ -102,11 +97,9 @@ class BankDetailsController extends StateNotifier<bool> {
         await showOtpBottomSheet(context, ref);
       } else if (response.isValidationFailed && response.data != null) {
         final serverErrors = response.data!;
-        ref.read(bankNameErrorProvider.notifier).state =
-            serverErrors['nameOnAcc'];
+        ref.read(bankNameErrorProvider.notifier).state = serverErrors['nameOnAcc'];
         ref.read(bankIbanErrorProvider.notifier).state = serverErrors['accNo'];
-        ref.read(bankReIbanErrorProvider.notifier).state =
-            serverErrors['reAccNo'];
+        ref.read(bankReIbanErrorProvider.notifier).state = serverErrors['reAccNo'];
 
         showGrowkSnackBar(
           context: context,
@@ -114,8 +107,7 @@ class BankDetailsController extends StateNotifier<bool> {
           message: 'Please correct the highlighted bank details.',
           type: SnackType.error,
         );
-      } else if (response.status == 'Unauthorized' ||
-          response.message?.contains('401') == true) {
+      } else if (response.status == 'Unauthorized' || response.message?.contains('401') == true) {
         showGrowkSnackBar(
           context: context,
           ref: ref,
@@ -161,11 +153,9 @@ class BankDetailsController extends StateNotifier<bool> {
         await showOtpBottomSheet(context, ref);
       } else if (response.isValidationFailed && response.data != null) {
         final serverErrors = response.data!;
-        ref.read(bankNameErrorProvider.notifier).state =
-            serverErrors['nameOnAcc'];
+        ref.read(bankNameErrorProvider.notifier).state = serverErrors['nameOnAcc'];
         ref.read(bankIbanErrorProvider.notifier).state = serverErrors['accNo'];
-        ref.read(bankReIbanErrorProvider.notifier).state =
-            serverErrors['reAccNo'];
+        ref.read(bankReIbanErrorProvider.notifier).state = serverErrors['reAccNo'];
 
         showGrowkSnackBar(
           context: context,
@@ -194,7 +184,6 @@ class BankDetailsController extends StateNotifier<bool> {
   }
 }
 
-final bankDetailsControllerProvider =
-    StateNotifierProvider<BankDetailsController, bool>(
-  (ref) => BankDetailsController(ref),
+final bankDetailsControllerProvider = StateNotifierProvider<BankDetailsController, bool>(
+      (ref) => BankDetailsController(ref),
 );

@@ -2,16 +2,18 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:growk_v2/features/goals/add_goal_page/view/widget/stnding_instrction_botom_sheet.dart';
+import 'package:growk_v2/features/goals/goal_page_checker/view/goal_page_checker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:money_mangmnt/features/goals/add_goal_page/provider/add_goal_provider.dart';
+import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:money_mangmnt/core/constants/app_space.dart';
-import 'package:money_mangmnt/core/services/icon_mapping_service.dart';
-import 'package:money_mangmnt/views.dart';
-import 'package:money_mangmnt/features/goals/edit_goal_page/repo/edit_goal_repo.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/model/goal_view_model.dart';
+import 'package:growk_v2/core/constants/app_space.dart';
+import 'package:growk_v2/core/services/icon_mapping_service.dart';
+import 'package:growk_v2/views.dart';
+import 'package:growk_v2/features/goals/edit_goal_page/repo/edit_goal_repo.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
 
 class CreateGoalController {
   final Ref ref;
@@ -178,6 +180,152 @@ class CreateGoalController {
     return XFile(compressedImagePath);
   }
 
+  // Future<void> createGoal(BuildContext context) async {
+  //   print('CONTROLLER: Starting goal creation...');
+  //   try {
+  //     final goalName = ref.read(goalNameProvider);
+  //     final selectedFrequency = ref.read(frequencyProvider);
+  //     final autoDeposit = ref.read(autoDepositProvider);
+
+  //     final selectedImage = ref.read(selectedImageFileProvider);
+  //     final selectedIcon = ref.read(selectedGoalIconProvider);
+
+  //     final targetYear = ref.read(calculatedYearProvider);
+  //     final targetAmount = ref.read(calculatedAmountProvider).round();
+
+  //     print('CONTROLLER: Form data collected');
+  //     print('CONTROLLER: Goal name: $goalName');
+  //     print('CONTROLLER: Frequency: $selectedFrequency');
+  //     print('CONTROLLER: Target year: $targetYear');
+  //     print('CONTROLLER: Target amount: $targetAmount');
+  //     print('CONTROLLER: Auto deposit: $autoDeposit');
+  //     print('CONTROLLER: Selected icon: $selectedIcon');
+  //     print('CONTROLLER: Has custom image: ${selectedImage != null}');
+
+  //     final durationInYears = (targetYear - 2025);
+  //     final duration = durationInYears > 3 ? 3 : durationInYears;
+  //     final actualDurationInMonths = duration * 12;
+
+  //     double transactionAmount;
+  //     int debitDate;
+
+  //     switch (selectedFrequency) {
+  //       case 'Daily':
+  //         transactionAmount = targetAmount / (actualDurationInMonths * 30);
+  //         debitDate = 1;
+  //         break;
+  //       case 'Weekly':
+  //         transactionAmount = targetAmount / (actualDurationInMonths * 4);
+  //         debitDate = 7;
+  //         break;
+  //       case 'Monthly':
+  //       default:
+  //         transactionAmount = targetAmount / actualDurationInMonths;
+  //         debitDate = 5;
+  //         break;
+  //     }
+
+  //     print('CONTROLLER: Calculated values');
+  //     print(
+  //         'CONTROLLER: Duration: $duration years ($actualDurationInMonths months)');
+  //     print('CONTROLLER: Transaction amount: ${transactionAmount.round()}');
+  //     print('CONTROLLER: Debit date: $debitDate');
+
+  //     if (goalName.isEmpty) {
+  //       print('CONTROLLER ERROR: Goal name is empty');
+  //       _showSnackBar(context, 'Please enter a goal name');
+  //       return;
+  //     }
+
+  //     final Map<String, dynamic> goalData = {
+  //       "goalName": goalName,
+  //       "targetYear": targetYear,
+  //       "targetAmount": targetAmount,
+  //       "duration": duration,
+  //       "debitDate": debitDate,
+  //       "transactionAmount": transactionAmount.round(),
+  //       "goldInvestment": autoDeposit ? "N" : "Y",
+  //       "frequency": selectedFrequency,
+  //       if (selectedIcon.isNotEmpty && selectedImage == null)
+  //         "iconName": selectedIcon,
+  //     };
+
+  //     print('CONTROLLER: Goal data prepared: $goalData');
+
+  //     File formDataFile = await saveFileAsBytesTemp(
+  //       context,
+  //       'goal_data',
+  //       'json',
+  //       goalData,
+  //     );
+
+  //     print('CONTROLLER: Temp file created: ${formDataFile.path}');
+
+  //     final accessToken =
+  //         SharedPreferencesHelper.getString('access_token') ?? '';
+  //     if (accessToken.isEmpty) {
+  //       print('CONTROLLER ERROR: No access token found');
+  //       _showSnackBar(context, 'Please login first');
+  //       return;
+  //     }
+
+  //     print('CONTROLLER: Access token found, proceeding with API call');
+
+  //     _showLoadingDialog(context);
+
+  //     final repository = ref.read(createGoalRepositoryProvider);
+  //     final result = await repository.addGoalApi(
+  //       accessToken,
+  //       selectedImage,
+  //       formDataFile,
+  //     );
+
+  //     if (context.mounted) {
+  //       Navigator.of(context).pop();
+  //     }
+
+  //     print('CONTROLLER: API call completed');
+  //     print('CONTROLLER: Result status: ${result.status}');
+  //     print('CONTROLLER: Result message: ${result.message}');
+
+  //     if (result.isSuccess) {
+  //       print('CONTROLLER: Goal created successfully');
+  //       // Store the icon mapping for later retrieval
+  //       final selectedIcon = ref.read(selectedGoalIconProvider);
+  //       if (selectedIcon.isNotEmpty) {
+  //         IconMappingService.storeGoalIcon(goalName, selectedIcon);
+  //         print('CONTROLLER: Stored icon mapping - $goalName -> $selectedIcon');
+  //       }
+
+  //       resetFormState();
+  //       print('CONTROLLER: Form reset completed - all fields back to default');
+
+  //       _showSnackBar(context, 'Goal created successfully!');
+
+  //       if (context.mounted) {
+  //         Navigator.of(context).pop();
+  //       }
+  //     } else if (result.isValidationFailed) {
+  //       print('CONTROLLER ERROR: Validation failed');
+  //       _showSnackBar(context, 'Validation Error: ${result.validationErrors}');
+  //     } else {
+  //       print('CONTROLLER ERROR: Goal creation failed');
+  //       _showSnackBar(context, result.message);
+  //     }
+  //   } catch (e, stackTrace) {
+  //     print('CONTROLLER EXCEPTION: $e');
+  //     print('CONTROLLER STACK TRACE: $stackTrace');
+
+  //     if (context.mounted && Navigator.of(context).canPop()) {
+  //       Navigator.of(context).pop();
+  //     }
+
+  //     if (context.mounted) {
+  //       _showSnackBar(context, 'Error creating goal: ${e.toString()}');
+  //     }
+  //   }
+  // }
+
   Future<void> createGoal(BuildContext context) async {
     print('CONTROLLER: Starting goal creation...');
     try {
@@ -288,7 +436,7 @@ class CreateGoalController {
 
       if (result.isSuccess) {
         print('CONTROLLER: Goal created successfully');
-        // Store the icon mapping for later retrieval
+
         final selectedIcon = ref.read(selectedGoalIconProvider);
         if (selectedIcon.isNotEmpty) {
           IconMappingService.storeGoalIcon(goalName, selectedIcon);
@@ -300,8 +448,22 @@ class CreateGoalController {
 
         _showSnackBar(context, 'Goal created successfully!');
 
+        final virtualAccount = result.data?.virtualAccount ?? 'Not Available';
+
         if (context.mounted) {
-          Navigator.of(context).pop();
+          await Future.delayed(const Duration(milliseconds: 500));
+
+          showStandingInstructionBottomSheet(
+            context,
+            virtualAccount,
+            transactionAmount,
+            selectedFrequency,
+            goalName,
+            onClose: () {
+              Navigator.of(context).pop();
+              ref.read(goalsRefreshTriggerProvider.notifier).state++;
+            },
+          );
         }
       } else if (result.isValidationFailed) {
         print('CONTROLLER ERROR: Validation failed');

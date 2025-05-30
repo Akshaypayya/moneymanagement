@@ -1,4 +1,6 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/controller/goal_detail_controller.dart';
+import 'package:growk_v2/features/referral_rewards/provider/referrel_rewards_notifier.dart';
+import 'package:growk_v2/views.dart';
 
 class ProviderResetService {
   void clearAll(WidgetRef ref) {
@@ -35,6 +37,8 @@ class ProviderResetService {
     ref.invalidate(isButtonLoadingProvider);
     ref.invalidate(kycIdErrorProvider);
     ref.read(bottomNavBarProvider.notifier).state = 0;
+    ref.invalidate(goalDetailRepositoryProvider); //goal detail repository
+    ref.invalidate(goalDetailStateProvider);
   }
 }
 

@@ -1,7 +1,6 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
-final userDataProvider =
-    StateNotifierProvider<UserDataNotifier, UserDataModel>((ref) {
+final userDataProvider = StateNotifierProvider<UserDataNotifier, UserDataModel>((ref) {
   return UserDataNotifier();
 });
 
@@ -46,16 +45,11 @@ class UserDataNotifier extends StateNotifier<UserDataModel> {
     final idToken = data['id_token'] as String?;
     final isNewUser = data['isNewUser'] as bool?;
 
-    if (accessToken != null)
-      SharedPreferencesHelper.saveString("access_token", accessToken);
-    if (refreshToken != null)
-      SharedPreferencesHelper.saveString("refresh_token", refreshToken);
-    if (idToken != null)
-      SharedPreferencesHelper.saveString("id_token", idToken);
-    if (phoneNumber.isNotEmpty)
-      SharedPreferencesHelper.saveString("phone_number", phoneNumber);
-    if (isNewUser != null)
-      SharedPreferencesHelper.saveBool("is_new_user", isNewUser);
+    if (accessToken != null) SharedPreferencesHelper.saveString("access_token", accessToken);
+    if (refreshToken != null) SharedPreferencesHelper.saveString("refresh_token", refreshToken);
+    if (idToken != null) SharedPreferencesHelper.saveString("id_token", idToken);
+    if (phoneNumber.isNotEmpty) SharedPreferencesHelper.saveString("phone_number", phoneNumber);
+    if (isNewUser != null) SharedPreferencesHelper.saveBool("is_new_user", isNewUser);
 
     state = UserDataModel(
       accessToken: accessToken,

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
-import 'package:money_mangmnt/features/transaction_page/model/transaction_model.dart';
-import 'package:money_mangmnt/features/transaction_page/provider/transaction_provider.dart';
+import 'package:growk_v2/features/transaction_page/model/transaction_model.dart';
+import 'package:growk_v2/features/transaction_page/provider/transaction_provider.dart';
 
 class PaginatedTransactionNotifier
     extends StateNotifier<TransactionPaginationState> {
@@ -54,11 +54,14 @@ class PaginatedTransactionNotifier
         debugPrint(
             'TRANSACTION PAGINATION: Total records: ${data.iTotalRecords}');
 
+        final hasMore = data.aaData.length < data.iTotalRecords;
+        debugPrint('TRANSACTION PAGINATION: Has more data: $hasMore');
+
         final newState = state.copyWith(
           isLoading: false,
           transactions: data.aaData,
           totalRecords: data.iTotalRecords,
-          hasMore: data.aaData.length < data.iTotalRecords,
+          hasMore: hasMore,
           currentPage: 1,
           errorMessage: null,
         );
@@ -67,7 +70,8 @@ class PaginatedTransactionNotifier
         debugPrint(
             'TRANSACTION PAGINATION: New transactions count: ${newState.transactions.length}');
         debugPrint('TRANSACTION PAGINATION: Has more: ${newState.hasMore}');
-        debugPrint('TRANSACTION PAGINATION: Is loading: ${newState.isLoading}');
+        debugPrint(
+            'TRANSACTION PAGINATION: Current page: ${newState.currentPage}');
 
         state = newState;
 
@@ -115,23 +119,32 @@ class PaginatedTransactionNotifier
   Future<void> loadMoreTransactions() async {
     if (state.isLoading || !state.hasMore) {
       debugPrint(
-          'TRANSACTION PAGINATION: Skipping loadMore - already loading or no more data');
+          'TRANSACTION PAGINATION: Skipping loadMore - isLoading: ${state.isLoading}, hasMore: ${state.hasMore}');
       return;
     }
 
     debugPrint(
-        'TRANSACTION PAGINATION: Loading more transactions - page ${state.currentPage + 1}');
+        'TRANSACTION PAGINATION: Loading more transactions - page ${state.currentPage}');
+    debugPrint(
+        'TRANSACTION PAGINATION: Current transactions count: ${state.transactions.length}');
+    debugPrint('TRANSACTION PAGINATION: Total records: ${state.totalRecords}');
+
+    final startIndex = state.transactions.length;
+    debugPrint('TRANSACTION PAGINATION: Start index: $startIndex');
 
     state = state.copyWith(isLoading: true);
 
     try {
       final repository = ref.read(transactionRepositoryProvider);
-      final startIndex = state.currentPage * state.itemsPerPage;
 
       final transactionModel = await repository.getAllTransactions(
         iDisplayStart: startIndex,
         iDisplayLength: state.itemsPerPage,
       );
+
+      debugPrint('TRANSACTION PAGINATION: Load more API call completed');
+      debugPrint(
+          'TRANSACTION PAGINATION: Response status: ${transactionModel.status}');
 
       if (transactionModel.isSuccess && transactionModel.data != null) {
         final data = transactionModel.data!;
@@ -143,6 +156,13 @@ class PaginatedTransactionNotifier
         final allTransactions = [...state.transactions, ...newTransactions];
         final hasMore = allTransactions.length < data.iTotalRecords;
 
+        debugPrint(
+            'TRANSACTION PAGINATION: Total transactions now: ${allTransactions.length}');
+        debugPrint(
+            'TRANSACTION PAGINATION: Total records available: ${data.iTotalRecords}');
+        debugPrint(
+            'TRANSACTION PAGINATION: Has more after this load: $hasMore');
+
         state = state.copyWith(
           isLoading: false,
           transactions: allTransactions,
@@ -153,22 +173,68 @@ class PaginatedTransactionNotifier
         );
 
         debugPrint(
-            'TRANSACTION PAGINATION: Now showing ${allTransactions.length} transactions, hasMore: $hasMore');
+            'TRANSACTION PAGINATION: Successfully loaded more. Now showing ${allTransactions.length} transactions, hasMore: $hasMore');
       } else {
         debugPrint('TRANSACTION PAGINATION: Failed to load more transactions');
+        debugPrint(
+            'TRANSACTION PAGINATION: API Status: ${transactionModel.status}');
+
         state = state.copyWith(
           isLoading: false,
-          errorMessage: 'Failed to load more transactions',
+          errorMessage:
+              'Failed to load more transactions: ${transactionModel.status}',
         );
       }
-    } catch (e) {
-      debugPrint('TRANSACTION PAGINATION ERROR: $e');
+    } catch (e, stackTrace) {
+      debugPrint('TRANSACTION PAGINATION ERROR in loadMore: $e');
+      debugPrint('TRANSACTION PAGINATION STACK: $stackTrace');
+
       state = state.copyWith(
         isLoading: false,
-        errorMessage: e.toString(),
+        errorMessage: 'Error loading more transactions: $e',
       );
     }
   }
+  // Future<void> loadMoreTransactions() async {
+  //   if (state.isLoading || !state.hasMore) return;
+
+  //   final startIndex = state.transactions.length;
+  //   state = state.copyWith(isLoading: true);
+
+  //   try {
+  //     final repo = ref.read(transactionRepositoryProvider);
+  //     final transactionModel = await repo.getAllTransactions(
+  //       iDisplayStart: startIndex,
+  //       iDisplayLength: state.itemsPerPage,
+  //     );
+
+  //     if (transactionModel.isSuccess && transactionModel.data != null) {
+  //       final data = transactionModel.data!;
+  //       final newTransactions = data.aaData;
+  //       final allTransactions = [...state.transactions, ...newTransactions];
+  //       final hasMore = allTransactions.length < data.iTotalRecords;
+
+  //       state = state.copyWith(
+  //         isLoading: false,
+  //         transactions: allTransactions,
+  //         totalRecords: data.iTotalRecords,
+  //         hasMore: hasMore,
+  //         currentPage: state.currentPage + 1,
+  //         errorMessage: null,
+  //       );
+  //     } else {
+  //       state = state.copyWith(
+  //         isLoading: false,
+  //         errorMessage: transactionModel.message ?? 'Unknown error',
+  //       );
+  //     }
+  //   } catch (e, stackTrace) {
+  //     state = state.copyWith(
+  //       isLoading: false,
+  //       errorMessage: e.toString(),
+  //     );
+  //   }
+  // }
 
   Future<void> refreshTransactions() async {
     debugPrint('TRANSACTION PAGINATION: Refreshing transactions');

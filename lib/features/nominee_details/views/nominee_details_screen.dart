@@ -1,5 +1,5 @@
-import 'package:money_mangmnt/core/widgets/common_title_and_description.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/core/widgets/common_title_and_description.dart';
+import 'package:growk_v2/views.dart';
 
 class NomineeDetailsScreen extends ConsumerWidget {
   const NomineeDetailsScreen({super.key});
@@ -20,11 +20,11 @@ class NomineeDetailsScreen extends ConsumerWidget {
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 22),
+
           child: const ReusableColumn(children: [
             CommonTitleAndDescription(
               title: 'Add Nominee Details',
-              description:
-                  'Provide nominee information to safeguard your assets. Accurate nominee details help ensure rightful claims in case of unforeseen events.',
+              description: 'Provide nominee information to safeguard your assets. Accurate nominee details help ensure rightful claims in case of unforeseen events.',
             ),
             ReusableSizedBox(
               height: 15,

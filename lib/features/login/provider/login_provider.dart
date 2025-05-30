@@ -1,9 +1,9 @@
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/core/network/network_service.dart';
-import 'package:money_mangmnt/features/login/controller/login_controller.dart';
-import 'package:money_mangmnt/features/login/repo/login_repo.dart';
-import 'package:money_mangmnt/features/login/use_case/login_use_case.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/core/network/network_service.dart';
+import 'package:growk_v2/features/login/controller/login_controller.dart';
+import 'package:growk_v2/features/login/repo/login_repo.dart';
+import 'package:growk_v2/features/login/use_case/login_use_case.dart';
+import 'package:growk_v2/views.dart';
 
 final httpClientProvider = Provider((ref) => createUnsafeClient());
 
@@ -13,6 +13,7 @@ final loginNetworkProvider = Provider<NetworkService>((ref) {
     baseUrl: AppUrl.baseUrl,
   );
 });
+
 
 final loginRepoProvider = Provider(
   (ref) => LoginRepository(ref.watch(loginNetworkProvider)),

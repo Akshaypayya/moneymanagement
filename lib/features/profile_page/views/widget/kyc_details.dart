@@ -1,5 +1,5 @@
-import 'package:money_mangmnt/features/profile_page/views/widget/profile_info_item.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/features/profile_page/views/widget/profile_info_item.dart';
+import 'package:growk_v2/views.dart';
 
 Widget kycDetails({required WidgetRef ref, required BuildContext context}) {
   final profileState = ref.watch(userProfileStateProvider);

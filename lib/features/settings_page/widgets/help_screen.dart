@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
+import 'package:growk_v2/core/widgets/growk_app_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class HelpScreenWeb extends StatefulWidget {
@@ -43,11 +43,11 @@ class _HelpScreenWebState extends State<HelpScreenWeb> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GrowkAppBar(
-          title: 'Frequently asked Questions', isBackBtnNeeded: true),
+      appBar: GrowkAppBar(title: 'Frequently asked Questions', isBackBtnNeeded: true),
       body: Column(
         children: [
-          if (_progress < 100) LinearProgressIndicator(value: _progress / 100),
+          if (_progress < 100)
+            LinearProgressIndicator(value: _progress / 100),
           Expanded(
             child: WebViewWidget(controller: _controller),
           ),

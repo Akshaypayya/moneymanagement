@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/theme/app_text_styles.dart';
-import 'package:money_mangmnt/core/widgets/reusable_text.dart';
-
+import 'package:growk_v2/core/theme/app_text_styles.dart';
+import 'package:growk_v2/core/widgets/reusable_text.dart';
 class ReusableTextField extends ConsumerWidget {
   final String label;
   final String? hintText;

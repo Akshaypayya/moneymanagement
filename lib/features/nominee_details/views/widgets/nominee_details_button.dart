@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class NomineeDetailsButton extends ConsumerWidget {
   const NomineeDetailsButton({super.key});
@@ -12,7 +12,7 @@ class NomineeDetailsButton extends ConsumerWidget {
       child: GrowkButton(
         title: 'Save',
         onTap: () {
-          controller.submitNomineeDetails(context, ref);
+         controller.submitNomineeDetails(context,ref);
         },
       ),
     );

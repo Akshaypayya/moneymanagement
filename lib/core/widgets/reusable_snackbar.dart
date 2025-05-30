@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 enum SnackType { success, error }
 
@@ -29,6 +29,7 @@ void showGrowkSnackBar({
           const SizedBox(width: 10),
           Expanded(
             child: ReusableText(
+              maxLines: 5,
               text: message,
               style: AppTextStyle(textColor: textColor).bodyMedium,
             ),

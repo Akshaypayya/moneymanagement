@@ -1,6 +1,6 @@
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/features/goals/edit_goal_page/controller/edit_goal_controller.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/features/goals/edit_goal_page/controller/edit_goal_controller.dart';
+import 'package:growk_v2/views.dart';
 
 class EditTargetYearSlider extends ConsumerStatefulWidget {
   const EditTargetYearSlider({super.key});

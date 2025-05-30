@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/core/network/network_service.dart';
-import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/model/goal_view_model.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/core/network/network_service.dart';
+import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
 import 'package:flutter/foundation.dart';
 
 class GoalDetailRepository {

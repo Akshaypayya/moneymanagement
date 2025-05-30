@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/network/network_service.dart';
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/model/goal_view_model.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/repo/goal_detail_repo.dart';
+import 'package:growk_v2/core/network/network_service.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/repo/goal_detail_repo.dart';
 
 final goalDetailStateProvider = StateNotifierProvider.family<
     GoalDetailStateNotifier,

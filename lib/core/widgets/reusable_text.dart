@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class ReusableText extends StatelessWidget {
   final String text;
@@ -20,7 +20,7 @@ class ReusableText extends StatelessWidget {
     this.textDirection,
     this.locale,
     this.softWrap,
-    this.overflow,
+    this.overflow=TextOverflow.ellipsis,
     this.maxLines = 1,
     this.textWidthBasis,
     this.strutStyle,

@@ -1,5 +1,4 @@
-import 'package:money_mangmnt/views.dart';
-
+import 'package:growk_v2/views.dart';
 class ScalingFactor extends StatefulWidget {
   Widget child;
   ScalingFactor({required this.child, super.key});

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_space.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_item.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/constants/app_space.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/controller/goal_summary_controller.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/controller/standing_instruction_controller.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_item.dart';
 import 'package:intl/date_symbols.dart';
 
 class StandingInstructions extends ConsumerWidget {
@@ -22,11 +25,11 @@ class StandingInstructions extends ConsumerWidget {
     required this.emiAmnt,
     required this.duration,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
-
+    final controller = ref.read(standingInstructionsControllerProvider);
+    final iBanController = ref.read(goalSummaryControllerProvider);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       // color: Colors.red,
@@ -49,13 +52,48 @@ class StandingInstructions extends ConsumerWidget {
               ),
             ),
           ),
-          Text(
-            'Please define a standing instruction of $emiAmnt amount in each $duration from your online bank to top up your wallet for the $goalName gold purchase',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              color: isDark ? Colors.grey[300] : Colors.grey[800],
+          RichText(
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                color: isDark ? Colors.grey[300] : Colors.grey[700],
+                height: 1.5,
+              ),
+              children: [
+                const TextSpan(
+                    text: 'Please define a standing instruction of '),
+                TextSpan(
+                  text: '"',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                WidgetSpan(
+                  child: Image.asset(
+                    AppImages.sarSymbol,
+                    height: 13,
+                    color: AppColors.current(isDark).primary,
+                  ),
+                  alignment: PlaceholderAlignment.middle,
+                ),
+                TextSpan(
+                  text: ' $emiAmnt"',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const TextSpan(text: ' amount in each '),
+                TextSpan(
+                  text: '"$duration"',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const TextSpan(
+                    text:
+                        ' from your online bank to top up your wallet for the "'),
+                TextSpan(
+                  text: goalName,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const TextSpan(text: '" gold purchase'),
+              ],
             ),
           ),
           GapSpace.height20,
@@ -78,6 +116,9 @@ class StandingInstructions extends ConsumerWidget {
                     label: 'IBAN Account Number',
                     value: iBanAcntNbr,
                     showSymbol: false,
+                    valOnTap: () =>
+                        iBanController.copyVirtualAccountToClipboard(
+                            context, iBanAcntNbr, ref),
                   ),
                   const SizedBox(height: 8),
                   DetailItem(
@@ -97,7 +138,13 @@ class StandingInstructions extends ConsumerWidget {
                       size: 22,
                       color: isDark ? Colors.white : Colors.black,
                     ),
-                    onPressed: () {},
+                    onPressed: () => controller.copyStandingInstructions(
+                      context: context,
+                      bankId: bankId,
+                      iBanAcntNbr: iBanAcntNbr,
+                      acntName: acntName,
+                      goalName: goalName,
+                    ),
                   ),
                   IconButton(
                     icon: Icon(
@@ -105,7 +152,13 @@ class StandingInstructions extends ConsumerWidget {
                       size: 22,
                       color: isDark ? Colors.white : Colors.black,
                     ),
-                    onPressed: () {},
+                    onPressed: () => controller.shareStandingInstructions(
+                      context: context,
+                      bankId: bankId,
+                      iBanAcntNbr: iBanAcntNbr,
+                      acntName: acntName,
+                      goalName: goalName,
+                    ),
                   ),
                 ],
               )

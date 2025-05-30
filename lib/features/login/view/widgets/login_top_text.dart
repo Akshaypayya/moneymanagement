@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class LoginTopText extends ConsumerWidget {
   const LoginTopText({super.key});
@@ -16,9 +16,7 @@ class LoginTopText extends ConsumerWidget {
               style: AppTextStyle.current(isDark).titleMedium,
             ),
           ),
-          ReusableSizedBox(
-            height: 20,
-          ),
+          ReusableSizedBox(height: 20,),
           Center(
             child: Text(
               'Create your account or sign in security using OTP verification \nEnjoy a seamless and secure experience with Growk!',
@@ -26,9 +24,7 @@ class LoginTopText extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          ReusableSizedBox(
-            height: 70,
-          ),
+          ReusableSizedBox(height: 70,),
         ],
       ),
     );

@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:money_mangmnt/features/kyc_verification/controller/kyc_controller.dart';
-import 'package:money_mangmnt/features/kyc_verification/repo/kyc_repo.dart';
+import 'package:growk_v2/features/kyc_verification/controller/kyc_controller.dart';
+import 'package:growk_v2/features/kyc_verification/repo/kyc_repo.dart';
 import '../../../views.dart';
 
 final kycRepoProvider = Provider<KYCRepository>((ref) {
@@ -13,8 +13,7 @@ final kycControllerProvider = AsyncNotifierProvider<KYCController, void>(
   KYCController.new,
 );
 
-final kycIdControllerProvider =
-    Provider.autoDispose<TextEditingController>((ref) {
+final kycIdControllerProvider = Provider.autoDispose<TextEditingController>((ref) {
   final controller = TextEditingController();
   ref.onDispose(() => controller.dispose());
   return controller;

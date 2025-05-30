@@ -4,7 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
 
 final imageDownloadProvider =
     StateNotifierProvider<ImageDownloadNotifier, bool>((ref) {

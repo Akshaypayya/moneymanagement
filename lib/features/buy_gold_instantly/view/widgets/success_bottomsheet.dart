@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/widgets/growk_button.dart';
-import 'package:money_mangmnt/core/widgets/sar_amount_widget.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/core/widgets/growk_button.dart';
+import 'package:growk_v2/core/widgets/sar_amount_widget.dart';
+import 'package:growk_v2/views.dart';
 
 class SuccessBottomSheet extends ConsumerWidget {
   final String title;

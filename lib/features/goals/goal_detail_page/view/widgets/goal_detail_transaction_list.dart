@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_transaction_item.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_transaction_item.dart';
 
 class TransactionList extends ConsumerWidget {
   final List<Map<String, String>> transactions;

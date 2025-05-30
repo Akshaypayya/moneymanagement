@@ -115,14 +115,14 @@ class SavingsRowWidget extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text('Invested: ', style: const TextStyle(fontSize: 13)),
+                Text('Invested: ', style:  TextStyle(fontSize: 13,color: AppColors.current(isDark).text)),
                 Image.asset(AppImages.sarSymbol,
                     color: AppColors.current(isDark).text, height: 10),
                 const SizedBox(width: 2),
-                Text(invested, style: const TextStyle(fontSize: 13)),
+                Text(invested, style:  TextStyle(fontSize: 13,color: AppColors.current(isDark).text)),
               ],
             ),
-            Text('Current: $current', style: const TextStyle(fontSize: 13)),
+            Text('Current: $current', style:  TextStyle(fontSize: 13,color:  AppColors.current(isDark).text)),
           ],
         ),
       ],

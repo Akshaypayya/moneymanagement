@@ -1,3 +1,4 @@
+
 import '../../../views.dart';
 
 class GetHomeDetailsRepo {
@@ -13,6 +14,14 @@ class GetHomeDetailsRepo {
         'app': 'SA',
       },
     );
-    return GetHomeDetailsModel.fromJson(json);
+
+    final model = GetHomeDetailsModel.fromJson(json);
+
+    // Throw exception if KYC not completed
+    if (model.status != 'Success') {
+      throw Exception(model.message ?? 'KYC verification required');
+    }
+
+    return model;
   }
 }

@@ -6,11 +6,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:money_mangmnt/core/constants/app_space.dart';
-import 'package:money_mangmnt/core/services/icon_mapping_service.dart';
-import 'package:money_mangmnt/views.dart';
-import 'package:money_mangmnt/features/goals/edit_goal_page/repo/edit_goal_repo.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/model/goal_view_model.dart';
+import 'package:growk_v2/core/constants/app_space.dart';
+import 'package:growk_v2/core/services/icon_mapping_service.dart';
+import 'package:growk_v2/views.dart';
+import 'package:growk_v2/features/goals/edit_goal_page/repo/edit_goal_repo.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
 
 final editGoalNameProvider = StateProvider<String>((ref) => '');
 final editSelectedGoalIconProvider = StateProvider<String>((ref) => '');

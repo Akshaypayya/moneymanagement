@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/constants/app_space.dart';
-import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
-import 'package:money_mangmnt/core/theme/app_text_styles.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
-import 'package:money_mangmnt/core/services/data_clearing_service.dart';
-import 'package:money_mangmnt/core/widgets/reusable_text.dart';
-import 'package:money_mangmnt/features/logout/provider/logout_provider.dart';
-import 'package:money_mangmnt/features/settings_page/widgets/biometric_setting.dart';
-import 'package:money_mangmnt/features/settings_page/widgets/settings_item.dart';
-import 'package:money_mangmnt/routes/app_router.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/constants/app_space.dart';
+import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+import 'package:growk_v2/core/theme/app_text_styles.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/widgets/growk_app_bar.dart';
+import 'package:growk_v2/core/services/data_clearing_service.dart';
+import 'package:growk_v2/core/widgets/reusable_text.dart';
+import 'package:growk_v2/features/logout/provider/logout_provider.dart';
+import 'package:growk_v2/features/settings_page/widgets/biometric_setting.dart';
+import 'package:growk_v2/features/settings_page/widgets/settings_item.dart';
+import 'package:growk_v2/routes/app_router.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -99,8 +99,7 @@ class SettingsPage extends ConsumerWidget {
                   ),
                   SettingsItem(
                     onTap: () {
-                      Navigator.pushNamed(
-                          context, AppRouter.termsAndConditions);
+                      Navigator.pushNamed(context, AppRouter.termsAndConditions);
                     },
                     img: !isDark
                         ? 'settings_terms_light.png'

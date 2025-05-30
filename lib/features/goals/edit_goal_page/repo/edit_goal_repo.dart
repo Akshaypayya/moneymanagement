@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/features/goals/edit_goal_page/model/edit_goal_model.dart';
-import 'package:money_mangmnt/core/network/network_service.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/features/goals/edit_goal_page/model/edit_goal_model.dart';
+import 'package:growk_v2/core/network/network_service.dart';
 
 class EditGoalRepository {
   final NetworkService network;

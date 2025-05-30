@@ -141,21 +141,54 @@ class TransactionItem {
   }
 
   String get transactionType {
-    if (drcrFlag == 1) {
-      return currencyCode == 'XAU' ? 'Gold Purchase' : 'Deposit';
-    } else {
-      return 'Charge';
+    int flagToUse = drcrFlag;
+
+    if (drcrFlag == 0) {
+      flagToUse = sequence;
+    }
+
+    switch (flagToUse) {
+      case 1:
+        return currencyCode == 'XAU' ? 'Gold Purchase' : 'Deposit';
+      case 2:
+        return 'Withdrawal';
+      case 3:
+        return 'Transaction Charge';
+      case 4:
+        return 'VAT Charge';
+      default:
+        return 'Transaction';
     }
   }
 
-  // String get formattedDate {
-  //   try {
-  //     final dateTime = DateTime.parse(transactionDate);
-  //     return '${dateTime.day.toString().padLeft(2, '0')} ${_getMonthName(dateTime.month)} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} ${dateTime.hour >= 12 ? 'PM' : 'AM'}';
-  //   } catch (e) {
-  //     return transactionDate;
-  //   }
-  // }
+  bool get isCredit {
+    int flagToUse = drcrFlag;
+    if (drcrFlag == 0) {
+      flagToUse = sequence;
+    }
+    return flagToUse == 1;
+  }
+
+  bool get isDebit {
+    int flagToUse = drcrFlag;
+    if (drcrFlag == 0) {
+      flagToUse = sequence;
+    }
+    return flagToUse == 2 || flagToUse == 3 || flagToUse == 4;
+  }
+
+  String get signedDisplayAmount {
+    String baseAmount = displayAmount;
+
+    if (isDebit) {
+      return '-$baseAmount';
+    } else if (isCredit) {
+      return '+$baseAmount';
+    }
+
+    return baseAmount;
+  }
+
   getFormattedDate() {
     String dateStr = transactionDate;
     DateTime utcTime = DateTime.parse(dateStr);
@@ -163,23 +196,6 @@ class TransactionItem {
     String formatted = DateFormat('dd MMM yyyy – hh:mm a').format(localTime);
     return formatted;
   }
-  // String _getMonthName(int month) {
-  //   const months = [
-  //     'January',
-  //     'February',
-  //     'March',
-  //     'April',
-  //     'May',
-  //     'June',
-  //     'July',
-  //     'August',
-  //     'September',
-  //     'October',
-  //     'November',
-  //     'December'
-  //   ];
-  //   return months[month - 1];
-  // }
 
   String get description {
     switch (transactionType) {
@@ -187,14 +203,26 @@ class TransactionItem {
         return 'Gold purchased for your ${accountSubGroup ?? 'goal'}. Amount auto-debited from your account.';
       case 'Deposit':
         return 'Amount deposited to your ${accountSubGroup ?? 'goal'} savings.';
-      case 'Charge':
+      case 'Withdrawal':
+        return 'Amount withdrawn from your ${accountSubGroup ?? 'goal'}.';
+      case 'Transaction Charge':
         return 'Transaction charges and fees applied.';
+      case 'VAT Charge':
+        return 'VAT charges applied to your transaction.';
       default:
         return 'Transaction processed for your ${accountSubGroup ?? 'goal'}.';
     }
   }
 
   String get iconAsset {
+    switch (transactionType) {
+      case 'Gold Purchase':
+        return 'assets/goldbsct.png';
+      case 'Transaction Charge':
+      case 'VAT Charge':
+        return 'assets/bank.jpg';
+    }
+
     switch (paymentMode.toLowerCase()) {
       case 'upi':
         return 'assets/bhim.png';
@@ -208,5 +236,9 @@ class TransactionItem {
         }
         return 'assets/bhim.png';
     }
+  }
+
+  String get debugInfo {
+    return 'drcrFlag: $drcrFlag, sequence: $sequence, type: $transactionType, isCredit: $isCredit, isDebit: $isDebit';
   }
 }

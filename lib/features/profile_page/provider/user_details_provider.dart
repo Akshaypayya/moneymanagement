@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/core/network/network_service.dart';
-import 'package:money_mangmnt/features/profile_page/controller/user_detail_controller.dart';
-import 'package:money_mangmnt/features/profile_page/model/user_details_model.dart';
-import 'package:money_mangmnt/features/profile_page/model/user_profile_model.dart';
-import 'package:money_mangmnt/features/profile_page/provider/user_profile_notifier.dart';
-import 'package:money_mangmnt/features/profile_page/repo/user_details_repo.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/core/network/network_service.dart';
+import 'package:growk_v2/features/profile_page/controller/user_detail_controller.dart';
+import 'package:growk_v2/features/profile_page/model/user_details_model.dart';
+import 'package:growk_v2/features/profile_page/model/user_profile_model.dart';
+import 'package:growk_v2/features/profile_page/provider/user_profile_notifier.dart';
+import 'package:growk_v2/features/profile_page/repo/user_details_repo.dart';
 
 final networkServiceProvider = Provider<NetworkService>((ref) {
   return NetworkService(

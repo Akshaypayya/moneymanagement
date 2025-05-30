@@ -1,5 +1,5 @@
 // bank_otp_use_case.dart
-import 'package:money_mangmnt/features/bank_details/model/bank_response_model.dart';
+import 'package:growk_v2/features/bank_details/model/bank_response_model.dart';
 import '../repo/bank_otp_repo.dart';
 
 class BankOtpUseCase {

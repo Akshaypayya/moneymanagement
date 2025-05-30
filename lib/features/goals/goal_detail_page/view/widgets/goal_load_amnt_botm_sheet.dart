@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/theme/app_text_styles.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/core/widgets/growk_button.dart';
-import 'package:money_mangmnt/core/widgets/reusable_text.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/controller/goals_funds_controller.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/theme/app_text_styles.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/widgets/growk_button.dart';
+import 'package:growk_v2/core/widgets/reusable_text.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/controller/goals_funds_controller.dart';
 
 class LoadFundsBottomSheet extends ConsumerStatefulWidget {
   final String? goalName;

@@ -1,5 +1,4 @@
-import 'package:money_mangmnt/views.dart';
-
+import 'package:growk_v2/views.dart';
 class ReusableColumn extends StatelessWidget {
   final List<Widget> children;
   final MainAxisAlignment mainAxisAlignment;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/features/bank_details/repo/bank_repo.dart';
-import 'package:money_mangmnt/features/bank_details/repo/update_bank_details_repo.dart';
-import 'package:money_mangmnt/features/profile_page/provider/user_details_provider.dart';
+import 'package:growk_v2/features/bank_details/repo/bank_repo.dart';
+import 'package:growk_v2/features/bank_details/repo/update_bank_details_repo.dart';
+import 'package:growk_v2/features/profile_page/provider/user_details_provider.dart';
 
 /// ✅ Persistent controllers (no autoDispose)
 final bankNameControllerProvider = Provider<TextEditingController>((ref) {

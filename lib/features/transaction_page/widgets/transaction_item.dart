@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/theme/app_text_styles.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/core/widgets/reusable_row.dart';
-import 'package:money_mangmnt/core/widgets/reusable_sized_box.dart';
-import 'package:money_mangmnt/core/widgets/reusable_text.dart';
-import 'package:money_mangmnt/features/transaction_page/model/transaction_model.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/theme/app_text_styles.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/widgets/reusable_row.dart';
+import 'package:growk_v2/core/widgets/reusable_sized_box.dart';
+import 'package:growk_v2/core/widgets/reusable_text.dart';
+import 'package:growk_v2/features/transaction_page/model/transaction_model.dart';
 import 'package:intl/intl.dart';
 
 class TransactionItem extends ConsumerWidget {
@@ -23,16 +23,24 @@ class TransactionItem extends ConsumerWidget {
     final isDark = ref.watch(isDarkProvider);
     final textColor = AppColors.current(isDark).text;
 
+    debugPrint('Transaction Item Debug: ${transactionData.debugInfo}');
+
+    Color amountColor = isDark ? Colors.white : Colors.black;
+    Color sarSymbolColor = AppColors.current(isDark).primary;
+    String amountSign = '';
+
+    if (transactionData.isCredit) {
+      amountColor = Colors.green;
+      sarSymbolColor = Colors.green;
+      amountSign = '+';
+    } else if (transactionData.isDebit) {
+      amountColor = Colors.red;
+      sarSymbolColor = Colors.red;
+      amountSign = '-';
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-      // decoration: BoxDecoration(
-      //   border: Border(
-      //     bottom: BorderSide(
-      //       color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-      //       width: 1,
-      //     ),
-      //   ),
-      // ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -67,11 +75,12 @@ class TransactionItem extends ConsumerWidget {
                     color: AppColors.current(isDark).text,
                     fontFamily: GoogleFonts.poppins().fontFamily,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 ReusableText(
                   text: getFormattedDate(),
-                  // text: _formatTransactionDate(),
                   style: AppTextStyle(
                     textColor:
                         isDark ? Colors.grey.shade500 : Colors.grey.shade700,
@@ -81,34 +90,34 @@ class TransactionItem extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 16),
-          Transform.translate(
-            offset: const Offset(0, 36),
-            child: ReusableRow(
-              children: [
-                Text(
-                  transactionData.isDebit ? '-' : '+',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: transactionData.isDebit ? Colors.red : Colors.green,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              ReusableRow(
+                children: [
+                  if (amountSign.isNotEmpty)
+                    Text(
+                      amountSign,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: amountColor,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                      ),
+                    ),
+                  Image.asset(
+                    AppImages.sarSymbol,
+                    height: 16,
+                    color: sarSymbolColor,
                   ),
-                ),
-                Image.asset(
-                  AppImages.sarSymbol,
-                  height: 16,
-                  color: transactionData.isDebit ? Colors.red : Colors.green,
-                ),
-                const ReusableSizedBox(width: 3),
-                ReusableText(
-                  text: transactionData.formattedAmount,
-                  style: AppTextStyle(
-                    textColor:
-                        transactionData.isDebit ? Colors.red : Colors.green,
-                  ).titleRegular,
-                ),
-              ],
-            ),
+                  const ReusableSizedBox(width: 3),
+                  ReusableText(
+                    text: transactionData.formattedAmount,
+                    style: AppTextStyle(textColor: amountColor).titleRegular,
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
@@ -134,6 +143,10 @@ class TransactionItem extends ConsumerWidget {
     final subGroup = transactionData.accountSubGroup.toLowerCase();
     final paymentMode = transactionData.paymentMode.toLowerCase();
     final transactionCode = transactionData.transactionCode.toLowerCase();
+
+    if (transactionData.isCredit && transactionData.currencyCode == 'XAU') {
+      return 'assets/goldbsct.png';
+    }
 
     if (subGroup.contains('education') || subGroup.contains('study')) {
       return 'assets/education.png';
@@ -184,11 +197,7 @@ class TransactionItem extends ConsumerWidget {
   }
 
   String _getTransactionDescription() {
-    if (transactionData.isDebit) {
-      return 'The amount is auto-debited from your account and added to your Gold savings.';
-    } else {
-      return 'Amount credited to your account from ${transactionData.paymentMode}.';
-    }
+    return transactionData.transactionDescription;
   }
 
   getFormattedDate() {
@@ -198,34 +207,4 @@ class TransactionItem extends ConsumerWidget {
     String formatted = DateFormat('dd MMM yyyy – hh:mm a').format(localTime);
     return formatted;
   }
-  // String _formatTransactionDate() {
-  //   try {
-  //     final date = DateTime.parse(transactionData.transactionDate);
-  //     final months = [
-  //       'January',
-  //       'February',
-  //       'March',
-  //       'April',
-  //       'May',
-  //       'June',
-  //       'July',
-  //       'August',
-  //       'September',
-  //       'October',
-  //       'November',
-  //       'December'
-  //     ];
-
-  //     final day = date.day;
-  //     final month = months[date.month - 1];
-  //     final hour = date.hour;
-  //     final minute = date.minute.toString().padLeft(2, '0');
-  //     final period = hour >= 12 ? 'PM' : 'AM';
-  //     final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-
-  //     return '$day $month $displayHour:$minute $period';
-  //   } catch (e) {
-  //     return transactionData.transactionDate;
-  //   }
-  // }
 }

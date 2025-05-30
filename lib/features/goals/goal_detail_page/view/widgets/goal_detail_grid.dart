@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/view/widgets/goal_detail_item.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_item.dart';
 
 class GoalDetailsGrid extends ConsumerWidget {
   final String targetYear;

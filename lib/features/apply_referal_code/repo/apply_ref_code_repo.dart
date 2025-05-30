@@ -1,8 +1,7 @@
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/features/apply_referal_code/model/apply_ref_code_model.dart';
-import 'package:money_mangmnt/features/login/model/otp_model.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/features/apply_referal_code/model/apply_ref_code_model.dart';
+import 'package:growk_v2/features/login/model/otp_model.dart';
 import '../../../core/network/network_service.dart';
-
 class ApplyRefCodeRepo {
   final NetworkService network;
   ApplyRefCodeRepo(this.network);

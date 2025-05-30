@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/provider/copy_to_clipboard_provider.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/provider/copy_to_clipboard_provider.dart';
 
-import 'package:money_mangmnt/core/widgets/reusable_snackbar.dart';
+import 'package:growk_v2/core/widgets/reusable_snackbar.dart';
 
 final goalSummaryControllerProvider = Provider<GoalSummaryController>((ref) {
   return GoalSummaryController(ref);

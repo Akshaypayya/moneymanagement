@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/network/network_service.dart';
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/model/goal_list_model.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/provider/goal_list_pagination.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/repo/goal_list_repo.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/controller/goal_list_controller.dart';
+import 'package:growk_v2/core/network/network_service.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/features/goals/goal_list_page/model/goal_list_model.dart';
+import 'package:growk_v2/features/goals/goal_list_page/provider/goal_list_pagination.dart';
+import 'package:growk_v2/features/goals/goal_list_page/repo/goal_list_repo.dart';
+import 'package:growk_v2/features/goals/goal_list_page/controller/goal_list_controller.dart';
 
 final goalListRepositoryProvider = Provider<GoalListRepository>((ref) {
   final networkService = NetworkService(

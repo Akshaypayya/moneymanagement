@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/features/notifcation_page/notification_ui_model/notification_ui_model.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/features/notifcation_page/notification_ui_model/notification_ui_model.dart';
 
 class NotificationItem extends ConsumerWidget {
   final NotificationModel notification;

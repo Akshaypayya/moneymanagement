@@ -1,17 +1,17 @@
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class AppTextStyle {
-  final Color textColor;
+  final Color ?textColor;
 
-  const AppTextStyle({required this.textColor});
+  const AppTextStyle({this.textColor});
 
   TextStyle get headlineLarge => GoogleFonts.poppins(
         fontSize: 24,
         fontWeight: FontWeight.bold,
         color: textColor,
       );
-  TextStyle get headlineVeryLarge => GoogleFonts.poppins(
+TextStyle get headlineVeryLarge => GoogleFonts.poppins(
         fontSize: 42,
         fontWeight: FontWeight.bold,
         color: textColor,
@@ -66,17 +66,17 @@ class AppTextStyle {
   TextStyle get labelSmall => GoogleFonts.poppins(
         fontSize: 12,
         fontWeight: FontWeight.w400,
-        color: textColor.withOpacity(0.8),
+        color: textColor!.withOpacity(0.8),
       );
   TextStyle get bodySmall => GoogleFonts.poppins(
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        color: textColor.withOpacity(0.8),
+        color: textColor?.withOpacity(0.8),
       );
   TextStyle get bodyKycSmall => GoogleFonts.poppins(
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        color: textColor.withOpacity(0.8),
+        color: textColor!.withOpacity(0.8),
       );
   TextStyle get titleLrg => GoogleFonts.poppins(
         fontSize: 22,

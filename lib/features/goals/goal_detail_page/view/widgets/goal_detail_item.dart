@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
 
 class DetailItem extends ConsumerWidget {
   final String label;
   final String value;
   final bool showSymbol;
   final bool? isRow;
+  final VoidCallback? valOnTap;
 
   const DetailItem({
     Key? key,
@@ -16,6 +17,7 @@ class DetailItem extends ConsumerWidget {
     required this.value,
     this.showSymbol = false,
     this.isRow = false,
+    this.valOnTap,
   }) : super(key: key);
 
   @override
@@ -35,13 +37,16 @@ class DetailItem extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.white : Colors.black,
+              GestureDetector(
+                onTap: valOnTap,
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
                 ),
               ),
             ],

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
 
 class NetworkService {
   final http.Client client;

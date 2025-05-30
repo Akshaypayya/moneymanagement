@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class LoginBottomText extends ConsumerWidget {
   const LoginBottomText({super.key});
@@ -10,13 +10,10 @@ class LoginBottomText extends ConsumerWidget {
     return ReusableSizedBox(
       child: ReusableColumn(
         children: <Widget>[
-          ReusableSizedBox(
-            height: 40,
-          ),
+          ReusableSizedBox(height: 40,),
           Center(
             child: ReusableText(
-              text:
-                  'Your personal information is always protected We only use your phone number for secure OTP verification-nothing more!',
+              text: 'Your personal information is always protected We only use your phone number for secure OTP verification-nothing more!',
               style: AppTextStyle.current(isDark).labelSmall,
               textAlign: TextAlign.center,
               maxLines: 3,

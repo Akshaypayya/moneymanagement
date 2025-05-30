@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/features/wallet_page/widgets/amount_option_button.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/features/wallet_page/widgets/amount_option_button.dart';
 
 class AddFundsSection extends ConsumerWidget {
   final List<Map<String, dynamic>> amountOptions;

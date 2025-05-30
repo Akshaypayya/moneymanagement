@@ -1,7 +1,6 @@
-import 'package:money_mangmnt/features/saved_address/view/widgets/saved_address_save_button.dart';
-import 'package:money_mangmnt/core/widgets/common_title_and_description.dart';
-import 'package:money_mangmnt/views.dart';
-
+import 'package:growk_v2/features/saved_address/view/widgets/saved_address_save_button.dart';
+import 'package:growk_v2/core/widgets/common_title_and_description.dart';
+import 'package:growk_v2/views.dart';
 class SavedAddressScreen extends StatelessWidget {
   const SavedAddressScreen({super.key});
   @override
@@ -18,8 +17,7 @@ class SavedAddressScreen extends StatelessWidget {
             children: [
               CommonTitleAndDescription(
                 title: 'Add Address',
-                description:
-                    'Add or update your address details to ensure accurate records. Make sure the information is correct to avoid any issues or delays in processing.',
+                description: 'Add or update your address details to ensure accurate records. Make sure the information is correct to avoid any issues or delays in processing.',
               ),
               SavedAddressTextFields(),
             ],

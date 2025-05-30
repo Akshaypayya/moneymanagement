@@ -1,5 +1,4 @@
-import 'package:money_mangmnt/views.dart';
-
+import 'package:growk_v2/views.dart';
 class KycVectorImage extends StatelessWidget {
   const KycVectorImage({super.key});
 
@@ -11,26 +10,10 @@ class KycVectorImage extends StatelessWidget {
       child: Center(
         child: ColorFiltered(
           colorFilter: const ColorFilter.matrix(<double>[
-            0.2126,
-            0.7152,
-            0.0722,
-            0,
-            0,
-            0.2126,
-            0.7152,
-            0.0722,
-            0,
-            0,
-            0.2126,
-            0.7152,
-            0.0722,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
+            0.2126, 0.7152, 0.0722, 0, 0,
+            0.2126, 0.7152, 0.0722, 0, 0,
+            0.2126, 0.7152, 0.0722, 0, 0,
+            0,      0,      0,      1, 0,
           ]),
           child: Image(image: AssetImage(AppImages.kycImage)),
         ),

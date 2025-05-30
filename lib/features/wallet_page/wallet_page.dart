@@ -1,7 +1,10 @@
-import 'package:money_mangmnt/features/wallet_page/provider/wallet_screen_providers.dart';
-import 'package:money_mangmnt/features/wallet_page/widgets/add_funds_section.dart';
-import 'package:money_mangmnt/features/wallet_page/widgets/wallet_description.dart';
-import 'package:money_mangmnt/features/wallet_page/widgets/wallet_header.dart';
+import 'package:growk_v2/features/wallet_page/provider/wallet_screen_providers.dart';
+import 'package:growk_v2/features/wallet_page/widgets/add_funds_section.dart';
+import 'package:growk_v2/features/wallet_page/widgets/bank_selection.dart';
+import 'package:growk_v2/features/wallet_page/widgets/wallet_description.dart';
+import 'package:growk_v2/features/wallet_page/widgets/wallet_header.dart';
+import 'package:growk_v2/features/wallet_page/widgets/wallet_page_button.dart';
+import 'package:growk_v2/features/wallet_page/widgets/wallet_standing_instructions.dart';
 
 import '../../views.dart';
 
@@ -43,100 +46,63 @@ class _WalletPageState extends ConsumerState<WalletPage> {
     final notifier = ref.read(loadWalletAmountNotifierProvider.notifier);
 
     return ScalingFactor(
-      child: Scaffold(
-        backgroundColor: isDark ? Colors.black : Colors.white,
-        appBar: GrowkAppBar(title: 'Wallet', isBackBtnNeeded: true),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                walletAsync.when(
-                  data: (walletData) => WalletHeader(
-                      balance: "${walletData.data?.walletBalance ?? 0.0}"),
-                  loading: () => WalletHeader(balance: '0.0'),
-                  error: (err, stack) => Text('Error: $err'),
-                ),
-                const WalletDescription(),
-                const SizedBox(height: 20),
-                AddFundsSection(
-                  amountOptions: amountOptions,
-                  selectedAmount: selectedAmount,
-                  onAmountSelected: (value) {
-                    ref.read(selectedAmountProvider.notifier).state = value;
-
-                    final formattedAmount = value.toString().replaceAllMapped(
-                        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-                        (Match match) => '${match[1]},');
-
-                    ref.read(amountTextProvider.notifier).state =
-                        formattedAmount;
-                    print(ref.read(amountTextProvider.notifier).state);
-                    print(ref.read(selectedAmountProvider));
-                  },
-                  onAmountChanged: (value) {
-                    ref.read(amountTextProvider.notifier).state = value;
-
-                    final parsedValue =
-                        int.tryParse(value.replaceAll(',', '')) ?? 0;
-
-                    ref.read(selectedAmountProvider.notifier).state =
-                        parsedValue;
-                  },
-                  amount: ref.watch(amountTextProvider),
-                ),
-                const SizedBox(height: 30),
-                // BankSelection(
-                //   bankName: walletData['bankName']!,
-                //   accountNumber: walletData['accountNumber']!,
-                // ),
-                const Spacer(),
-                GrowkButton(
-                  title: 'Confirm & Add',
-                  onTap: () async {
-                    final notifier =
-                        ref.read(loadWalletAmountNotifierProvider.notifier);
-                    final account = ref.read(showWalletBalanceProvider);
-                    final amountStr = ref.read(amountTextProvider);
-                    final amount = int.parse(amountStr.replaceAll(',', ''));
-
-                    // 🔄 Show button loading
-                    ref.read(isButtonLoadingProvider.notifier).state = true;
-
-                    try {
-                      await notifier.loadAmount(account, amount);
-                      await ref.refresh(getNewWalletBalanceProvider);
-                      await ref.refresh(homeDetailsProvider);
-                      ref.invalidate(amountTextProvider);
-                      showGrowkSnackBar(
-                        context: context,
-                        ref: ref,
-                        message:
-                            'SAR ${amount.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (match) => '${match[1]},')} added to your wallet successfully!',
-                        type: SnackType.success,
-                      );
-
-                      if (context.mounted) {
-                        Navigator.pop(context);
-                      }
-                    } catch (e) {
-                      showGrowkSnackBar(
-                        context: context,
-                        ref: ref,
-                        message: 'Failed to add amount. Please try again.',
-                        type: SnackType.error,
-                      );
-                    } finally {
-                      ref.read(isButtonLoadingProvider.notifier).state = false;
-                    }
-                  },
-                ),
-
-                const SizedBox(height: 20),
-              ],
+      child: ScalingFactor(
+        child: Scaffold(
+          backgroundColor: isDark ? Colors.black : Colors.white,
+          appBar: GrowkAppBar(title: 'Wallet', isBackBtnNeeded: true),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  walletAsync.when(
+                    data: (walletData) =>
+                        WalletHeader(balance: "${walletData.data?.walletBalance ?? 0.0}"),
+                    loading: () => WalletHeader(balance: '0.0'),
+                    error: (err, stack) => Text('Error: $err'),
+                  ),
+                  const WalletDescription(),
+                  const SizedBox(height: 30),
+                  // AddFundsSection(
+                  //   amountOptions: amountOptions,
+                  //   selectedAmount: selectedAmount,
+                  //   onAmountSelected: (value) {
+                  //     ref.read(selectedAmountProvider.notifier).state = value;
+                  //
+                  //     final formattedAmount = value.toString().replaceAllMapped(
+                  //         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                  //             (Match match) => '${match[1]},');
+                  //
+                  //     ref.read(amountTextProvider.notifier).state = formattedAmount;
+                  //     print(ref.read(amountTextProvider.notifier).state);
+                  //     print(ref.read(selectedAmountProvider));
+                  //   },
+                  //   onAmountChanged: (value) {
+                  //     ref.read(amountTextProvider.notifier).state = value;
+                  //
+                  //     final parsedValue = int.tryParse(value.replaceAll(',', '')) ?? 0;
+                  //
+                  //     ref.read(selectedAmountProvider.notifier).state = parsedValue;
+                  //   },
+                  //   amount: ref.watch(amountTextProvider),
+                  // ),
+                  WalletStandingInstruction(
+                    bankId: 'Arab National Bank',
+                    ibanAccount: ref.watch(showWalletBalanceProvider),
+                    accountName: 'Nexus Global Limited or Growk',
+                  ),
+                  // BankSelection(
+                  //   bankName: 'Virtual Account',
+                  //   accountNumber: ref.watch(showWalletBalanceProvider),
+                  // ),
+                  // const Spacer(),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
+          // bottomNavigationBar: WalletPageButton(),
         ),
       ),
     );

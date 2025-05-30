@@ -1,6 +1,6 @@
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_space.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/core/constants/app_space.dart';
+import 'package:growk_v2/views.dart';
 
 Widget noGoalDescription({required WidgetRef ref}) {
   final isDark = ref.watch(isDarkProvider);

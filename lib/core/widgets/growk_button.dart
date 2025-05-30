@@ -1,4 +1,5 @@
 import '../../views.dart';
+
 final isButtonLoadingProvider = StateProvider<bool>((ref) => false);
 
 class GrowkButton extends ConsumerWidget {
@@ -33,19 +34,19 @@ class GrowkButton extends ConsumerWidget {
             child: Center(
               child: isLoading
                   ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
                   : ReusableText(
-                text: title,
-                style: AppTextStyle(
-                  textColor: AppColors.current(isDark).background,
-                ).titleSmall,
-              ),
+                      text: title,
+                      style: AppTextStyle(
+                        textColor: AppColors.current(isDark).background,
+                      ).titleSmall,
+                    ),
             ),
           ),
         ),

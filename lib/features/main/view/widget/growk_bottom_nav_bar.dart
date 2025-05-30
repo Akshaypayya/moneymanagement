@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class GrowkBottomNavBar extends ConsumerWidget {
   final Function(int) onTap;

@@ -1,14 +1,13 @@
 import '../../../views.dart';
-import 'package:money_mangmnt/features/bank_details/provider/bank_otp_provider.dart'
-    as bank;
+import 'package:growk_v2/features/bank_details/provider/bank_otp_provider.dart' as bank;
 
 class BankOtpController extends StateNotifier<AsyncValue<void>> {
   final Ref ref;
 
   BankOtpController(this.ref) : super(const AsyncData(null));
 
-  Future<void> verifyOtp(
-      String otp, BuildContext context, WidgetRef ref) async {
+  Future<void> verifyOtp(String otp, BuildContext context,
+      WidgetRef ref) async {
     final errorNotifier = ref.read(bank.otpErrorProvider.notifier);
 
     if (otp.isEmpty || otp.length != 4) {
@@ -19,8 +18,8 @@ class BankOtpController extends StateNotifier<AsyncValue<void>> {
     state = const AsyncLoading();
     errorNotifier.state = null;
 
-    final data =
-        ref.read(bankDetailsControllerProvider.notifier).getBankDetails();
+    final data = ref.read(bankDetailsControllerProvider.notifier)
+        .getBankDetails();
     final useCase = BankOtpUseCase(ref.read(bank.bankOtpRepoProvider));
 
     try {
@@ -68,8 +67,7 @@ class BankOtpController extends StateNotifier<AsyncValue<void>> {
     }
   }
 }
-
-final bankOtpControllerProvider =
-    StateNotifierProvider<BankOtpController, AsyncValue<void>>(
-  (ref) => BankOtpController(ref),
+  final bankOtpControllerProvider =
+StateNotifierProvider<BankOtpController, AsyncValue<void>>(
+      (ref) => BankOtpController(ref),
 );

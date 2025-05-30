@@ -1,6 +1,6 @@
-import 'package:money_mangmnt/features/profile_page/views/widget/profile_format_fns.dart';
-import 'package:money_mangmnt/features/profile_page/views/widget/profile_info_section.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/features/profile_page/views/widget/profile_format_fns.dart';
+import 'package:growk_v2/features/profile_page/views/widget/profile_info_section.dart';
+import 'package:growk_v2/views.dart';
 
 Widget nomineeDetails({required WidgetRef ref, required BuildContext context}) {
   final profileState = ref.watch(userProfileStateProvider);

@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/features/bank_details/model/bank_response_model.dart';
+import 'package:growk_v2/features/bank_details/model/bank_response_model.dart';
 
 import '../repo/bank_repo.dart';
 

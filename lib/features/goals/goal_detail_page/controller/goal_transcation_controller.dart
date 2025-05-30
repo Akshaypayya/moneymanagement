@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/model/goal_transaction_model.dart';
-import 'package:money_mangmnt/features/goals/goal_detail_page/provider/goal_transaction_provider.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/model/goal_transaction_model.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/provider/goal_transaction_provider.dart';
 
 class GoalTransactionStateNotifier
     extends StateNotifier<AsyncValue<GoalTransactionModel>> {

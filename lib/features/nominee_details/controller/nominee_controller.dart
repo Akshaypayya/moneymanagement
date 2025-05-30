@@ -1,8 +1,8 @@
+
 import 'package:intl/intl.dart';
 
 import '../../../views.dart';
-import 'package:money_mangmnt/features/nominee_details/use_case/nominee_use_case.dart';
-
+import 'package:growk_v2/features/nominee_details/use_case/nominee_use_case.dart';
 class NomineeDetailsController {
   final Ref ref;
 
@@ -19,13 +19,11 @@ class NomineeDetailsController {
     );
 
     if (pickedDate != null) {
-      final formatted =
-          DatePickerUtils.formatDate(pickedDate); // e.g., 'yyyy-MM-dd'
+      final formatted = DatePickerUtils.formatDate(pickedDate); // e.g., 'yyyy-MM-dd'
       final uiFormatted = DateFormat('dd/MM/yyyy').format(pickedDate);
       debugPrint('📅 UI DOB format: $uiFormatted');
-      debugPrint('🛠 pickedDate raw: $pickedDate'); // Shows full datetime
-      debugPrint(
-          '🛠 normalizedDate: ${DateTime.utc(pickedDate.year, pickedDate.month, pickedDate.day)}');
+      debugPrint('🛠 pickedDate raw: $pickedDate');  // Shows full datetime
+      debugPrint('🛠 normalizedDate: ${DateTime.utc(pickedDate.year, pickedDate.month, pickedDate.day)}');
       debugPrint('📅 Backend DOB format: $formatted');
       ref.read(nomineeDobProvider.notifier).state = formatted;
       ref.read(nomineeDobUIProvider.notifier).state = uiFormatted;
@@ -42,15 +40,7 @@ class NomineeDetailsController {
       backgroundColor: Colors.transparent,
       builder: (context) => CommonBottomSheet(
         title: 'Select Relation',
-        options: [
-          'Father',
-          'Mother',
-          'Spouse',
-          'Brother',
-          'Sister',
-          'Child',
-          'Other'
-        ],
+        options: ['Father', 'Mother', 'Spouse', 'Brother', 'Sister', 'Child', 'Other'],
         onSelected: (value) {
           ref.read(nomineeRelationProvider.notifier).state = value;
           ref.read(nomineeRelationErrorProvider.notifier).state = null;
@@ -142,8 +132,7 @@ class NomineeDetailsController {
           message: 'Please correct the highlighted errors.',
           type: SnackType.error,
         );
-      } else if (response.status == 'Unauthorized' ||
-          response.message?.contains('401') == true) {
+      } else if (response.status == 'Unauthorized' || response.message?.contains('401') == true) {
         showGrowkSnackBar(
           context: context,
           ref: ref,

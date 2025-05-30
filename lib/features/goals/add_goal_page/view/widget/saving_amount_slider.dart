@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/features/goals/add_goal_page/provider/add_goal_provider.dart';
-import 'package:money_mangmnt/features/goals/add_goal_page/view/widget/custom_slider_wrapper.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart';
+import 'package:growk_v2/features/goals/add_goal_page/view/widget/custom_slider_wrapper.dart';
 
 class SavingsAmountSlider extends ConsumerStatefulWidget {
   const SavingsAmountSlider({super.key});
@@ -23,15 +23,20 @@ class _SavingsAmountSliderState extends ConsumerState<SavingsAmountSlider> {
 
   final double minAmount = 10000.0;
   final double maxAmount = 1000000.0;
+  final double defaultAmount = 100000.0;
 
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
 
-    // _controller = TextEditingController(text: _formatNumber(minAmount.round()));
-    _controller = TextEditingController(
-        text: _sliderValueToAmount(ref.read(amountSliderProvider)).toString());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final sliderValue = _amountToSliderValue(defaultAmount);
+      ref.read(amountSliderProvider.notifier).state = sliderValue;
+    });
+
+    _controller =
+        TextEditingController(text: _formatNumber(defaultAmount.round()));
 
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus && _isUserTyping) {
@@ -74,10 +79,9 @@ class _SavingsAmountSliderState extends ConsumerState<SavingsAmountSlider> {
 
   int _parseNumber(String formattedNumber) {
     final cleanedString = formattedNumber.replaceAll(RegExp(r'[^0-9]'), '');
-    if (cleanedString.isEmpty) return minAmount.round();
-
+    if (cleanedString.isEmpty) return defaultAmount.round();
     final parsedInt = int.tryParse(cleanedString);
-    if (parsedInt == null) return minAmount.round();
+    if (parsedInt == null) return defaultAmount.round();
 
     return parsedInt.clamp(minAmount.round(), maxAmount.round());
   }
@@ -172,7 +176,7 @@ class _SavingsAmountSliderState extends ConsumerState<SavingsAmountSlider> {
         ),
         const SizedBox(width: 5),
         SizedBox(
-          width: 70,
+          width: 80,
           child: Transform.translate(
             offset: const Offset(0, -8),
             child: TextField(

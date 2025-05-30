@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/model/goal_list_model.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/provider/goal_list_page_provider.dart';
-import 'package:money_mangmnt/features/goals/goal_list_page/provider/goal_list_pagination.dart';
+import 'package:growk_v2/features/goals/goal_list_page/model/goal_list_model.dart';
+import 'package:growk_v2/features/goals/goal_list_page/provider/goal_list_page_provider.dart';
+import 'package:growk_v2/features/goals/goal_list_page/provider/goal_list_pagination.dart';
 
 class GoalListStateNotifier extends StateNotifier<AsyncValue<GoalListModel>> {
   final Ref ref;

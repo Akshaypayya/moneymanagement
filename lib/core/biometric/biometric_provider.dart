@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/biometric/biometric_service.dart';
-import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:growk_v2/core/biometric/biometric_service.dart';
+import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
 import 'package:local_auth/local_auth.dart';
 
 final biometricServiceProvider = Provider<BiometricService>((ref) {
@@ -14,7 +14,7 @@ final biometricEnabledProvider =
 
 class BiometricEnabledNotifier extends StateNotifier<bool> {
   BiometricEnabledNotifier()
-      : super(SharedPreferencesHelper.getBool('biometric_enabled') ?? false);
+      : super(SharedPreferencesHelper.getBool('biometric_enabled') ?? true);
 
   void toggleBiometric(bool enabled) {
     SharedPreferencesHelper.saveBool('biometric_enabled', enabled);

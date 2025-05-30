@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/storage/shared_preference/shared_preference_service.dart';
+import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
 
 final biometricEnabledProvider =
     StateNotifierProvider<BiometricEnabledNotifier, bool>((ref) {

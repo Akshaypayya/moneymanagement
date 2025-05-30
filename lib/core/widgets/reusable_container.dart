@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class ReusableContainer extends StatelessWidget {
   final Widget? child;
@@ -58,9 +58,9 @@ class ReusableContainer extends StatelessWidget {
                 gradient: gradient,
                 border: borderWidth != null
                     ? Border.all(
-                        color: borderColor ?? Colors.black,
-                        width: borderWidth!,
-                      )
+                  color: borderColor ?? Colors.black,
+                  width: borderWidth!,
+                )
                     : null,
               ),
           transform: transform,

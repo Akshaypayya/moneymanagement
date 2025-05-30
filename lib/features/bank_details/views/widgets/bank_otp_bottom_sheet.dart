@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/features/bank_details/controller/bank_otp_verification_controller.dart';
+import 'package:growk_v2/features/bank_details/controller/bank_otp_verification_controller.dart';
 import '../../../../views.dart';
 
 Future<void> showOtpBottomSheet(BuildContext context, WidgetRef ref) async {
@@ -31,15 +31,15 @@ Future<void> showOtpBottomSheet(BuildContext context, WidgetRef ref) async {
                   const OtpInputFieldSection(),
                   const SizedBox(height: 10),
                   GrowkButton(
-                    title: 'Verify OTP',
+                    title:'Verify OTP',
                     onTap: isLoading
                         ? null
                         : () async {
-                            final otp = ref.read(otpInputProvider);
-                            await ref
-                                .read(bankOtpControllerProvider.notifier)
-                                .verifyOtp(otp, context, ref);
-                          },
+                      final otp = ref.read(otpInputProvider);
+                      await ref
+                          .read(bankOtpControllerProvider.notifier)
+                          .verifyOtp(otp, context,ref);
+                    },
                   ),
                 ],
               ),

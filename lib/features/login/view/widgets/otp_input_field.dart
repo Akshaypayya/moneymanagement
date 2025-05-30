@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class OtpInputField extends ConsumerStatefulWidget {
   final Function(String) onCompleted;

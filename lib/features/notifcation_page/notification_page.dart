@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
-import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
-import 'package:money_mangmnt/features/notifcation_page/notification_ui_model/notification_ui_model.dart';
-import 'package:money_mangmnt/features/notifcation_page/widgets/notification_item.dart';
+import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+import 'package:growk_v2/core/widgets/growk_app_bar.dart';
+import 'package:growk_v2/features/notifcation_page/notification_ui_model/notification_ui_model.dart';
+import 'package:growk_v2/features/notifcation_page/widgets/notification_item.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
 
 class NotificationsPage extends ConsumerWidget {
   const NotificationsPage({Key? key}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/features/login/controller/otp_controller.dart';
-import 'package:money_mangmnt/features/login/provider/login_provider.dart';
-import 'package:money_mangmnt/features/login/repo/otp_repo.dart';
-import 'package:money_mangmnt/features/login/use_case/otp_use_case.dart';
+import 'package:growk_v2/features/login/controller/otp_controller.dart';
+import 'package:growk_v2/features/login/provider/login_provider.dart';
+import 'package:growk_v2/features/login/repo/otp_repo.dart';
+import 'package:growk_v2/features/login/use_case/otp_use_case.dart';
 import '../../../core/constants/app_url.dart';
 import '../../../core/network/network_service.dart';
 

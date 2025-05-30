@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
 
 class GoalProgress extends ConsumerWidget {
   final String progress;
@@ -40,7 +40,7 @@ class GoalProgress extends ConsumerWidget {
                 ),
               ),
               Text(
-                ' $progress',
+                progress,
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
@@ -60,6 +60,7 @@ class GoalProgress extends ConsumerWidget {
                     'Invested Amount: ',
                     style: TextStyle(
                       fontSize: 12,
+                      fontWeight: FontWeight.w400,
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       color: isDark ? Colors.grey[300] : Colors.grey[800],
                     ),
@@ -73,6 +74,7 @@ class GoalProgress extends ConsumerWidget {
                     ' $invested',
                     style: TextStyle(
                       fontSize: 12,
+                      fontWeight: FontWeight.bold,
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       color: isDark ? Colors.grey[300] : Colors.grey[800],
                     ),
@@ -85,6 +87,7 @@ class GoalProgress extends ConsumerWidget {
                     'Target: ',
                     style: TextStyle(
                       fontSize: 12,
+                      fontWeight: FontWeight.w400,
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       color: isDark ? Colors.grey[300] : Colors.grey[800],
                     ),
@@ -98,6 +101,7 @@ class GoalProgress extends ConsumerWidget {
                     ' $target',
                     style: TextStyle(
                       fontSize: 12,
+                      fontWeight: FontWeight.bold,
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       color: isDark ? Colors.grey[300] : Colors.grey[800],
                     ),

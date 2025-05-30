@@ -1,5 +1,5 @@
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/features/login/model/otp_model.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/features/login/model/otp_model.dart';
 import '../../../core/network/network_service.dart';
 
 class OtpRepository {

@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/features/login/repo/login_repo.dart';
+import 'package:growk_v2/features/login/repo/login_repo.dart';
 
 import '../model/login_model.dart';
 

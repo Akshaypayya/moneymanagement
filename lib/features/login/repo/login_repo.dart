@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/core/constants/app_url.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
 
 import '../../../core/network/network_service.dart';
 import '../model/login_model.dart';

@@ -1,5 +1,5 @@
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class UserHeaderDetails extends ConsumerStatefulWidget {
   const UserHeaderDetails({super.key});

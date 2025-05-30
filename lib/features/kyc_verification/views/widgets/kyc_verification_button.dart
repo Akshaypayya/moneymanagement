@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/features/kyc_verification/views/widgets/kyc_bottom_text.dart';
+import 'package:growk_v2/features/kyc_verification/views/widgets/kyc_bottom_text.dart';
 
 import '../../../../views.dart';
 
@@ -14,14 +14,10 @@ class KycVerificationButton extends ConsumerWidget {
           GrowkButton(
             title: 'Verify',
             onTap: () async {
-              await ref
-                  .read(kycControllerProvider.notifier)
-                  .submitForm(context, ref);
+              await ref.read(kycControllerProvider.notifier).submitForm(context,ref);
             },
           ),
-          ReusableSizedBox(
-            height: 30,
-          ),
+          ReusableSizedBox(height: 30,),
           KycBottomText(),
         ],
       ),

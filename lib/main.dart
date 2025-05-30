@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 // final GlobalKey _providerScopeKey = GlobalKey();
 class MyHttpOverrides extends HttpOverrides {
@@ -36,6 +36,11 @@ Future<void> main() async {
   //   systemNavigationBarIconBrightness: Brightness.dark,
   //   systemNavigationBarDividerColor: Colors.black,
   // ));
+  // LOCK ORIENTATION TO PORTRAIT
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    // DeviceOrientation.portraitDown, // optionally add this if you want upside-down portrait
+  ]);
 
   runApp(ProviderScope(
       // key: _providerScopeKey,

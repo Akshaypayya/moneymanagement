@@ -35,10 +35,10 @@ class AppColors {
   // Dark mode instance
   static  AppColors dark = AppColors(
     resendBlue: Color.fromRGBO(58, 89, 185, 1),
-    scaffoldBackground: Color.fromRGBO(25, 25, 25, 1),
+    scaffoldBackground: Color(0xFF1C1C1C),
     dividerColor: Color.fromRGBO(185, 185, 185, 1),
     labelText: Colors.grey[500]!,
-    background: Color(0xFF1C1C1C),
+    background: Colors.black,
     text: Colors.white,
     primary: Colors.white,
   );

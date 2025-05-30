@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class OtpScreen extends ConsumerWidget {
   const OtpScreen({super.key});
@@ -16,8 +16,7 @@ class OtpScreen extends ConsumerWidget {
               const SizedBox(height: 100),
               GrowkButton(
                 title: 'Verify',
-                onTap: () =>
-                    ref.read(otpControllerProvider).validateOtp(context),
+                onTap: () => ref.read(otpControllerProvider).validateOtp(context),
               ),
               LoginBottomText(),
             ],

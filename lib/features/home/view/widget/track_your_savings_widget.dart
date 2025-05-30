@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/constants/app_images.dart';
-import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
-import 'package:money_mangmnt/core/widgets/reusable_white_container_with_padding.dart';
-import 'package:money_mangmnt/routes/app_router.dart';
+import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+import 'package:growk_v2/core/theme/app_text_styles.dart';
+import 'package:growk_v2/core/widgets/reusable_white_container_with_padding.dart';
+import 'package:growk_v2/routes/app_router.dart';
+import '../../../../views.dart';
 import 'savings_row_widget.dart';
 
 class TrackYourSavingsWidget extends ConsumerWidget {
@@ -46,16 +48,15 @@ class TrackYourSavingsWidget extends ConsumerWidget {
         'growth': '0%',
       },
     ];
-
+    final isDark = ref.watch(isDarkProvider);
     return ScalingFactor(
       child: ReusableWhiteContainerWithPadding(
         widget: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Track Your Savings",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text("Track Your Savings",
+                style: AppTextStyle(textColor: AppColors.current(isDark).text)
+                    .titleRegular),
             const SizedBox(height: 16),
             ...List.generate(data.length, (index) {
               final item = data[index];
@@ -71,17 +72,35 @@ class TrackYourSavingsWidget extends ConsumerWidget {
                     focusColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
-                    onTap: () {
+                    onTap: () async {
                       if (index == 0) {
                         Navigator.pushNamed(
                             context, AppRouter.buyGoldInstantly);
-                      }
-                      if (index == 1) {
+                      } else if (index == 1) {
                         Navigator.pushNamed(
                             context, AppRouter.createGoalScreen);
-                      }
-                      if (index == 2) {
-                        Navigator.pushNamed(context, AppRouter.referralRewards);
+                      } else if (index == 2) {
+                        try {
+                          final result =
+                              await ref.refresh(homeDetailsProvider.future);
+                          Navigator.pushNamed(
+                              context, AppRouter.referralRewards);
+                        } catch (e) {
+                          final errorMessage = e
+                                  .toString()
+                                  .contains('KYC not completed')
+                              ? 'KYC not verified. Please complete KYC to access this feature.'
+                              : 'Something went wrong. Please try again later.';
+
+                          showGrowkSnackBar(
+                            context: context,
+                            ref: ref,
+                            message: errorMessage,
+                            type: SnackType.error,
+                          );
+                          await  Navigator.pushNamed(
+                              context, AppRouter.kycVerificationScreen);
+                        }
                       }
                     },
                     child: Padding(

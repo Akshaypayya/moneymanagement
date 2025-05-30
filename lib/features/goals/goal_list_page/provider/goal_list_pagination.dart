@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/features/goals/goal_list_page/model/goal_list_model.dart';
+import 'package:growk_v2/features/goals/goal_list_page/model/goal_list_model.dart';
 
 class GoalListPaginatedState {
   final List<GoalListItem> goals;

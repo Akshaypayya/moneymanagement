@@ -1,18 +1,18 @@
-import 'package:money_mangmnt/core/biometric/biometric_page.dart';
-import 'package:money_mangmnt/features/add_user_details/view/edit_user_details.dart';
-import 'package:money_mangmnt/features/bank_details/views/bank_details_screen.dart';
-import 'package:money_mangmnt/features/goals/add_goal_page/view/add_goal_page.dart';
-import 'package:money_mangmnt/features/goals/edit_goal_page/view/edit_goal_page.dart';
-import 'package:money_mangmnt/features/gold_price_trends/view/gold_price_trends_page.dart';
-import 'package:money_mangmnt/features/kyc_verification/views/kyc_verification_page.dart';
-import 'package:money_mangmnt/features/nominee_details/views/nominee_details_screen.dart';
-import 'package:money_mangmnt/features/notifcation_page/notification_page.dart';
-import 'package:money_mangmnt/features/referral_rewards/view/referral_rewards_screen.dart';
-import 'package:money_mangmnt/features/saved_address/view/saved_address_screen.dart';
-import 'package:money_mangmnt/features/settings_page/widgets/help_screen.dart';
-import 'package:money_mangmnt/features/settings_page/widgets/terms_and_condition.dart';
-import 'package:money_mangmnt/features/wallet_page/wallet_page.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/core/biometric/biometric_page.dart';
+import 'package:growk_v2/features/add_user_details/view/edit_user_details.dart';
+import 'package:growk_v2/features/bank_details/views/bank_details_screen.dart';
+import 'package:growk_v2/features/goals/add_goal_page/view/add_goal_page.dart';
+import 'package:growk_v2/features/goals/edit_goal_page/view/edit_goal_page.dart';
+import 'package:growk_v2/features/gold_price_trends/view/gold_price_trends_page.dart';
+import 'package:growk_v2/features/kyc_verification/views/kyc_verification_page.dart';
+import 'package:growk_v2/features/nominee_details/views/nominee_details_screen.dart';
+import 'package:growk_v2/features/notifcation_page/notification_page.dart';
+import 'package:growk_v2/features/referral_rewards/view/referral_rewards_screen.dart';
+import 'package:growk_v2/features/saved_address/view/saved_address_screen.dart';
+import 'package:growk_v2/features/settings_page/widgets/help_screen.dart';
+import 'package:growk_v2/features/settings_page/widgets/terms_and_condition.dart';
+import 'package:growk_v2/features/wallet_page/wallet_page.dart';
+import 'package:growk_v2/views.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -121,6 +121,8 @@ class AppRouter {
             body: Center(child: Text('No route defined')),
           ),
         );
+
+
     }
   }
 }

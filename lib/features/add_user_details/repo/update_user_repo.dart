@@ -1,6 +1,5 @@
-import 'package:money_mangmnt/features/add_user_details/model/update_user_details_model.dart';
+import 'package:growk_v2/features/add_user_details/model/update_user_details_model.dart';
 import '../../../views.dart';
-
 class UpdateUserDetailsRepo {
   final NetworkService network;
 

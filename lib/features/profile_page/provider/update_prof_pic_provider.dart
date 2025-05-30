@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/constants/app_url.dart';
-import 'package:money_mangmnt/features/profile_page/controller/profile_controller.dart';
-import 'package:money_mangmnt/features/profile_page/repo/profile_repo.dart';
+import 'package:growk_v2/core/constants/app_url.dart';
+import 'package:growk_v2/features/profile_page/controller/profile_controller.dart';
+import 'package:growk_v2/features/profile_page/repo/profile_repo.dart';
 
 final profilePictureRepositoryProvider =
     Provider<ProfilePictureRepository>((ref) {

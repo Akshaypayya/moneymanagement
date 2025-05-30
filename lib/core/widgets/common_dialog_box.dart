@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // For WidgetRef
-import 'package:money_mangmnt/core/widgets/reusable_text.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/core/widgets/reusable_text.dart';
+import 'package:growk_v2/views.dart';
 
 class CommonDialog extends ConsumerWidget {
   final String title;
@@ -56,7 +56,7 @@ class CommonDialog extends ConsumerWidget {
             const SizedBox(height: 15),
             ReusableText(
               maxLines: 1,
-              text: number ?? '',
+              text: number??'',
               textAlign: TextAlign.justify,
               style: AppTextStyle(textColor: colors.text).headlineVeryLarge,
             ),

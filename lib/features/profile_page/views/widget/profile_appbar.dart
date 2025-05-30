@@ -1,5 +1,5 @@
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 PreferredSizeWidget profileAppBar({
   required WidgetRef ref,

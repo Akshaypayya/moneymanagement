@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:money_mangmnt/features/kyc_verification/repo/kyc_repo.dart';
+import 'package:growk_v2/features/kyc_verification/repo/kyc_repo.dart';
 
 class UploadKYCUseCase {
   final KYCRepository repo;

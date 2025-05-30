@@ -51,12 +51,29 @@ class AppInputFormatters {
     ];
   }
 
+
+
   /// Formatter: Saudi IBAN - auto SA + space every 4 chars
   static List<TextInputFormatter> saudiIbanFormatter() {
     return [
       _FormattedSaudiIbanInputFormatter(),
     ];
   }
+
+  /// Formatter: gram formatter
+  static List<TextInputFormatter> gramFormatter() {
+    return [
+      GramInputFormatter(),
+    ];
+  }
+  /// Formatter: buy price formatter
+
+  static List<TextInputFormatter> buyPriceFormatter() {
+    return [
+      BuyPriceFormatter(),
+    ];
+  }
+
 
 
   /// Formatter: Allows valid email characters
@@ -147,5 +164,53 @@ class _FormattedSaudiIbanInputFormatter extends TextInputFormatter {
       text: truncated,
       selection: TextSelection.collapsed(offset: clampedOffset),
     );
+  }
+}
+/// Formatter: Only allows up to 4-digit numeric input for grams
+class GramInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    final newText = newValue.text;
+
+    // Allow only digits and one optional decimal point
+    final isValid = RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newText);
+    if (!isValid) return oldValue;
+
+    // If it contains a dot, allow up to 7 characters (e.g., 9999.99)
+    if (newText.contains('.')) {
+      if (newText.length > 7) return oldValue;
+    } else {
+      // If no dot, max length = 4 (e.g., 9999)
+      if (newText.length > 4) return oldValue;
+    }
+
+    return newValue;
+  }
+}
+
+class BuyPriceFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    final newText = newValue.text;
+
+    // Allow only digits and optional one decimal point with up to 2 digits after it
+    final isValid = RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newText);
+    if (!isValid) return oldValue;
+
+    if (newText.contains('.')) {
+      // If decimal exists, limit length to 15
+      if (newText.length > 15) return oldValue;
+    } else {
+      // If no decimal, limit length to 12
+      if (newText.length > 12) return oldValue;
+    }
+
+    return newValue;
   }
 }

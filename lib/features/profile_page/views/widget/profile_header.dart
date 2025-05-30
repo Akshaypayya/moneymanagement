@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/features/profile_page/model/user_details_model.dart';
-import 'package:money_mangmnt/features/profile_page/provider/user_details_provider.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/features/profile_page/model/user_details_model.dart';
+import 'package:growk_v2/features/profile_page/provider/user_details_provider.dart';
 
 class ProfilePicture extends ConsumerStatefulWidget {
   const ProfilePicture({super.key});

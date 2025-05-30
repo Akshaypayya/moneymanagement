@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
-import 'package:money_mangmnt/core/widgets/sar_amount_widget.dart';
+import 'package:growk_v2/core/widgets/growk_app_bar.dart';
+import 'package:growk_v2/core/widgets/sar_amount_widget.dart';
+import 'package:growk_v2/features/gold_price_trends/view/widgets/year_selection_widget.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+
+import '../../../views.dart';
+import '../../goals/add_goal_page/view/widget/custom_slider.dart';
 
 class GoldPriceTrendsPage extends StatefulWidget {
   const GoldPriceTrendsPage({super.key});
@@ -106,6 +110,7 @@ class _GoldPriceTrendsPageState extends State<GoldPriceTrendsPage> {
         padding: const EdgeInsets.all(22),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Text("Growth Calculator",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
@@ -114,40 +119,60 @@ class _GoldPriceTrendsPageState extends State<GoldPriceTrendsPage> {
               "Check how much your past gold investment would be worth today. Select the investment amount and time period to calculate your total returns based on historical price trends.",
               style: TextStyle(color: Colors.black54, fontSize: 13),
             ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: periods.map((year) {
-                return ElevatedButton(
-                  onPressed: () => setState(() => selectedPeriod = year),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor:
-                        selectedPeriod == year ? Colors.teal : Colors.white,
-                    foregroundColor:
-                        selectedPeriod == year ? Colors.white : Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: const BorderSide(color: Colors.grey),
-                    ),
-                  ),
-                  child: Text(year == 0 ? "6 M" : "$year Y"),
-                );
-              }).toList(),
+            // const SizedBox(height: 16),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: periods.map((year) {
+            //     return ElevatedButton(
+            //       onPressed: () => setState(() => selectedPeriod = year),
+            //       style: ElevatedButton.styleFrom(
+            //         elevation: 0,
+            //         backgroundColor:
+            //             selectedPeriod == year ? Colors.teal : Colors.white,
+            //         foregroundColor:
+            //             selectedPeriod == year ? Colors.white : Colors.black,
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(5),
+            //           side: const BorderSide(color: Colors.grey),
+            //         ),
+            //       ),
+            //       child: Text(year == 0 ? "6 M" : "$year Y"),
+            //     );
+            //   }).toList(),
+            // ),
+            const SizedBox(height: 30),
+            YearSelectionWidget(
+              buttonCount: periods.length,
+              buttonNames: periods,
+              onYearSelected: (int year) {
+                setState(() {
+                  selectedPeriod = year;
+                });
+              },
+              selectedYear: selectedPeriod,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 50),
             AspectRatio(
               aspectRatio: 1.6,
               child: LineChart(
                 LineChartData(
                   minY: 100,
-                  maxY: 370,
+                  maxY: 350,
+                  backgroundColor: Colors.white,
                   gridData: FlGridData(
                     show: true,
-                    drawVerticalLine: false,
+                    drawVerticalLine: true,
+                    horizontalInterval: 50,
+                    verticalInterval: 2,
                     getDrawingHorizontalLine: (value) => FlLine(
-                      color: Colors.grey.shade300,
+                      color: Colors.grey.withOpacity(0.2),
+                      strokeWidth: 0.7,
+                      // dashArray: [5, 8],
+                    ),
+                    getDrawingVerticalLine: (value) => FlLine(
+                      color: Colors.transparent,
                       strokeWidth: 1,
+                      // dashArray: [5, 8],
                     ),
                   ),
                   titlesData: FlTitlesData(
@@ -155,43 +180,137 @@ class _GoldPriceTrendsPageState extends State<GoldPriceTrendsPage> {
                       sideTitles: SideTitles(
                         showTitles: true,
                         interval: 50,
-                        reservedSize: 35,
-                        getTitlesWidget: (value, _) => Text("${value.toInt()}",
-                            style: const TextStyle(fontSize: 10)),
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 6),
+                            child: Text(
+                              "${value.toInt()}",
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    rightTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    topTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    bottomTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 2,
+                        reservedSize: 30,
+                        getTitlesWidget: (value, meta) {
+                          String label;
+                          if (selectedPeriod == 0) {
+                            label =
+                                "${(value * 1.5).toInt()}M"; // Approx months
+                          } else {
+                            label = value.toInt().toString();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              label,
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
                   ),
-                  borderData: FlBorderData(show: false),
+                  borderData: FlBorderData(
+                    show: false,
+                  ),
+                  lineTouchData: LineTouchData(
+                    handleBuiltInTouches: true,
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipItems: (touchedSpots) {
+                        return touchedSpots.map((spot) {
+                          return LineTooltipItem(
+                            "Year ${spot.x.toInt()}: ${spot.y.toStringAsFixed(1)}",
+                            const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          );
+                        }).toList();
+                      },
+                    ),
+                    touchCallback: (event, response) {},
+                    getTouchedSpotIndicator: (barData, spotIndexes) {
+                      return spotIndexes.map((index) {
+                        return TouchedSpotIndicatorData(
+                          FlLine(color: Colors.teal, strokeWidth: 3),
+                          FlDotData(
+                            show: true,
+                            getDotPainter: (spot, percent, bar, index) =>
+                                FlDotCirclePainter(
+                              radius: 6,
+                              color: Colors.white,
+                              strokeWidth: 3,
+                              strokeColor: Colors.teal,
+                            ),
+                          ),
+                        );
+                      }).toList();
+                    },
+                  ),
                   lineBarsData: [
                     LineChartBarData(
+                      spots: spots,
                       isCurved: true,
-                      color: Colors.black,
-                      barWidth: 2,
+                      curveSmoothness: 0.0,
+                      color: Colors.teal,
+                      barWidth: 2.5,
                       isStrokeCapRound: true,
                       dotData: FlDotData(show: false),
-                      belowBarData: BarAreaData(show: false),
-                      spots: spots,
-                    )
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: Colors.transparent,
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.teal.withOpacity(0.4),
+                            Colors.teal.withOpacity(0.05),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 50),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Text(
                   "Select Investment Amount (SAR)",
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
-
+                Slider(
+                  min: 10000,
+                  max: 1000000,
+                  value: investmentAmount,
+                  onChanged: (value) =>
+                      setState(() => investmentAmount = value),
+                  activeColor: Colors.teal,
+                  inactiveColor: Colors.grey.shade300,
+                ),
                 // Min & Max Labels Row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -200,25 +319,6 @@ class _GoldPriceTrendsPageState extends State<GoldPriceTrendsPage> {
                     Text("1 M", style: TextStyle(fontSize: 13)),
                   ],
                 ),
-
-                // Full-width slider
-                Row(
-                  children: [
-                    Expanded(
-                      child: Slider(
-                        min: 10000,
-                        max: 1000000,
-                        divisions: 100,
-                        value: investmentAmount,
-                        onChanged: (value) =>
-                            setState(() => investmentAmount = value),
-                        activeColor: Colors.teal,
-                        inactiveColor: Colors.grey.shade300,
-                      ),
-                    ),
-                  ],
-                ),
-
                 // Amount Display
                 Align(
                   alignment: Alignment.centerRight,
@@ -234,7 +334,7 @@ class _GoldPriceTrendsPageState extends State<GoldPriceTrendsPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 50),
             const Text("Gold Investment Returns",
                 style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
@@ -260,7 +360,7 @@ class _GoldPriceTrendsPageState extends State<GoldPriceTrendsPage> {
                         child: SarAmountWidget(
                           alignment: Alignment.center,
                           height: 12,
-                          text: "${totalReturns.toStringAsFixed(2)}",
+                          text: totalReturns.toStringAsFixed(2),
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
                         ),
@@ -278,7 +378,7 @@ class _GoldPriceTrendsPageState extends State<GoldPriceTrendsPage> {
                       _legendItem(
                         color: Colors.teal,
                         title: "Investment Amount",
-                        value: "${investmentAmount.toStringAsFixed(2)}",
+                        value: investmentAmount.toStringAsFixed(2),
                       ),
                       const SizedBox(height: 10),
                       _legendItem(

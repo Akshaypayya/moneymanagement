@@ -1,9 +1,8 @@
-import 'package:money_mangmnt/features/kyc_verification/views/widgets/kyc_description.dart';
-import 'package:money_mangmnt/features/kyc_verification/views/widgets/kyc_vector_image.dart';
-import 'package:money_mangmnt/features/kyc_verification/views/widgets/kyc_verification_button.dart';
-import 'package:money_mangmnt/features/kyc_verification/views/widgets/kyc_verification_form.dart';
-import 'package:money_mangmnt/views.dart';
-
+import 'package:growk_v2/features/kyc_verification/views/widgets/kyc_description.dart';
+import 'package:growk_v2/features/kyc_verification/views/widgets/kyc_vector_image.dart';
+import 'package:growk_v2/features/kyc_verification/views/widgets/kyc_verification_button.dart';
+import 'package:growk_v2/features/kyc_verification/views/widgets/kyc_verification_form.dart';
+import 'package:growk_v2/views.dart';
 class KycVerificationPage extends ConsumerWidget {
   const KycVerificationPage({super.key});
 
@@ -12,15 +11,13 @@ class KycVerificationPage extends ConsumerWidget {
     return ScalingFactor(
       child: CustomScaffold(
         appBar: GrowkAppBar(title: 'KYC verification', isBackBtnNeeded: true),
-        body: SingleChildScrollView(
+        body:SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 22),
           child: const ReusableColumn(
             children: [
               KycVectorImage(),
               KycDescription(),
-              ReusableSizedBox(
-                height: 50,
-              ),
+              ReusableSizedBox(height: 50,),
               KycVerificationForm(),
             ],
           ),

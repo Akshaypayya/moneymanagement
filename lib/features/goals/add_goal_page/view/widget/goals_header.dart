@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
 
 class GoalsHeader extends ConsumerWidget {
   const GoalsHeader({Key? key}) : super(key: key);

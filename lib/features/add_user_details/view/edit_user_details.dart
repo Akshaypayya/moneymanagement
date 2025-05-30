@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class EditUserDetails extends ConsumerStatefulWidget {
   const EditUserDetails({super.key});
@@ -28,8 +28,7 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
     final uploadState = ref.watch(profilePictureUploadStateProvider);
     final profileState = ref.watch(userProfileStateProvider);
     final userData = profileState.userData;
-    final hasProfilePictureFromApi =
-        userData?.profilePicture?.isNotEmpty == true;
+    final hasProfilePictureFromApi = userData?.profilePicture?.isNotEmpty == true;
     final isUploading = uploadState.status == UploadStatus.loading;
     final isSaving = ref.watch(isButtonLoadingProvider);
     final genderError = ref.watch(genderErrorProvider);
@@ -69,8 +68,7 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                           GestureDetector(
                             onTap: isUploading
                                 ? null
-                                : () => controller.showImageSourceActionSheet(
-                                    context, ref),
+                                : () => controller.showImageSourceActionSheet(context, ref),
                             child: Stack(
                               children: [
                                 Container(
@@ -81,44 +79,39 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                                     color: Colors.grey[200],
                                     image: imageFile != null
                                         ? DecorationImage(
-                                            image: FileImage(imageFile),
-                                            fit: BoxFit.cover,
-                                          )
+                                      image: FileImage(imageFile),
+                                      fit: BoxFit.cover,
+                                    )
                                         : hasProfilePictureFromApi
-                                            ? DecorationImage(
-                                                image: MemoryImage(
-                                                  base64Decode(userData!
-                                                      .profilePicture!),
-                                                ),
-                                                fit: BoxFit.cover,
-                                              )
-                                            : null,
+                                        ? DecorationImage(
+                                      image: MemoryImage(
+                                        base64Decode(userData!.profilePicture!),
+                                      ),
+                                      fit: BoxFit.cover,
+                                    )
+                                        : null,
                                   ),
                                   // Replace blank Icon with default asset image:
-                                  child: (imageFile == null &&
-                                          !hasProfilePictureFromApi)
+                                  child: (imageFile == null && !hasProfilePictureFromApi)
                                       ? ClipOval(
-                                          child: Image.asset(
-                                            AppImages.profileDefaultImage,
-                                            width: 140,
-                                            height: 140,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        )
+                                    child: Image.asset(
+                                      AppImages.profileDefaultImage,
+                                      width: 140,
+                                      height: 140,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
                                       : (isUploading && !isSaving)
-                                          ? Container(
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.black
-                                                    .withOpacity(0.5),
-                                              ),
-                                              child: const Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                        color: Colors.white),
-                                              ),
-                                            )
-                                          : null,
+                                      ? Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.black.withOpacity(0.5),
+                                    ),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(color: Colors.white),
+                                    ),
+                                  )
+                                      : null,
                                 ),
                                 Positioned(
                                   bottom: 0,
@@ -129,13 +122,11 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                                     decoration: BoxDecoration(
                                       color: Colors.black,
                                       shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.white, width: 2),
+                                      border: Border.all(color: Colors.white, width: 2),
                                     ),
                                     child: isUploading
                                         ? const SizedBox()
-                                        : const Icon(Icons.camera_alt,
-                                            color: Colors.white, size: 20),
+                                        : const Icon(Icons.camera_alt, color: Colors.white, size: 20),
                                   ),
                                 ),
                               ],
@@ -146,8 +137,7 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                               padding: const EdgeInsets.only(top: 8),
                               child: Text(
                                 imageError,
-                                style: AppTextStyle(textColor: Colors.red)
-                                    .labelSmall,
+                                style: AppTextStyle(textColor: Colors.red).labelSmall,
                               ),
                             ),
                         ],

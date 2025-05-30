@@ -1,11 +1,11 @@
-import 'package:money_mangmnt/core/constants/app_space.dart';
-import 'package:money_mangmnt/features/profile_page/views/widget/bank_details.dart';
-import 'package:money_mangmnt/features/profile_page/views/widget/kyc_details.dart';
-import 'package:money_mangmnt/features/profile_page/views/widget/nominee_details.dart';
-import 'package:money_mangmnt/features/profile_page/views/widget/profile_format_fns.dart';
-import 'package:money_mangmnt/features/profile_page/views/widget/profile_info_item.dart';
-import 'package:money_mangmnt/features/profile_page/views/widget/saved_address.dart';
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/core/constants/app_space.dart';
+import 'package:growk_v2/features/profile_page/views/widget/bank_details.dart';
+import 'package:growk_v2/features/profile_page/views/widget/kyc_details.dart';
+import 'package:growk_v2/features/profile_page/views/widget/nominee_details.dart';
+import 'package:growk_v2/features/profile_page/views/widget/profile_format_fns.dart';
+import 'package:growk_v2/features/profile_page/views/widget/profile_info_item.dart';
+import 'package:growk_v2/features/profile_page/views/widget/saved_address.dart';
+import 'package:growk_v2/views.dart';
 
 class UserOtherDetails extends ConsumerStatefulWidget {
   const UserOtherDetails({super.key});

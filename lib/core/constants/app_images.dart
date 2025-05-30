@@ -14,7 +14,7 @@ class AppImages {
   static const String tabSettingsSelected =
       'assets/tab_settings_selected_dark.png';
   static const String sarSymbol = 'assets/sar_light.png';
-  static const String rewardsSymbol = 'assets/rewards_dark.png';
+  static const String rewardsSymbol = 'assets/icons8-graph-96 (1).png';
   static const String notificationSymbol = 'assets/notifications_dark.png';
   static const String instantGold = 'assets/instant_gold.png';
   static const String goalDashboard = 'assets/goal_dashboard.png';

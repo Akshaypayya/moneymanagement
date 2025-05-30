@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
 
 class BankSelection extends ConsumerWidget {
   final String bankName;
@@ -22,7 +22,7 @@ class BankSelection extends ConsumerWidget {
       children: [
         const SizedBox(height: 20),
         Text(
-          'Take funds from',
+          'Add Funds to',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,

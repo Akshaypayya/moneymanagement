@@ -214,10 +214,52 @@ class TransactionApiModel {
     }
   }
 
-  bool get isDebit => drcrFlag == 1;
-  bool get isCredit => drcrFlag == 0;
+  bool get isCredit {
+    int flagToUse = drcrFlag;
+    if (drcrFlag == 0) {
+      flagToUse = sequence;
+    }
+    return flagToUse == 1;
+  }
 
-  String get transactionType => isDebit ? 'Debit' : 'Credit';
+  bool get isDebit {
+    int flagToUse = drcrFlag;
+    if (drcrFlag == 0) {
+      flagToUse = sequence;
+    }
+    return flagToUse == 2 || flagToUse == 3 || flagToUse == 4;
+  }
+
+  String get transactionType {
+    if (isCredit) {
+      return currencyCode == 'XAU' ? 'Gold Purchase' : 'Credit';
+    } else if (isDebit) {
+      int flagToUse = drcrFlag == 0 ? sequence : drcrFlag;
+      switch (flagToUse) {
+        case 2:
+          return 'Debit';
+        case 3:
+          return 'Transaction Charge';
+        case 4:
+          return 'VAT Charge';
+        default:
+          return 'Debit';
+      }
+    }
+    return 'Transaction';
+  }
+
+  String get signedFormattedAmount {
+    String baseAmount = formattedAmount;
+
+    if (isDebit) {
+      return '-$baseAmount';
+    } else if (isCredit) {
+      return '+$baseAmount';
+    }
+
+    return baseAmount;
+  }
 
   String get goalBasedIcon {
     final subGroup = accountSubGroup.toLowerCase();
@@ -236,6 +278,10 @@ class TransactionApiModel {
   }
 
   String get transactionIcon {
+    if (isCredit && currencyCode == 'XAU') {
+      return 'assets/goldbsct.png';
+    }
+
     switch (paymentMode.toLowerCase()) {
       case 'upi':
         return 'assets/bhim.png';
@@ -251,18 +297,32 @@ class TransactionApiModel {
 
   String get transactionDescription {
     if (accountSubGroup.isNotEmpty) {
-      if (isDebit) {
-        return 'The amount is auto-debited from your account and added to your Gold savings.';
-      } else {
-        return 'Amount credited to your account from $paymentMode.';
+      if (isCredit) {
+        return currencyCode == 'XAU'
+            ? 'Gold purchased for your ${accountSubGroup}. Amount auto-debited from your account.'
+            : 'Amount deposited to your ${accountSubGroup} savings.';
+      } else if (isDebit) {
+        int flagToUse = drcrFlag == 0 ? sequence : drcrFlag;
+        switch (flagToUse) {
+          case 2:
+            return 'Amount withdrawn from your ${accountSubGroup}.';
+          case 3:
+            return 'Transaction charges applied to your ${accountSubGroup}.';
+          case 4:
+            return 'VAT charges applied to your ${accountSubGroup}.';
+          default:
+            return 'Amount debited from your ${accountSubGroup}.';
+        }
       }
     }
 
-    if (isDebit) {
-      return 'Amount debited via $paymentMode';
-    } else {
+    if (isCredit) {
       return 'Amount credited via $paymentMode';
+    } else if (isDebit) {
+      return 'Amount debited via $paymentMode';
     }
+
+    return 'Transaction processed via $paymentMode';
   }
 
   String get displayCategory {
@@ -308,6 +368,10 @@ class TransactionApiModel {
     }
   }
 
+  String get debugInfo {
+    return 'drcrFlag: $drcrFlag, sequence: $sequence, type: $transactionType, isCredit: $isCredit, isDebit: $isDebit';
+  }
+
   @override
   String toString() {
     return 'TransactionApiModel('
@@ -315,7 +379,8 @@ class TransactionApiModel {
         'type: $transactionType, '
         'mode: $paymentMode, '
         'category: $displayCategory, '
-        'date: $transactionDate'
+        'date: $transactionDate, '
+        'debug: $debugInfo'
         ')';
   }
 }

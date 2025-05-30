@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class ReusableRow extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;

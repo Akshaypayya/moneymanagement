@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/features/profile_page/model/user_details_model.dart';
+import 'package:growk_v2/features/profile_page/model/user_details_model.dart';
 import 'package:intl/intl.dart';
 
 import '../../../views.dart';
@@ -58,7 +58,7 @@ class UserDetailRepository {
           // 👇 Only store if successful
           ref.read(userProfileProvider.notifier).setProfile(userDetails);
 
-// ✅ Bank details
+          // ✅ Bank details
           ref.read(bankNameControllerProvider).text =
               userDetails.bankDetails['nameOnAcc'] ?? '';
           ref.read(bankIbanControllerProvider).text =
@@ -68,7 +68,7 @@ class UserDetailRepository {
           ref.read(showWalletBalanceProvider.notifier).state =
               userDetails.walletVA ?? '';
 
-// ✅ Nominee details
+          // ✅ Nominee details
           final nominee = userDetails.nomineeDetails;
           ref.read(nomineeNameControllerProvider).text =
               nominee['nomineeName'] ?? '';
@@ -87,7 +87,7 @@ class UserDetailRepository {
             ref.read(nomineeDobUIProvider.notifier).state = uiFormatted;
           }
 
-// ✅ Saved Address details
+          // ✅ Saved Address details
           final address = userDetails.savedAddress;
           ref.read(pinCodeControllerProvider).text = address['pinCode'] ?? '';
           ref.read(addressLine1ControllerProvider).text =
@@ -97,7 +97,7 @@ class UserDetailRepository {
           ref.read(cityControllerProvider).text = address['city'] ?? '';
           ref.read(stateControllerProvider).text = address['state'] ?? '';
 
-// ✅ Optional: debug logs
+          // ✅ Optional: debug logs
           debugPrint(
               '🏦 Bank Name: ${ref.read(bankNameControllerProvider).text}');
           debugPrint(

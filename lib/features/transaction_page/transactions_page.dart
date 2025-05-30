@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_mangmnt/core/scaling_factor/scale_factor.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/core/widgets/growk_app_bar.dart';
-import 'package:money_mangmnt/core/widgets/reusable_sized_box.dart';
-import 'package:money_mangmnt/features/transaction_page/widgets/month_header.dart';
-import 'package:money_mangmnt/features/transaction_page/widgets/transaction_item.dart';
-import 'package:money_mangmnt/features/transaction_page/provider/transaction_provider.dart';
-import 'package:money_mangmnt/features/transaction_page/model/transaction_model.dart';
+import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/widgets/growk_app_bar.dart';
+import 'package:growk_v2/core/widgets/reusable_sized_box.dart';
+import 'package:growk_v2/features/transaction_page/widgets/month_header.dart';
+import 'package:growk_v2/features/transaction_page/widgets/transaction_item.dart';
+import 'package:growk_v2/features/transaction_page/provider/transaction_provider.dart';
+import 'package:growk_v2/features/transaction_page/model/transaction_model.dart';
 
 class TransactionsPage extends ConsumerStatefulWidget {
   const TransactionsPage({Key? key}) : super(key: key);
@@ -53,6 +53,13 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     final isDark = ref.watch(isDarkProvider);
     final transactionState = ref.watch(paginatedTransactionProvider);
 
+    debugPrint(
+        'TRANSACTIONS PAGE: Current state - ${transactionState.transactions.length} transactions loaded');
+    debugPrint('TRANSACTIONS PAGE: isLoading: ${transactionState.isLoading}');
+    debugPrint('TRANSACTIONS PAGE: hasMore: ${transactionState.hasMore}');
+    debugPrint(
+        'TRANSACTIONS PAGE: errorMessage: ${transactionState.errorMessage}');
+
     return ScalingFactor(
       child: Scaffold(
         backgroundColor: AppColors.current(isDark).scaffoldBackground,
@@ -94,6 +101,13 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   Widget _buildTransactionsList(TransactionPaginationState state, bool isDark) {
     final groupedTransactions = _groupTransactionsByMonth(state.transactions);
 
+    debugPrint(
+        'TRANSACTIONS PAGE: Processing ${state.transactions.length} transactions');
+    for (int i = 0; i < state.transactions.length && i < 5; i++) {
+      final tx = state.transactions[i];
+      debugPrint('Transaction $i: ${tx.debugInfo}');
+    }
+
     return SingleChildScrollView(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -131,15 +145,6 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
               isDark ? Colors.white : Colors.black,
             ),
           ),
-          // const SizedBox(height: 16),
-          // Text(
-          //   'Loading transactions...',
-          //   style: TextStyle(
-          //     fontSize: 16,
-          //     fontFamily: GoogleFonts.poppins().fontFamily,
-          //     color: isDark ? Colors.white : Colors.black,
-          //   ),
-          // ),
         ],
       ),
     );
@@ -172,16 +177,17 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                const SizedBox(height: 10),
+                Text(
+                  'Your transaction history will appear here once you start investing.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    color: isDark ? Colors.grey[300] : Colors.grey[600],
+                  ),
+                ),
                 const SizedBox(height: 100),
-                // Text(
-                //   'Your transaction history will appear here',
-                //   textAlign: TextAlign.center,
-                //   style: TextStyle(
-                //     fontSize: 14,
-                //     fontFamily: GoogleFonts.poppins().fontFamily,
-                //     color: isDark ? Colors.grey[300] : Colors.grey[600],
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -269,52 +275,13 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
               const CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
               ),
-              // const SizedBox(height: 8),
-              // Text(
-              //   'Loading more transactions...',
-              //   style: TextStyle(
-              //     fontSize: 14,
-              //     fontFamily: GoogleFonts.poppins().fontFamily,
-              //     color: isDark ? Colors.grey[400] : Colors.grey[600],
-              //   ),
-              // ),
             ],
           ),
         ),
       );
     } else if (state.hasMore && state.transactions.isNotEmpty) {
       return const SizedBox(height: 80);
-    }
-    // else if (state.transactions.isNotEmpty) {
-    //   return Padding(
-    //     padding: const EdgeInsets.symmetric(vertical: 20.0),
-    //     child: Center(
-    //       child: Column(
-    //         children: [
-    //           Container(
-    //             width: 40,
-    //             height: 2,
-    //             decoration: BoxDecoration(
-    //               color: isDark ? Colors.grey[600] : Colors.grey[400],
-    //               borderRadius: BorderRadius.circular(1),
-    //             ),
-    //           ),
-    //           const SizedBox(height: 8),
-    //           Text(
-    //             'You\'ve reached the end',
-    //             style: TextStyle(
-    //               color: isDark ? Colors.grey[400] : Colors.grey[600],
-    //               fontStyle: FontStyle.italic,
-    //               fontSize: 14,
-    //               fontFamily: GoogleFonts.poppins().fontFamily,
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   );
-    // }
-    else {
+    } else {
       return const SizedBox.shrink();
     }
   }

@@ -1,4 +1,4 @@
-import 'package:money_mangmnt/views.dart';
+import 'package:growk_v2/views.dart';
 
 class OtpController {
   final Ref ref;
@@ -33,9 +33,10 @@ class OtpController {
             .setUserData(data, phoneNumber: cellNo);
         ref.read(otpErrorProvider.notifier).state = null;
 
-        Navigator.pushReplacementNamed(
+        Navigator.pushNamedAndRemoveUntil(
           context,
           isNewUser ? AppRouter.applyReferralCode : AppRouter.mainScreen,
+              (route) => false,  // This removes all previous routes
         );
       } else {
         ref.read(otpErrorProvider.notifier).state =
@@ -50,7 +51,6 @@ class OtpController {
       ref.read(isButtonLoadingProvider.notifier).state = false;
     }
   }
-
   Future<void> resendLoginOtp(BuildContext context) async {
     final cellNo = ref.read(phoneInputProvider);
     final remainingTime = ref.read(otpTimerProvider);
@@ -74,7 +74,8 @@ class OtpController {
     } catch (e) {
       debugPrint("Resend OTP Error: $e");
       ref.read(otpErrorProvider.notifier).state =
-          "Something went wrong while resending OTP";
-    } finally {}
+      "Something went wrong while resending OTP";
+    } finally {
+    }
   }
 }

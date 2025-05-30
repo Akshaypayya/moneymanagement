@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/core/theme/app_theme.dart';
-import 'package:money_mangmnt/features/profile_page/provider/update_prof_pic_provider.dart';
-import 'package:money_mangmnt/features/profile_page/provider/user_details_provider.dart';
-import 'package:money_mangmnt/features/profile_page/repo/profile_repo.dart';
+import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/features/profile_page/provider/update_prof_pic_provider.dart';
+import 'package:growk_v2/features/profile_page/provider/user_details_provider.dart';
+import 'package:growk_v2/features/profile_page/repo/profile_repo.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class ProfilePictureController {
@@ -13,7 +13,7 @@ class ProfilePictureController {
 
   ProfilePictureController(this._repository, this._profilePictureNotifier);
 
-  Future<File?> cropImage(File imageFile, WidgetRef ref) async {
+  Future<File?> cropImage(File imageFile,WidgetRef ref) async {
     final isDark = ref.watch(isDarkProvider);
 
     final croppedFile = await ImageCropper().cropImage(
@@ -27,14 +27,14 @@ class ProfilePictureController {
           toolbarColor: AppColors.current(isDark).background,
           backgroundColor: AppColors.current(isDark).background,
           cropStyle: CropStyle.circle,
-          toolbarWidgetColor: AppColors.current(isDark).text,
+          toolbarWidgetColor:AppColors.current(isDark).text,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true,
           cropFrameColor: Colors.transparent,
           cropGridColor: Colors.transparent,
           hideBottomControls: true,
           statusBarColor: AppColors.current(isDark).text,
-          activeControlsWidgetColor: Colors.black,
+          activeControlsWidgetColor:  Colors.black,
         ),
         IOSUiSettings(
           title: 'Crop Image',
@@ -57,7 +57,7 @@ class ProfilePictureController {
       if (imageFile != null) {
         debugPrint('CONTROLLER: Image selected successfully');
 
-        final cropped = await cropImage(imageFile, ref);
+        final cropped = await cropImage(imageFile,ref);
         if (cropped != null) {
           debugPrint('CONTROLLER: Image cropped successfully');
           _profilePictureNotifier.setProfilePicture(cropped);
@@ -70,14 +70,12 @@ class ProfilePictureController {
       }
     } catch (e) {
       debugPrint('CONTROLLER ERROR: Failed to pick image: ${e.toString()}');
-      ref
-          .read(profilePictureUploadStateProvider.notifier)
+      ref.read(profilePictureUploadStateProvider.notifier)
           .setError('Failed to pick image: ${e.toString()}');
     }
   }
 
-  Future<void> captureProfilePicture(
-      WidgetRef ref, BuildContext context) async {
+  Future<void> captureProfilePicture(WidgetRef ref, BuildContext context) async {
     debugPrint('CONTROLLER: Initiating profile picture capture from camera');
 
     try {
@@ -86,7 +84,7 @@ class ProfilePictureController {
       if (imageFile != null) {
         debugPrint('CONTROLLER: Image captured successfully');
 
-        final cropped = await cropImage(imageFile, ref);
+        final cropped = await cropImage(imageFile,ref);
         if (cropped != null) {
           debugPrint('CONTROLLER: Image cropped successfully');
           _profilePictureNotifier.setProfilePicture(cropped);
@@ -99,8 +97,7 @@ class ProfilePictureController {
       }
     } catch (e) {
       debugPrint('CONTROLLER ERROR: Failed to capture image: ${e.toString()}');
-      ref
-          .read(profilePictureUploadStateProvider.notifier)
+      ref.read(profilePictureUploadStateProvider.notifier)
           .setError('Failed to capture image: ${e.toString()}');
     }
   }
@@ -129,8 +126,7 @@ class ProfilePictureController {
         stateNotifier.setError(response.message);
       }
     } catch (e) {
-      stateNotifier
-          .setError('Failed to upload profile picture: ${e.toString()}');
+      stateNotifier.setError('Failed to upload profile picture: ${e.toString()}');
     }
   }
 

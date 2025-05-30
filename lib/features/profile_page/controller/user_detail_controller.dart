@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:money_mangmnt/features/profile_page/provider/user_details_provider.dart';
-import 'package:money_mangmnt/features/profile_page/repo/user_details_repo.dart';
+import 'package:growk_v2/features/profile_page/provider/user_details_provider.dart';
+import 'package:growk_v2/features/profile_page/repo/user_details_repo.dart';
 
 class UserProfileController {
   final UserDetailRepository _repository;

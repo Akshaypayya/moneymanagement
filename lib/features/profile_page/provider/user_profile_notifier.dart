@@ -1,5 +1,4 @@
-import 'package:money_mangmnt/views.dart';
-
+import 'package:growk_v2/views.dart';
 class UserProfileNotifier extends StateNotifier<UserProfileModel?> {
   UserProfileNotifier() : super(null);
 
@@ -15,8 +14,7 @@ class UserProfileNotifier extends StateNotifier<UserProfileModel?> {
     if (state?.bankDetails.isNotEmpty == true) {
       final bankDetails = state!.bankDetails;
 
-      ref.read(bankNameControllerProvider).text =
-          bankDetails['nameOnAcc'] ?? '';
+      ref.read(bankNameControllerProvider).text = bankDetails['nameOnAcc'] ?? '';
       ref.read(bankIbanControllerProvider).text = bankDetails['accNo'] ?? '';
       ref.read(bankReIbanControllerProvider).text = bankDetails['accNo'] ?? '';
     }
