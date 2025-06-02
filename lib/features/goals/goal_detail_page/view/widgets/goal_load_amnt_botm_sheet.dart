@@ -6,6 +6,7 @@ import 'package:growk_v2/core/constants/app_images.dart';
 import 'package:growk_v2/core/theme/app_text_styles.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_button.dart';
+import 'package:growk_v2/core/widgets/reusable_snackbar.dart';
 import 'package:growk_v2/core/widgets/reusable_text.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/controller/goals_funds_controller.dart';
 
@@ -27,6 +28,7 @@ class LoadFundsBottomSheet extends ConsumerStatefulWidget {
 class _LoadFundsBottomSheetState extends ConsumerState<LoadFundsBottomSheet> {
   final TextEditingController _amountController = TextEditingController();
   final FocusNode _amountFocusNode = FocusNode();
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -55,60 +57,64 @@ class _LoadFundsBottomSheetState extends ConsumerState<LoadFundsBottomSheet> {
     final loadAmount = ref.watch(loadAmountProvider);
     final isLoading = ref.watch(isLoadingFundsProvider);
 
-    return Container(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: isDark ? Colors.grey[900] : Colors.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        ),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Load Funds Manually',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                color: isDark ? Colors.white : Colors.black,
-              ),
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[900] : Colors.white,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(16)),
             ),
-            const SizedBox(height: 12),
-            Text(
-              'Move money from your main wallet and get one step closer to your dream.',
-              style: TextStyle(
-                fontSize: 14,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                color: isDark ? Colors.grey[300] : Colors.grey[600],
-                height: 1.4,
-              ),
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Load Funds Manually',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Move money from your main wallet and get one step closer to your dream.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    color: isDark ? Colors.grey[300] : Colors.grey[600],
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                _buildAmountInputSection(isDark, controller),
+
+                const SizedBox(height: 32),
+
+                _buildLoadAmountButton(context, isDark, controller, isLoading),
+
+                // GrowkButton(
+                //     title: 'Load Fund',
+                //     onTap: () => controller.loadFunds(
+                //           context,
+                //           widget.goalName ?? '',
+                //           ref,
+                //           onSuccess: widget.onSuccess,
+                //         )),
+                const SizedBox(height: 16),
+              ],
             ),
-
-            const SizedBox(height: 24),
-
-            _buildAmountInputSection(isDark, controller),
-
-            const SizedBox(height: 32),
-
-            _buildLoadAmountButton(context, isDark, controller, isLoading),
-
-            // GrowkButton(
-            //     title: 'Load Fund',
-            //     onTap: () => controller.loadFunds(
-            //           context,
-            //           widget.goalName ?? '',
-            //           ref,
-            //           onSuccess: widget.onSuccess,
-            //         )),
-            const SizedBox(height: 16),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -224,7 +230,9 @@ class _LoadFundsBottomSheetState extends ConsumerState<LoadFundsBottomSheet> {
                     color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
                     width: 1,
                   ),
-                  color: Colors.transparent,
+                  color: _amountController.text == amount
+                      ? Colors.teal
+                      : Colors.transparent,
                 ),
                 child: Center(
                   child: Text(
@@ -233,7 +241,11 @@ class _LoadFundsBottomSheetState extends ConsumerState<LoadFundsBottomSheet> {
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       fontFamily: GoogleFonts.poppins().fontFamily,
-                      color: isDark ? Colors.grey[300] : Colors.grey[700],
+                      color: isDark
+                          ? Colors.grey[300]
+                          : _amountController.text == amount
+                              ? Colors.white
+                              : Colors.grey[700],
                     ),
                   ),
                 ),
@@ -258,12 +270,24 @@ class _LoadFundsBottomSheetState extends ConsumerState<LoadFundsBottomSheet> {
         child: ElevatedButton(
           onPressed: isLoading
               ? null
-              : () => controller.loadFunds(
+              : () {
+                  if (_amountController.text.trim().isEmpty) {
+                    Navigator.pop(context);
+                    showGrowkSnackBar(
+                        context: context,
+                        ref: ref,
+                        message: 'Enter any amount to load',
+                        type: SnackType.error);
+
+                    return;
+                  }
+                  controller.loadFunds(
                     context,
                     widget.goalName ?? '',
                     ref,
                     onSuccess: widget.onSuccess,
-                  ),
+                  );
+                },
           style: ElevatedButton.styleFrom(
             backgroundColor: isDark ? Colors.white : Colors.black,
             foregroundColor: isDark ? Colors.black : Colors.white,

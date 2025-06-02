@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
+import 'package:growk_v2/core/widgets/goal_pic_selector.dart';
 import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart';
 
 class GoalIconPicker extends ConsumerWidget {
@@ -129,6 +130,27 @@ class GoalIconPicker extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget buildGoalImage({
+    required ImageProvider imageProvider,
+    double size = 60,
+    double borderRadius = 12,
+  }) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: Container(
+        width: size,
+        height: size,
+        color: Colors.grey[200],
+        child: Image(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          width: size,
+          height: size,
+        ),
+      ),
     );
   }
 }

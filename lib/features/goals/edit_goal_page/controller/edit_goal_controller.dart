@@ -62,10 +62,14 @@ class EditGoalController {
         goalData.goldInvestment == 'Y';
 
     String iconName = '';
-
-    if (goalData.iconName != null && goalData.iconName!.isNotEmpty) {
-      iconName = goalData.iconName!;
-      print('EDIT CONTROLLER: Using iconName from goal data: $iconName');
+    if (goalData.goalPic != null && goalData.goalPic!.isNotEmpty) {
+      ref.read(editSelectedImageFileProvider.notifier).state =
+          XFile(goalData.goalPic!);
+      ref.read(editSelectedGoalIconProvider.notifier).state = '';
+    } else if (goalData.iconName != null && goalData.iconName!.isNotEmpty) {
+      ref.read(editSelectedGoalIconProvider.notifier).state =
+          goalData.iconName!;
+      ref.read(editSelectedImageFileProvider.notifier).state = null;
     } else {
       final storedIcon = IconMappingService.getStoredIcon(goalData.goalName);
       if (storedIcon != null) {
@@ -77,8 +81,22 @@ class EditGoalController {
       }
     }
 
-    ref.read(editSelectedGoalIconProvider.notifier).state = iconName;
-    ref.read(editSelectedImageFileProvider.notifier).state = null;
+    // if (goalData.iconName != null && goalData.iconName!.isNotEmpty) {
+    //   iconName = goalData.iconName!;
+    //   print('EDIT CONTROLLER: Using iconName from goal data: $iconName');
+    // } else {
+    //   final storedIcon = IconMappingService.getStoredIcon(goalData.goalName);
+    //   if (storedIcon != null) {
+    //     iconName = storedIcon;
+    //     print('EDIT CONTROLLER: Using stored icon mapping: $iconName');
+    //   } else {
+    //     iconName = _getIconFromGoalName(goalData.goalName);
+    //     print('EDIT CONTROLLER: Using name-based detection: $iconName');
+    //   }
+    // }
+
+    // ref.read(editSelectedGoalIconProvider.notifier).state = iconName;
+    // ref.read(editSelectedImageFileProvider.notifier).state = null;
 
     print('EDIT CONTROLLER: Form initialized with goal data');
     print('EDIT CONTROLLER: Goal name: ${goalData.goalName}');

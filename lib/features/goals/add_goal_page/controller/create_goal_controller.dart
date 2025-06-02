@@ -14,6 +14,8 @@ import 'package:growk_v2/core/services/icon_mapping_service.dart';
 import 'package:growk_v2/views.dart';
 import 'package:growk_v2/features/goals/edit_goal_page/repo/edit_goal_repo.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:image/image.dart' as img;
 
 class CreateGoalController {
   final Ref ref;
@@ -496,6 +498,24 @@ class CreateGoalController {
     ref.read(frequencyProvider.notifier).state = 'Monthly';
     ref.read(autoDepositProvider.notifier).state = false;
     print('CONTROLLER: Form reset completed');
+  }
+
+  Future<File> assetImageToFile(String assetName) async {
+    final byteData = await rootBundle.load('assets/$assetName');
+    final Uint8List pngBytes = byteData.buffer.asUint8List();
+
+    final img.Image? image = img.decodeImage(pngBytes);
+    if (image == null) {
+      throw Exception('Failed to decode asset image');
+    }
+
+    final List<int> jpegBytes = img.encodeJpg(image, quality: 90);
+
+    final tempDir = await getTemporaryDirectory();
+    final fileName = path.basenameWithoutExtension(assetName) + '.jpg';
+    final file = File('${tempDir.path}/$fileName');
+    await file.writeAsBytes(jpegBytes);
+    return file;
   }
 
   Future<File> saveFileAsBytesTemp(BuildContext context, String fileName,

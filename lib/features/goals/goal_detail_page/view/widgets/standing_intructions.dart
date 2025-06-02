@@ -25,6 +25,7 @@ class StandingInstructions extends ConsumerWidget {
     required this.emiAmnt,
     required this.duration,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
