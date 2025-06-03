@@ -15,6 +15,7 @@ class GoalSummary extends ConsumerWidget {
   final String virtualAccountNbr;
   final String currentGoldPrice;
   final String invested;
+  final String goalStatus;
 
   const GoalSummary({
     Key? key,
@@ -24,6 +25,7 @@ class GoalSummary extends ConsumerWidget {
     required this.virtualAccountNbr,
     required this.currentGoldPrice,
     required this.invested,
+    required this.goalStatus,
   }) : super(key: key);
 
   @override
@@ -57,7 +59,10 @@ class GoalSummary extends ConsumerWidget {
                 style: AppTextStyle(textColor: textColor).titleMedium,
               ),
               const SizedBox(width: 8),
-              _buildProfitSection(isDark, formattedProfit, isProfitNegative),
+              goalStatus == "COMPLETED"
+                  ? const SizedBox()
+                  : _buildProfitSection(
+                      isDark, formattedProfit, isProfitNegative),
             ],
           ),
           const SizedBox(height: 8),

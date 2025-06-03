@@ -134,39 +134,42 @@ class GoalItem extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        ReusableRow(
-                          children: [
-                            ReusableText(
-                              text: '(Profit: ',
-                              style: AppTextStyle(textColor: textColor)
-                                  .bodyRegular,
-                            ),
-                            Image.asset(
-                              AppImages.sarSymbol,
-                              height: 13,
-                              color: getProfitVal(amount, invested) < 0
-                                  ? Colors.red
-                                  : Colors.green,
-                            ),
-                            ReusableSizedBox(
-                              width: 3,
-                            ),
-                            ReusableText(
-                              text: getProfitVal(amount, invested)
-                                  .toStringAsFixed(2),
-                              style: AppTextStyle(
-                                textColor: getProfitVal(amount, invested) < 0
-                                    ? Colors.red
-                                    : Colors.green,
-                              ).titleSmall,
-                            ),
-                            ReusableText(
-                              text: ')',
-                              style: AppTextStyle(textColor: textColor)
-                                  .bodyRegular,
-                            ),
-                          ],
-                        ),
+                        goalStatus == "COMPLETED"
+                            ? const SizedBox()
+                            : ReusableRow(
+                                children: [
+                                  ReusableText(
+                                    text: '(Profit: ',
+                                    style: AppTextStyle(textColor: textColor)
+                                        .bodyRegular,
+                                  ),
+                                  Image.asset(
+                                    AppImages.sarSymbol,
+                                    height: 13,
+                                    color: getProfitVal(amount, invested) < 0
+                                        ? Colors.red
+                                        : Colors.green,
+                                  ),
+                                  ReusableSizedBox(
+                                    width: 3,
+                                  ),
+                                  ReusableText(
+                                    text: getProfitVal(amount, invested)
+                                        .toStringAsFixed(2),
+                                    style: AppTextStyle(
+                                      textColor:
+                                          getProfitVal(amount, invested) < 0
+                                              ? Colors.red
+                                              : Colors.green,
+                                    ).titleSmall,
+                                  ),
+                                  ReusableText(
+                                    text: ')',
+                                    style: AppTextStyle(textColor: textColor)
+                                        .bodyRegular,
+                                  ),
+                                ],
+                              )
                       ],
                     ),
                   ],

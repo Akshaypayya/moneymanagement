@@ -121,6 +121,34 @@ class StandingInstructions extends ConsumerWidget {
                         iBanController.copyVirtualAccountToClipboard(
                             context, iBanAcntNbr, ref),
                   ),
+                  // Row(
+                  //   children: [
+                  //     DetailItem(
+                  //       isRow: true,
+                  //       label: 'IBAN Account Number',
+                  //       value: iBanAcntNbr,
+                  //       showSymbol: false,
+                  //       valOnTap: () =>
+                  //           iBanController.copyVirtualAccountToClipboard(
+                  //               context, iBanAcntNbr, ref),
+                  //     ),
+                  //     Expanded(
+                  //       child: Transform.translate(
+                  //         offset: Offset(-10, -3),
+                  //         child: IconButton(
+                  //           icon: Icon(
+                  //             Icons.copy,
+                  //             size: 10,
+                  //             color: isDark ? Colors.white : Colors.black,
+                  //           ),
+                  //           onPressed: () =>
+                  //               iBanController.copyVirtualAccountToClipboard(
+                  //                   context, iBanAcntNbr, ref),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: 8),
                   DetailItem(
                     isRow: true,

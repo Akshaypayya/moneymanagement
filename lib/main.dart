@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:growk_v2/core/internet_checker/view/internet_checker_ui.dart';
 import 'package:growk_v2/views.dart';
 
 // final GlobalKey _providerScopeKey = GlobalKey();
@@ -81,6 +82,8 @@ class _MyAppState extends ConsumerState<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors.light.primary),
         ),
         onGenerateRoute: AppRouter.generateRoute,
+        builder: (context, child) =>
+            InternetCheckerWidget(child: child ?? SizedBox()),
       ),
     );
   }

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
+import 'package:growk_v2/core/theme/app_text_styles.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_app_bar.dart';
+import 'package:growk_v2/core/widgets/growk_button.dart';
 import 'package:growk_v2/core/widgets/reusable_sized_box.dart';
+import 'package:growk_v2/core/widgets/reusable_text.dart';
 import 'package:growk_v2/features/transaction_page/widgets/month_header.dart';
 import 'package:growk_v2/features/transaction_page/widgets/transaction_item.dart';
 import 'package:growk_v2/features/transaction_page/provider/transaction_provider.dart';
@@ -196,67 +199,138 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     );
   }
 
+  // Widget _buildErrorState(String errorMessage, bool isDark) {
+  //   return SingleChildScrollView(
+  //     physics: const AlwaysScrollableScrollPhysics(),
+  //     child: SizedBox(
+  //       height: MediaQuery.of(context).size.height * 0.7,
+  //       child: Center(
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(20.0),
+  //           child: Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               Icon(
+  //                 Icons.error_outline,
+  //                 size: 64,
+  //                 color: isDark ? Colors.red[300] : Colors.red,
+  //               ),
+  //               const SizedBox(height: 16),
+  //               Text(
+  //                 'Error loading transactions',
+  //                 style: TextStyle(
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.bold,
+  //                   fontFamily: GoogleFonts.poppins().fontFamily,
+  //                   color: isDark ? Colors.white : Colors.black,
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 8),
+  //               Text(
+  //                 errorMessage,
+  //                 textAlign: TextAlign.center,
+  //                 style: TextStyle(
+  //                   fontSize: 14,
+  //                   fontFamily: GoogleFonts.poppins().fontFamily,
+  //                   color: isDark ? Colors.grey[300] : Colors.grey[600],
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 20),
+  //               ElevatedButton(
+  //                 onPressed: () {
+  //                   ref
+  //                       .read(paginatedTransactionProvider.notifier)
+  //                       .refreshTransactions();
+  //                 },
+  //                 style: ElevatedButton.styleFrom(
+  //                   backgroundColor: Colors.teal,
+  //                   foregroundColor: Colors.white,
+  //                   shape: RoundedRectangleBorder(
+  //                     borderRadius: BorderRadius.circular(8),
+  //                   ),
+  //                   padding: const EdgeInsets.symmetric(
+  //                       horizontal: 24, vertical: 12),
+  //                 ),
+  //                 child: Text(
+  //                   'Retry',
+  //                   style: TextStyle(
+  //                     fontFamily: GoogleFonts.poppins().fontFamily,
+  //                     fontSize: 16,
+  //                     fontWeight: FontWeight.w600,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget _buildErrorState(String errorMessage, bool isDark) {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.7,
+        height: MediaQuery.of(context).size.height * 0.8,
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: isDark ? Colors.red[300] : Colors.red,
+                Image.asset(
+                  'assets/nogoal.png',
+                  height: 250,
+                  width: 250,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      Icons.receipt_long_outlined,
+                      size: 120,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    );
+                  },
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Error loading transactions',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
+                ReusableText(
+                  text: 'Something went wrong',
+                  style: AppTextStyle(textColor: AppColors.current(isDark).text)
+                      .titleLrg,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 20),
                 Text(
+                  // 'We couldn\'t load your transaction history right now. Please check your connection and try again.',
                   errorMessage,
+                  maxLines: 3,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
+                    fontWeight: FontWeight.w700,
                     fontFamily: GoogleFonts.poppins().fontFamily,
-                    color: isDark ? Colors.grey[300] : Colors.grey[600],
+                    color: isDark ? Colors.grey[300] : Colors.grey[700],
                   ),
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    ref
-                        .read(paginatedTransactionProvider.notifier)
-                        .refreshTransactions();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                  ),
-                  child: Text(
-                    'Retry',
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 36),
+                // if (errorMessage.isNotEmpty) ...[
+                //   Text(
+                //     'Error: $errorMessage',
+                //     textAlign: TextAlign.center,
+                //     style: TextStyle(
+                //       fontSize: 12,
+                //       fontFamily: GoogleFonts.poppins().fontFamily,
+                //       color: isDark ? Colors.grey[500] : Colors.grey[500],
+                //     ),
+                //   ),
+                //   const SizedBox(height: 24),
+                // ],
+                // const SizedBox(height: 24),
+                // GrowkButton(
+                //   title: 'Try Again',
+                //   onTap: () {
+                //     ref
+                //         .read(paginatedTransactionProvider.notifier)
+                //         .refreshTransactions();
+                //   },
+                // ),
+                const SizedBox(height: 60),
               ],
             ),
           ),

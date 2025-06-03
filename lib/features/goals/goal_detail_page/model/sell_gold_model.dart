@@ -53,8 +53,8 @@ class SellGoldResponse {
 }
 
 class SellGoldData {
-  final int goldSold;
-  final int soldPrice;
+  final double goldSold;
+  final double soldPrice;
   final String currencyCode;
 
   SellGoldData({
@@ -65,8 +65,8 @@ class SellGoldData {
 
   factory SellGoldData.fromJson(Map<String, dynamic> json) {
     return SellGoldData(
-      goldSold: json['goldSold'] ?? 0,
-      soldPrice: json['soldPrice'] ?? 0,
+      goldSold: (json['goldSold'] ?? 0).toDouble(),
+      soldPrice: (json['soldPrice'] ?? 0).toDouble(),
       currencyCode: json['currencyCode'] ?? '',
     );
   }
