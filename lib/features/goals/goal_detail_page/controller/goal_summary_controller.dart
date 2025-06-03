@@ -40,11 +40,11 @@ class GoalSummaryController {
       final clipboardService = ref.read(clipboardProvider);
       await clipboardService.copyToClipboard(virtualAccountNumber);
 
-      if (context.mounted) {
-        debugPrint('GOAL SUMMARY: Successfully copied virtual account number');
-        _showSuccessSnackbar(
-            context, 'Virtual Account Number copied to clipboard', ref);
-      }
+      // if (context.mounted) {
+      //   debugPrint('GOAL SUMMARY: Successfully copied virtual account number');
+      //   _showSuccessSnackbar(
+      //       context, 'Virtual Account Number copied to clipboard', ref);
+      // }
     } catch (e, stackTrace) {
       debugPrint(
           'GOAL SUMMARY ERROR: Failed to copy virtual account number - $e');

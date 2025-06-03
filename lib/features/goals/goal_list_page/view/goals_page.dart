@@ -98,6 +98,7 @@ class GoalsPage extends ConsumerWidget {
           progress: goal.progressText,
           progressPercent: goal.progressPercent,
           isLast: isLast,
+          goalStatus: goal.status,
         );
       }).toList(),
     );

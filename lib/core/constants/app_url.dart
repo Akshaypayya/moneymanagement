@@ -46,4 +46,7 @@ class AppUrl {
   static const String buyGoldUrl = "/user-service/user/buyGold";
   static const String getLiveGoldPriceUrl =
       "/user-service/user/currentGoldRate";
+
+  static const String sellGoldUrl = "/user-service/goals/sellGold";
+
 }

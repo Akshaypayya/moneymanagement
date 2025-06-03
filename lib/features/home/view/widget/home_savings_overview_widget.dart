@@ -19,8 +19,8 @@ class HomeSavingsOverviewWidget extends ConsumerWidget {
             gold: 0,
           ),
           data: (data) {
-            final wallet = (data.data?.walletBalance ?? 0).toDouble();
-            final gold = (data.data?.currentPrice ?? 0).toDouble();
+            final wallet = (data.data?.summary?.walletBalance ?? 0).toDouble();
+            final gold = (data.data?.summary?.currentPrice ?? 0).toDouble();
             return _buildSavingsOverview(
               context,
               isDark: isDark,

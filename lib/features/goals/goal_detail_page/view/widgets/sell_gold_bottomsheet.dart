@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_button.dart';
+import 'package:growk_v2/core/widgets/reusable_snackbar.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/controller/sell_gold_controller.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/provider/sell_gold_provider.dart';
 
 class SellGoldBottomSheet extends ConsumerWidget {
   final String goalName;
@@ -17,6 +20,8 @@ class SellGoldBottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
+    final controller = ref.read(sellGoldControllerProvider);
+    final isLoading = ref.watch(isSellGoldLoadingProvider);
 
     return Container(
       decoration: BoxDecoration(
@@ -62,28 +67,51 @@ class SellGoldBottomSheet extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 32),
-          Row(
-            children: [
-              Expanded(
+          Row(children: [
+            Expanded(
+              child: Expanded(
                 child: GrowkButton(
                   title: 'Cancel',
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: isLoading ? null : () => Navigator.of(context).pop(),
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: GrowkButton(
-                  title: 'Ok',
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    if (onConfirm != null) {
-                      onConfirm!();
-                    }
-                  },
-                ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: GrowkButton(
+                title: 'Ok',
+                onTap: isLoading
+                    ? null
+                    : () async {
+                        final responseMessage = await controller.sellGold(
+                          context: context,
+                          goalName: goalName,
+                          widgetRef: ref,
+                        );
+                        if (responseMessage == "No gold balance available." ||
+                            responseMessage == "Goal already completed.") {
+                          Navigator.of(context).pop(responseMessage);
+                          showGrowkSnackBar(
+                              context: context,
+                              ref: ref,
+                              message: responseMessage.toString(),
+                              type: responseMessage ==
+                                          "No gold balance available." ||
+                                      responseMessage ==
+                                          "Goal already completed."
+                                  ? SnackType.error
+                                  : SnackType.success);
+
+                          return;
+                        }
+                        Navigator.of(context).pop(responseMessage);
+                        if (onConfirm != null) {
+                          onConfirm!();
+                        }
+                      },
               ),
-            ],
-          ),
+            ),
+          ]),
           const SizedBox(height: 16),
         ],
       ),

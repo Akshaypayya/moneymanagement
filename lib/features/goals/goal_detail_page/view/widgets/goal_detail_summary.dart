@@ -39,6 +39,8 @@ class GoalSummary extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

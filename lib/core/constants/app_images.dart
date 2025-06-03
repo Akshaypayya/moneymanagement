@@ -34,4 +34,5 @@ class AppImages {
   static const String profileMale = 'assets/profile_male.jpg';
   static const String profileFemale = 'assets/profile_female.jpg';
   static const String profileDefaultImage = 'assets/profile_default_image.png';
+  static const String goalClosedImage = 'assets/goalseal.png';
 }

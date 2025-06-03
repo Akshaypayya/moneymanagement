@@ -31,16 +31,16 @@ final homeDetailsProvider = FutureProvider<GetHomeDetailsModel>((ref) async {
 
 final totalSavingsProvider = Provider<String?>((ref) {
   final asyncHome = ref.watch(homeDetailsProvider);
-  return asyncHome.whenOrNull(data: (data) => data.data?.totalBalance?.toStringAsFixed(2));
+  return asyncHome.whenOrNull(data: (data) => data.data?.summary?.totalBalance?.toStringAsFixed(2));
 });
 
 final goldWeightProvider = Provider<String?>((ref) {
   final asyncHome = ref.watch(homeDetailsProvider);
-  return asyncHome.whenOrNull(data: (data) => data.data?.goldBalance?.toStringAsFixed(3));
+  return asyncHome.whenOrNull(data: (data) => data.data?.summary?.goldBalance?.toStringAsFixed(3));
 });
 final walletBalanceProvider = Provider<String?>((ref) {
   final asyncHome = ref.watch(homeDetailsProvider);
-  return asyncHome.whenOrNull(data: (data) => data.data?.walletBalance?.toStringAsFixed(3));
+  return asyncHome.whenOrNull(data: (data) => data.data?.summary?.walletBalance?.toStringAsFixed(3));
 });
 final appColorsProvider = Provider<AppColors>((ref) {
   final isDark = ref.watch(isDarkProvider);

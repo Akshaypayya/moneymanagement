@@ -22,6 +22,7 @@ class GoalItem extends ConsumerWidget {
   final double progressPercent;
   final bool isLast;
   final Widget? iconWidget;
+  final String goalStatus;
 
   GoalItem({
     Key? key,
@@ -36,6 +37,7 @@ class GoalItem extends ConsumerWidget {
     required this.progressPercent,
     this.isLast = false,
     this.iconWidget,
+    required this.goalStatus,
   }) : super(key: key);
 
   // String profitVal = '';
@@ -62,6 +64,7 @@ class GoalItem extends ConsumerWidget {
             builder: (context) => GoalDetailPage(
               goalName: title,
               goalIcon: iconAsset,
+              goalStatus: goalStatus,
             ),
           ),
         );
@@ -71,7 +74,11 @@ class GoalItem extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isDark ? Colors.black : Colors.white,
+              color: goalStatus == "COMPLETED"
+                  ? Colors.grey[300]
+                  : isDark
+                      ? Colors.black
+                      : Colors.white,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,7 +258,9 @@ class GoalItem extends ConsumerWidget {
                   child: LinearProgressIndicator(
                     value: progressPercent,
                     minHeight: 10,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: goalStatus == "COMPLETED"
+                        ? Colors.white
+                        : Colors.grey[300],
                     valueColor:
                         const AlwaysStoppedAnimation<Color>(Colors.teal),
                   ),

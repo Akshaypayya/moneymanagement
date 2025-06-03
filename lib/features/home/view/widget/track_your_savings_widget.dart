@@ -7,48 +7,67 @@ import 'package:growk_v2/core/widgets/reusable_white_container_with_padding.dart
 import 'package:growk_v2/routes/app_router.dart';
 import '../../../../views.dart';
 import 'savings_row_widget.dart';
-
 class TrackYourSavingsWidget extends ConsumerWidget {
   const TrackYourSavingsWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final homeDataAsync = ref.watch(homeDetailsProvider);
+    final isDark = ref.watch(isDarkProvider);
+
+    // Default safe values
+    final summary = homeDataAsync.valueOrNull?.data?.summary ?? Summary();
+    final goals = homeDataAsync.valueOrNull?.data?.goals ?? Goals();
+    final referral = homeDataAsync.valueOrNull?.data?.referral ?? Referral();
+
     final data = [
       {
         'emoji': AppImages.instantGold,
         'actionIcon': AppImages.buyMoreLite,
         'title': 'Instant Purchase',
-        'profit': '0',
-        'profitColor': Colors.green,
+        'profit': ((summary.currentPrice ?? 0) - (summary.buyPrice ?? 0)).toStringAsFixed(2),
+        'profitColor': ((summary.currentPrice ?? 0) - (summary.buyPrice ?? 0)) >= 0
+            ? Colors.green
+            : Colors.red,
         'action': 'Buy More',
-        'invested': '0',
-        'current': '0',
-        'growth': '0%',
+        'invested': (summary.buyPrice ?? 0).toStringAsFixed(2),
+        'current': (summary.totalBalance ?? 0).toStringAsFixed(2),
+        'growth': (summary.buyPrice ?? 0) != 0
+            ? '${((((summary.currentPrice ?? 0) - summary.buyPrice!) / summary.buyPrice!) * 100).toStringAsFixed(1)}%'
+            : '0%',
       },
       {
         'emoji': AppImages.goalDashboard,
         'actionIcon': AppImages.createNewGoal,
         'title': 'Goal Based Savings',
-        'profit': '0',
-        'profitColor': Colors.green,
+        'profit': ((goals.currentPrice ?? 0) - (goals.buyPrice ?? 0)).toStringAsFixed(2),
+        'profitColor': ((goals.currentPrice ?? 0) - (goals.buyPrice ?? 0)) >= 0
+            ? Colors.green
+            : Colors.red,
         'action': 'Create New',
-        'invested': '0',
-        'current': '0',
-        'growth': '0%',
+        'invested': (goals.totalInvested ?? 0).toStringAsFixed(2),
+        'current': (goals.totalBalance ?? 0).toStringAsFixed(2),
+        'growth': (goals.buyPrice ?? 0) != 0
+            ? '${((((goals.currentPrice ?? 0) - goals.buyPrice!) / goals.buyPrice!) * 100).toStringAsFixed(1)}%'
+            : '0%',
       },
       {
         'emoji': AppImages.referralDark,
         'actionIcon': AppImages.share,
         'title': 'Referral Rewards',
-        'profit': '0',
-        'profitColor': Colors.green,
+        'profit': ((referral.currentPrice ?? 0) - (referral.buyPrice ?? 0)).toStringAsFixed(2),
+        'profitColor': ((referral.currentPrice ?? 0) - (referral.buyPrice ?? 0)) >= 0
+            ? Colors.green
+            : Colors.red,
         'action': 'Invite Now',
-        'invested': '0',
-        'current': '0',
-        'growth': '0%',
+        'invested': (referral.buyPrice ?? 0).toStringAsFixed(2),
+        'current': (referral.currentPrice ?? 0).toStringAsFixed(2),
+        'growth': (referral.buyPrice ?? 0) != 0
+            ? '${((((referral.currentPrice ?? 0) - referral.buyPrice!) / referral.buyPrice!) * 100).toStringAsFixed(1)}%'
+            : '0%',
       },
     ];
-    final isDark = ref.watch(isDarkProvider);
+
     return ScalingFactor(
       child: ReusableWhiteContainerWithPadding(
         widget: Column(
@@ -61,34 +80,26 @@ class TrackYourSavingsWidget extends ConsumerWidget {
             ...List.generate(data.length, (index) {
               final item = data[index];
               return Padding(
-                padding:
-                    EdgeInsets.only(bottom: index == data.length - 1 ? 0 : 35),
+                padding: EdgeInsets.only(bottom: index == data.length - 1 ? 0 : 35),
                 child: Material(
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
                   child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () async {
-                      if (index == 0) {
-                        Navigator.pushNamed(
-                            context, AppRouter.buyGoldInstantly);
-                      } else if (index == 1) {
-                        Navigator.pushNamed(
-                            context, AppRouter.createGoalScreen);
-                      } else if (index == 2) {
+                      onTap: () async {
                         try {
-                          final result =
-                              await ref.refresh(homeDetailsProvider.future);
-                          Navigator.pushNamed(
-                              context, AppRouter.referralRewards);
+                          await ref.refresh(homeDetailsProvider.future);
+                          if (index == 0) {
+                            Navigator.pushNamed(context, AppRouter.buyGoldInstantly);
+                          } else if (index == 1) {
+                            Navigator.pushNamed(context, AppRouter.createGoalScreen);
+                          } else if (index == 2) {
+                            Navigator.pushNamed(context, AppRouter.referralRewards);
+                          }
                         } catch (e) {
-                          final errorMessage = e
-                                  .toString()
-                                  .contains('KYC not completed')
+                          final errorMessage = e.toString().contains('KYC not completed')
                               ? 'KYC not verified. Please complete KYC to access this feature.'
                               : 'Something went wrong. Please try again later.';
 
@@ -98,12 +109,11 @@ class TrackYourSavingsWidget extends ConsumerWidget {
                             message: errorMessage,
                             type: SnackType.error,
                           );
-                          await  Navigator.pushNamed(
-                              context, AppRouter.kycVerificationScreen);
+
+                          await Navigator.pushNamed(context, AppRouter.kycVerificationScreen);
                         }
-                      }
-                    },
-                    child: Padding(
+                      },
+                      child: Padding(
                       padding: const EdgeInsets.all(4),
                       child: SavingsRowWidget(
                         actionIcon: item['actionIcon'].toString(),

@@ -57,6 +57,7 @@ class GoalListItem {
   final double walletBalance;
   final String linkedVA;
   final double investedAmount;
+  final String status;
 
   GoalListItem({
     required this.goalName,
@@ -78,6 +79,7 @@ class GoalListItem {
     required this.walletBalance,
     required this.linkedVA,
     required this.investedAmount,
+    required this.status,
   });
 
   factory GoalListItem.fromJson(Map<String, dynamic> json) {
@@ -88,6 +90,15 @@ class GoalListItem {
     print('goalPicExtension: ${json['goalPicExtension']}');
     print('goalPicContentType: ${json['goalPicContentType']}');
     print('iconName: ${json['iconName']}');
+    print('createdDate: ${json['createdDate']}');
+    print('availableBalance: ${json['availableBalance']}');
+    print('buyPrice: ${json['buyPrice']}');
+    print('currentPrice: ${json['currentPrice']}');
+    print('goldBalance: ${json['goldBalance']}');
+    print('walletBalance: ${json['walletBalance']}');
+    print('linkedVA: ${json['linkedVA']}');
+    print('investedAmount: ${json['investedAmount']}');
+    print('goal status: ${json['status']}');
 
     return GoalListItem(
       goalName: json['goalName'] ?? '',
@@ -109,6 +120,7 @@ class GoalListItem {
       walletBalance: (json['walletBalance'] ?? 0).toDouble(),
       linkedVA: json['linkedVA'] ?? '',
       investedAmount: (json['investedAmount'] ?? 0).toDouble(),
+      status: json['status'] ?? '',
     );
   }
 
@@ -133,6 +145,7 @@ class GoalListItem {
       'walletBalance': walletBalance,
       'linkedVA': linkedVA,
       'investedAmount': investedAmount,
+      'status': status,
     };
   }
 
