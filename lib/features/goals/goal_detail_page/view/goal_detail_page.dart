@@ -81,10 +81,32 @@ class GoalDetailPage extends ConsumerWidget {
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
+              // child: goalDetailState.when(
+              //   loading: () => _buildLoadingState(ref: ref, context: context),
+              //   error: (error, stackTrace) =>
+              //       _buildErrorState(error.toString(), isDark, ref),
+              //   data: (goalViewModel) =>
+              //       _buildGoalDetailContent(goalViewModel, isDark, context),
+              // ),
               child: goalDetailState.when(
                 loading: () => _buildLoadingState(ref: ref, context: context),
-                error: (error, stackTrace) =>
-                    _buildErrorState(error.toString(), isDark, ref),
+                error: (error, stackTrace) {
+                  final errorStr = error.toString();
+                  final isNetworkError = errorStr.contains('No Internet') ||
+                      errorStr.contains('SocketException') ||
+                      errorStr.contains('Connection failed') ||
+                      errorStr.contains('Network is unreachable');
+                  final lastData = goalDetailState.value;
+
+                  if (isNetworkError) {
+                    if (lastData != null) {
+                      return _buildGoalDetailContent(lastData, isDark, context);
+                    } else {
+                      return _buildOfflineState(isDark);
+                    }
+                  }
+                  return _buildErrorState(errorStr, isDark, ref);
+                },
                 data: (goalViewModel) =>
                     _buildGoalDetailContent(goalViewModel, isDark, context),
               ),
@@ -314,6 +336,42 @@ class GoalDetailPage extends ConsumerWidget {
         GoalTransactionListWidget(goalName: goalName),
         GapSpace.height20
       ],
+    );
+  }
+
+  Widget _buildOfflineState(bool isDark) {
+    return Container(
+      height: 600,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.wifi_off,
+            size: 64,
+            color: isDark ? Colors.grey[400] : Colors.grey[600],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No Internet Connection',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Please check your network and try again.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              color: isDark ? Colors.grey[300] : Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

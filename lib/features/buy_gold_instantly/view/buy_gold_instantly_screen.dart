@@ -8,7 +8,6 @@ import 'package:growk_v2/features/buy_gold_instantly/view/providers/buy_gold_ins
 import 'package:growk_v2/features/buy_gold_instantly/view/widgets/buy_gold_ui_widget.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/widgets/sell_gold_ui_widget.dart';
 import 'package:growk_v2/views.dart';
-
 class BuyGoldPage extends ConsumerStatefulWidget {
   const BuyGoldPage({super.key});
 
@@ -18,7 +17,7 @@ class BuyGoldPage extends ConsumerStatefulWidget {
 
 class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
   bool isBuyByWeight = true;
-  int selectedAmount = 373; // Default, will be overridden once price is fetched
+  int selectedAmount = 373;
   final List<int> amounts = [101, 501, 1001];
   late TextEditingController amountController;
   bool _isInitialized = false;
@@ -34,6 +33,7 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
     amountController.dispose();
     super.dispose();
   }
+
   double _calculateTextWidth(String text, TextStyle style) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
@@ -42,12 +42,12 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
     )..layout(minWidth: 0, maxWidth: double.infinity);
     return textPainter.size.width;
   }
-  String selectedTab = 'Buy Gold';
 
   @override
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
     final livePriceAsync = ref.watch(liveGoldPriceProvider);
+    final selectedTab = ref.watch(selectedGoldTabProvider);
 
     return ScalingFactor(
       child: Scaffold(
@@ -75,8 +75,10 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
                 : goldPricePerGram == 0
                 ? "0.000 g"
                 : "${(selectedAmount / goldPricePerGram).toStringAsFixed(3)} g";
+
             final List<int> presetValues =
             isBuyByWeight ? [1, 5, 10] : amounts;
+
             return SingleChildScrollView(
               padding:
               const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
@@ -88,9 +90,7 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
                     itemNames: ['Buy Gold', 'Sell Gold'],
                     selectedItem: selectedTab,
                     onItemSelected: (val) {
-                      setState(() {
-                        selectedTab = val;
-                      });
+                      ref.read(selectedGoldTabProvider.notifier).state = val;
                     },
                   ),
                   const SizedBox(height: 30),
@@ -101,7 +101,8 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
                     )
                   else
                     SellGoldUIWidget(
-                      goldSellPricePerGram: livePriceData.data?.sellRate?.toDouble() ?? 0,
+                      goldSellPricePerGram:
+                      livePriceData.data?.sellRate?.toDouble() ?? 0,
                       calculateTextWidth: _calculateTextWidth,
                     )
                 ],

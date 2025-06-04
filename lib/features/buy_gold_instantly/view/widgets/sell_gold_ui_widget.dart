@@ -202,38 +202,33 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
 
   void _proceed(BuildContext context) async {
     final notifier = ref.read(isButtonLoadingProvider.notifier);
+    final useCase = ref.read(initiateGoldBuyUseCaseProvider); // still reused
     final inputText = amountController.text.trim();
 
-    if (inputText.isEmpty ||
-        double.tryParse(inputText) == null ||
-        double.parse(inputText) <= 0) {
+    final goldInGrams = double.tryParse(inputText);
+
+    if (goldInGrams == null || goldInGrams <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a valid gram value')),
       );
       return;
     }
 
-    final inputAmount = selectedAmount.toDouble();
-
     try {
       notifier.state = true;
-      // TODO: replace with actual sell use case
-      // final result = await sellUseCase.call(inputAmount);
+      final result = await useCase.call(goldInGrams, 1); // gram quantity passed to sell API
+      ref.read(initiateBuyGoldProvider.notifier).setTransaction(result);
 
-      // showGrowkSnackBar(
-      //   context: context,
-      //   ref: ref,
-      //   message: 'Gold sold successfully',
-      //   type: SnackType.success,
-      // );
-      // Navigator.pushNamed(context, AppRouter.sellGoldSummary);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('✅ Sell flow placeholder executed')),
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Transaction initiated successfully',
+        type: SnackType.success,
       );
+      Navigator.pushNamed(context, AppRouter.sellGoldSummaryPage);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sell failed: $e')),
+        SnackBar(content: Text('Transaction failed: $e')),
       );
     } finally {
       notifier.state = false;

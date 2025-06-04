@@ -1,6 +1,7 @@
 import 'package:growk_v2/core/biometric/biometric_page.dart';
 import 'package:growk_v2/features/add_user_details/view/edit_user_details.dart';
 import 'package:growk_v2/features/bank_details/views/bank_details_screen.dart';
+import 'package:growk_v2/features/buy_gold_instantly/view/sell_gold_summary_page.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/add_goal_page.dart';
 import 'package:growk_v2/features/goals/edit_goal_page/view/edit_goal_page.dart';
 import 'package:growk_v2/features/gold_price_trends/view/gold_price_trends_page.dart';
@@ -37,6 +38,7 @@ class AppRouter {
   static const String biometricAuth = '/biometricAuth';
   static const String termsAndConditions = '/termsAndConditions';
   static const String help = '/help';
+  static const String sellGoldSummaryPage = '/SellGoldSummaryPage';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -115,6 +117,9 @@ class AppRouter {
       case help:
         return MaterialPageRoute(
             builder: (_) => const HelpScreenWeb(), settings: settings);
+      case sellGoldSummaryPage:
+        return MaterialPageRoute(
+            builder: (_) => const SellGoldSummaryPage(), settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

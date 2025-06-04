@@ -314,7 +314,7 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
 
     try {
       notifier.state = true;
-      final result = await useCase.call(inputAmount);
+      final result = await useCase.call(inputAmount,0);
       ref.read(initiateBuyGoldProvider.notifier).setTransaction(result);
 
       showGrowkSnackBar(

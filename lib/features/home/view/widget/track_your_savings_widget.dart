@@ -24,7 +24,7 @@ class TrackYourSavingsWidget extends ConsumerWidget {
       {
         'emoji': AppImages.instantGold,
         'actionIcon': AppImages.buyMoreLite,
-        'title': 'Instant Purchase',
+        'title': 'Instant Gold Trade',
         'profit': ((summary.currentPrice ?? 0) - (summary.buyPrice ?? 0)).toStringAsFixed(2),
         'profitColor': ((summary.currentPrice ?? 0) - (summary.buyPrice ?? 0)) >= 0
             ? Colors.green

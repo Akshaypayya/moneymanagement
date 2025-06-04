@@ -238,9 +238,9 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   //               const SizedBox(height: 20),
   //               ElevatedButton(
   //                 onPressed: () {
-  //                   ref
-  //                       .read(paginatedTransactionProvider.notifier)
-  //                       .refreshTransactions();
+  // ref
+  //     .read(paginatedTransactionProvider.notifier)
+  //     .refreshTransactions();
   //                 },
   //                 style: ElevatedButton.styleFrom(
   //                   backgroundColor: Colors.teal,
@@ -297,7 +297,6 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  // 'We couldn\'t load your transaction history right now. Please check your connection and try again.',
                   errorMessage,
                   maxLines: 3,
                   textAlign: TextAlign.center,
@@ -308,29 +307,14 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                     color: isDark ? Colors.grey[300] : Colors.grey[700],
                   ),
                 ),
-                const SizedBox(height: 36),
-                // if (errorMessage.isNotEmpty) ...[
-                //   Text(
-                //     'Error: $errorMessage',
-                //     textAlign: TextAlign.center,
-                //     style: TextStyle(
-                //       fontSize: 12,
-                //       fontFamily: GoogleFonts.poppins().fontFamily,
-                //       color: isDark ? Colors.grey[500] : Colors.grey[500],
-                //     ),
-                //   ),
-                //   const SizedBox(height: 24),
-                // ],
-                // const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 // GrowkButton(
-                //   title: 'Try Again',
-                //   onTap: () {
-                //     ref
-                //         .read(paginatedTransactionProvider.notifier)
-                //         .refreshTransactions();
-                //   },
-                // ),
-                const SizedBox(height: 60),
+                //     title: 'Retry',
+                //     onTap: () {
+                //       ref
+                //           .read(paginatedTransactionProvider.notifier)
+                //           .refreshTransactions();
+                //     }),
               ],
             ),
           ),

@@ -39,3 +39,5 @@ final liveGoldPriceUseCaseProvider = Provider<GetLiveGoldPriceUseCase>((ref) {
   final repo = ref.watch(liveGoldPriceRepoProvider);
   return GetLiveGoldPriceUseCase(repo);
 });
+final operationProvider = StateProvider<int>((ref) => 0);
+final selectedGoldTabProvider = StateProvider<String>((ref) => 'Buy Gold');

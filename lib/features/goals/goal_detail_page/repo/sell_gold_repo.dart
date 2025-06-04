@@ -26,12 +26,12 @@ class SellGoldRepository {
 
       final request = SellGoldRequest(goalName: goalName);
 
-      debugPrint('SELL GOLD REQUEST: POST ${AppUrl.sellGoldUrl}');
+      debugPrint('SELL GOLD REQUEST: POST ${AppUrl.goalSellGoldUrl}');
       debugPrint('SELL GOLD: Goal name: $goalName');
       debugPrint('SELL GOLD: Request body: ${request.toJson()}');
 
       final response = await _networkService.post(
-        AppUrl.sellGoldUrl,
+        AppUrl.goalSellGoldUrl,
         headers: {
           'Authorization': 'Bearer $token',
           'app': 'SA',

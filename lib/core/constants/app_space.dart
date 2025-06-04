@@ -17,6 +17,7 @@ class GapSpace {
   static const SizedBox height32 = SizedBox(height: 32);
   static const SizedBox height35 = SizedBox(height: 35);
   static const SizedBox height40 = SizedBox(height: 40);
+  static const SizedBox height45 = SizedBox(height: 45);
   static const SizedBox height50 = SizedBox(height: 50);
   static const SizedBox height60 = SizedBox(height: 60);
   static const SizedBox height70 = SizedBox(height: 70);

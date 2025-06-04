@@ -42,11 +42,13 @@ class AppUrl {
   static const String getAllTransactionUrl =
       "/user-service/goals/getAllTransaction";
   static const String transferAmountUrl = "/user-service/goals/transferAmount";
-  static const String initiateGoldBuyUrl = "/user-service/user/initiateGoldBuy";
+  static const String initiateGoldBuyUrl =
+      "/user-service/user/initiateGoldTransaction";
   static const String buyGoldUrl = "/user-service/user/buyGold";
   static const String getLiveGoldPriceUrl =
       "/user-service/user/currentGoldRate";
 
-  static const String sellGoldUrl = "/user-service/goals/sellGold";
-
+  static const String goalSellGoldUrl = "/user-service/goals/sellGold";
+  static const String intitiateGoalSellTransactionUrl =
+      "/user-service/user/initiateGoldTransaction";
 }

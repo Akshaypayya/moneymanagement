@@ -6,7 +6,7 @@ class InitiateBuyGoldUseCase {
 
   InitiateBuyGoldUseCase(this.repo);
 
-  Future<InitiateBuyGoldModel> call(double amount) {
-    return repo.initiateBuyGold(amount);
+  Future<InitiateBuyGoldModel> call(double amount,int operation) {
+    return repo.initiateBuyGold(amount,operation);
   }
 }
