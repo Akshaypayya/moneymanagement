@@ -40,10 +40,11 @@ class Data {
 
   Data.fromJson(dynamic json) {
     transactionAmount = json['transactionAmount'];
-    chargeAmount = json['ChargeAmount'];
+    chargeAmount = json['chargeAmount'];
     transactionId = json['transactionId'];
     vATamount = json['VATamount'];
   }
+
   num? transactionAmount;
   num? chargeAmount;
   String? transactionId;

@@ -287,6 +287,8 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
   }
 
   Widget _buildRow(String label, String value, {bool isBold = false}) {
+    final bool isGramValue = value.trim().toLowerCase().contains('g');
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
@@ -299,7 +301,15 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
               fontSize: 12,
             ),
           ),
-          SarAmountWidget(
+          isGramValue
+              ? Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: isBold ? 16 : 12,
+            ),
+          )
+              : SarAmountWidget(
             text: value,
             height: 12,
             style: TextStyle(

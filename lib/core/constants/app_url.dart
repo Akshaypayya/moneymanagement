@@ -16,6 +16,7 @@ class AppUrl {
   static const String nomineeDetailsUrl = "/user-service/user/setNominee";
   static const String savedAddressUrl = "/user-service/user/savedAddress";
   static const String createGoalUrl = "/user-service/goals";
+
   static String goalViewByNameUrl(String goalName) {
     final encodedName = goalName.replaceAll(' ', '+');
     return '/user-service/goals?goalName=$encodedName';
@@ -47,8 +48,9 @@ class AppUrl {
   static const String buyGoldUrl = "/user-service/user/buyGold";
   static const String getLiveGoldPriceUrl =
       "/user-service/user/currentGoldRate";
-
   static const String goalSellGoldUrl = "/user-service/goals/sellGold";
+  static const String sellGoldUrl = "/user-service/user/sellGold";
+
   static const String intitiateGoalSellTransactionUrl =
       "/user-service/user/initiateGoldTransaction";
 }

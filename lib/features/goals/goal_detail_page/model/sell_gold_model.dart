@@ -1,19 +1,22 @@
 class SellGoldRequest {
   final String goalName;
+  final String transactionId;
 
   SellGoldRequest({
     required this.goalName,
+    required this.transactionId,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'goalName': goalName,
+      'transactionId': transactionId,
     };
   }
 
   @override
   String toString() {
-    return 'SellGoldRequest(goalName: $goalName)';
+    return 'SellGoldRequest(goalName: $goalName, transactionId: $transactionId)';
   }
 }
 

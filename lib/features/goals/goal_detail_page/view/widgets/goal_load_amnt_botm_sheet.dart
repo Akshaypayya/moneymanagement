@@ -94,7 +94,6 @@ class _LoadFundsBottomSheetState extends ConsumerState<LoadFundsBottomSheet> {
                   ),
                 ),
                 const SizedBox(height: 24),
-
                 _buildAmountInputSection(isDark, controller),
                 const SizedBox(height: 32),
                 _buildLoadAmountButton(context, isDark, controller, isLoading),

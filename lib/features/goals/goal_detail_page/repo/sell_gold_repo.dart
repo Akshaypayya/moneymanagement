@@ -13,6 +13,7 @@ class SellGoldRepository {
 
   Future<SellGoldResponse> sellGold({
     required String goalName,
+    required String transactionId,
   }) async {
     try {
       final token = SharedPreferencesHelper.getString("access_token");
@@ -24,7 +25,8 @@ class SellGoldRepository {
         );
       }
 
-      final request = SellGoldRequest(goalName: goalName);
+      final request =
+          SellGoldRequest(goalName: goalName, transactionId: transactionId);
 
       debugPrint('SELL GOLD REQUEST: POST ${AppUrl.goalSellGoldUrl}');
       debugPrint('SELL GOLD: Goal name: $goalName');
@@ -46,7 +48,8 @@ class SellGoldRepository {
         final sellGoldResponse = SellGoldResponse.fromJson(response);
 
         if (sellGoldResponse.isSuccess) {
-          debugPrint('SELL GOLD: Successfully sold gold for goal: $goalName');
+          debugPrint(
+              'SELL GOLD: Successfully sold gold for goal: $goalName :$transactionId');
           debugPrint('SELL GOLD: Message: ${sellGoldResponse.message}');
           if (sellGoldResponse.data != null) {
             final data = sellGoldResponse.data!;

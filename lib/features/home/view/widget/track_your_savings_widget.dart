@@ -1,12 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:growk_v2/core/constants/app_images.dart';
-import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
-import 'package:growk_v2/core/theme/app_text_styles.dart';
-import 'package:growk_v2/core/widgets/reusable_white_container_with_padding.dart';
-import 'package:growk_v2/routes/app_router.dart';
 import '../../../../views.dart';
 import 'savings_row_widget.dart';
+
 class TrackYourSavingsWidget extends ConsumerWidget {
   const TrackYourSavingsWidget({super.key});
 
@@ -25,13 +19,16 @@ class TrackYourSavingsWidget extends ConsumerWidget {
         'emoji': AppImages.instantGold,
         'actionIcon': AppImages.buyMoreLite,
         'title': 'Instant Gold Trade',
-        'profit': ((summary.currentPrice ?? 0) - (summary.buyPrice ?? 0)).toStringAsFixed(2),
-        'profitColor': ((summary.currentPrice ?? 0) - (summary.buyPrice ?? 0)) >= 0
-            ? Colors.green
-            : Colors.red,
-        'action': 'Buy More',
-        'invested': (summary.buyPrice ?? 0).toStringAsFixed(2),
-        'current': (summary.totalBalance ?? 0).toStringAsFixed(2),
+        'profit': ((summary.currentPrice ?? 0) - (summary.buyPrice ?? 0))
+            .toStringAsFixed(2),
+        'profitColor':
+            ((summary.currentPrice ?? 0) - (summary.buyPrice ?? 0)) >= 0
+                ? Colors.green
+                : Colors.red,
+        'action': 'Buy/sell',
+        'invested':
+            "${(summary.buyPrice ?? 0).toStringAsFixed(2)}(${(summary.goldBalance ?? 0).toStringAsFixed(2)}g)",
+        'current': (summary.currentPrice ?? 0).toStringAsFixed(2),
         'growth': (summary.buyPrice ?? 0) != 0
             ? '${((((summary.currentPrice ?? 0) - summary.buyPrice!) / summary.buyPrice!) * 100).toStringAsFixed(1)}%'
             : '0%',
@@ -40,13 +37,15 @@ class TrackYourSavingsWidget extends ConsumerWidget {
         'emoji': AppImages.goalDashboard,
         'actionIcon': AppImages.createNewGoal,
         'title': 'Goal Based Savings',
-        'profit': ((goals.currentPrice ?? 0) - (goals.buyPrice ?? 0)).toStringAsFixed(2),
+        'profit': ((goals.currentPrice ?? 0) - (goals.buyPrice ?? 0))
+            .toStringAsFixed(2),
         'profitColor': ((goals.currentPrice ?? 0) - (goals.buyPrice ?? 0)) >= 0
             ? Colors.green
             : Colors.red,
         'action': 'Create New',
-        'invested': (goals.totalInvested ?? 0).toStringAsFixed(2),
-        'current': (goals.totalBalance ?? 0).toStringAsFixed(2),
+        'invested':
+            "${(goals.buyPrice ?? 0).toStringAsFixed(2)}(${(goals.goldBalance ?? 0).toStringAsFixed(2)}g)",
+        'current': (goals.currentPrice ?? 0).toStringAsFixed(2),
         'growth': (goals.buyPrice ?? 0) != 0
             ? '${((((goals.currentPrice ?? 0) - goals.buyPrice!) / goals.buyPrice!) * 100).toStringAsFixed(1)}%'
             : '0%',
@@ -55,16 +54,20 @@ class TrackYourSavingsWidget extends ConsumerWidget {
         'emoji': AppImages.referralDark,
         'actionIcon': AppImages.share,
         'title': 'Referral Rewards',
-        'profit': ((referral.currentPrice ?? 0) - (referral.buyPrice ?? 0)).toStringAsFixed(2),
-        'profitColor': ((referral.currentPrice ?? 0) - (referral.buyPrice ?? 0)) >= 0
-            ? Colors.green
-            : Colors.red,
+        'profit': ((referral.currentPrice ?? 0) - (referral.buyPrice ?? 0))
+            .toStringAsFixed(2),
+        'profitColor':
+            ((referral.currentPrice ?? 0) - (referral.buyPrice ?? 0)) >= 0
+                ? Colors.green
+                : Colors.red,
         'action': 'Invite Now',
-        'invested': (referral.buyPrice ?? 0).toStringAsFixed(2),
+        'invested':
+            "${(referral.buyPrice ?? 0).toStringAsFixed(2)}(${(referral.goldBalance ?? 0).toStringAsFixed(2)}g)",
         'current': (referral.currentPrice ?? 0).toStringAsFixed(2),
         'growth': (referral.buyPrice ?? 0) != 0
             ? '${((((referral.currentPrice ?? 0) - referral.buyPrice!) / referral.buyPrice!) * 100).toStringAsFixed(1)}%'
             : '0%',
+        'received': true,
       },
     ];
 
@@ -80,7 +83,8 @@ class TrackYourSavingsWidget extends ConsumerWidget {
             ...List.generate(data.length, (index) {
               final item = data[index];
               return Padding(
-                padding: EdgeInsets.only(bottom: index == data.length - 1 ? 0 : 35),
+                padding:
+                    EdgeInsets.only(bottom: index == data.length - 1 ? 0 : 35),
                 child: Material(
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
@@ -88,32 +92,38 @@ class TrackYourSavingsWidget extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(8),
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
-                      onTap: () async {
-                        try {
-                          await ref.refresh(homeDetailsProvider.future);
-                          if (index == 0) {
-                            Navigator.pushNamed(context, AppRouter.buyGoldInstantly);
-                          } else if (index == 1) {
-                            Navigator.pushNamed(context, AppRouter.createGoalScreen);
-                          } else if (index == 2) {
-                            Navigator.pushNamed(context, AppRouter.referralRewards);
-                          }
-                        } catch (e) {
-                          final errorMessage = e.toString().contains('KYC not completed')
-                              ? 'KYC not verified. Please complete KYC to access this feature.'
-                              : 'Something went wrong. Please try again later.';
-
-                          showGrowkSnackBar(
-                            context: context,
-                            ref: ref,
-                            message: errorMessage,
-                            type: SnackType.error,
-                          );
-
-                          await Navigator.pushNamed(context, AppRouter.kycVerificationScreen);
+                    onTap: () async {
+                      try {
+                        await ref.refresh(homeDetailsProvider.future);
+                        if (index == 0) {
+                          Navigator.pushNamed(
+                              context, AppRouter.buyGoldInstantly);
+                        } else if (index == 1) {
+                          Navigator.pushNamed(
+                              context, AppRouter.createGoalScreen);
+                        } else if (index == 2) {
+                          Navigator.pushNamed(
+                              context, AppRouter.referralRewards);
                         }
-                      },
-                      child: Padding(
+                      } catch (e) {
+                        final errorMessage = e
+                                .toString()
+                                .contains('KYC not completed')
+                            ? 'KYC not verified. Please complete KYC to access this feature.'
+                            : 'Something went wrong. Please try again later.';
+
+                        showGrowkSnackBar(
+                          context: context,
+                          ref: ref,
+                          message: errorMessage,
+                          type: SnackType.error,
+                        );
+
+                        await Navigator.pushNamed(
+                            context, AppRouter.kycVerificationScreen);
+                      }
+                    },
+                    child: Padding(
                       padding: const EdgeInsets.all(4),
                       child: SavingsRowWidget(
                         actionIcon: item['actionIcon'].toString(),
@@ -125,6 +135,7 @@ class TrackYourSavingsWidget extends ConsumerWidget {
                         invested: item['invested'].toString(),
                         current: item['current'].toString(),
                         growth: item['growth'].toString(),
+                        received: item['received'] as bool? ?? false,
                       ),
                     ),
                   ),

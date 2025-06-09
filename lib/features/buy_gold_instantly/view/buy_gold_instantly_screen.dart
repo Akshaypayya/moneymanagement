@@ -29,6 +29,16 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInitialized) {
+      ref.read(selectedGoldTabProvider.notifier).state = 'Buy Gold';
+      _isInitialized = true;
+    }
+  }
+
+  @override
   void dispose() {
     amountController.dispose();
     super.dispose();

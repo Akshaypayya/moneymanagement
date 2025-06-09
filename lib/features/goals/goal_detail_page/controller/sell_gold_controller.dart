@@ -15,6 +15,7 @@ class SellGoldController {
   Future sellGold({
     required BuildContext context,
     required String goalName,
+    required String transactionId,
     required WidgetRef widgetRef,
     VoidCallback? onSuccess,
   }) async {
@@ -32,7 +33,8 @@ class SellGoldController {
       ref.read(isSellGoldLoadingProvider.notifier).state = true;
 
       final repository = ref.read(sellGoldRepositoryProvider);
-      final result = await repository.sellGold(goalName: goalName);
+      final result = await repository.sellGold(
+          goalName: goalName, transactionId: transactionId);
 
       ref.read(isSellGoldLoadingProvider.notifier).state = false;
 

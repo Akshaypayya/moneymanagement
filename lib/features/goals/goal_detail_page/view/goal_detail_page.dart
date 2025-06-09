@@ -6,6 +6,7 @@ import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_app_bar.dart';
 import 'package:growk_v2/core/widgets/reusable_snackbar.dart';
+import 'package:growk_v2/core/widgets/sar_amount_widget.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/controller/goal_detail_controller.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/controller/goals_funds_controller.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
@@ -20,17 +21,22 @@ import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_load_
 import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_transaction.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/sell_gold_bottomsheet.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/standing_intructions.dart';
+import 'package:growk_v2/features/goals/goal_list_page/provider/goal_list_page_provider.dart';
 
 class GoalDetailPage extends ConsumerWidget {
   final String goalName;
   final String? goalIcon;
   final String goalStatus;
+  final double walletBalance;
+  final double currentGoldPrice;
 
   const GoalDetailPage({
     Key? key,
     required this.goalName,
     this.goalIcon,
     required this.goalStatus,
+    required this.walletBalance,
+    required this.currentGoldPrice,
   }) : super(key: key);
 
   @override
@@ -78,6 +84,7 @@ class GoalDetailPage extends ConsumerWidget {
               await ref
                   .read(goalTransactionStateProvider(goalName).notifier)
                   .refreshTransactions();
+              await ref.read(goalListStateProvider.notifier).refreshGoals();
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -155,6 +162,7 @@ class GoalDetailPage extends ConsumerWidget {
       builder: (context) => LoadFundsBottomSheet(
         goalName: goalName,
         onSuccess: () {
+          ref.read(goalListStateProvider.notifier).refreshGoals();
           ref
               .read(goalDetailStateProvider(goalName).notifier)
               .refreshGoalDetail();
@@ -176,6 +184,7 @@ class GoalDetailPage extends ConsumerWidget {
       builder: (context) => SellGoldBottomSheet(
         goalName: goalName,
         onConfirm: () {
+          ref.read(goalListStateProvider.notifier).refreshGoals();
           ref
               .read(goalDetailStateProvider(goalName).notifier)
               .refreshGoalDetail();

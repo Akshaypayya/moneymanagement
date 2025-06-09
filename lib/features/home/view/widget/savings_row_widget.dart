@@ -10,6 +10,7 @@ class SavingsRowWidget extends ConsumerWidget {
   final String current;
   final String growth;
   final String actionIcon;
+  final bool ?received;
 
   const SavingsRowWidget({
     super.key,
@@ -22,6 +23,7 @@ class SavingsRowWidget extends ConsumerWidget {
     required this.current,
     required this.growth,
     required this.actionIcon,
+    this.received
   });
 
   @override
@@ -115,7 +117,7 @@ class SavingsRowWidget extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text('Invested: ', style:  TextStyle(fontSize: 13,color: AppColors.current(isDark).text)),
+                Text(received==true?'Received: ':'Invested: ', style:  TextStyle(fontSize: 13,color: AppColors.current(isDark).text)),
                 Image.asset(AppImages.sarSymbol,
                     color: AppColors.current(isDark).text, height: 10),
                 const SizedBox(width: 2),

@@ -62,10 +62,11 @@ class GoalItem extends ConsumerWidget {
           context,
           MaterialPageRoute(
             builder: (context) => GoalDetailPage(
-              goalName: title,
-              goalIcon: iconAsset,
-              goalStatus: goalStatus,
-            ),
+                goalName: title,
+                goalIcon: iconAsset,
+                goalStatus: goalStatus,
+                walletBalance: double.tryParse(amount) ?? 0.0,
+                currentGoldPrice: double.tryParse(currentGold) ?? 0.0),
           ),
         );
       },

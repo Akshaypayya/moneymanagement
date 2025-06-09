@@ -8,7 +8,7 @@ final biometricEnabledProvider =
 
 class BiometricEnabledNotifier extends StateNotifier<bool> {
   BiometricEnabledNotifier()
-      : super(SharedPreferencesHelper.getBool('biometric_enabled') ?? false);
+      : super(SharedPreferencesHelper.getBool('biometric_enabled') ?? true);
 
   void toggleBiometric(bool enabled) {
     SharedPreferencesHelper.saveBool('biometric_enabled', enabled);

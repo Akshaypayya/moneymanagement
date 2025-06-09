@@ -23,7 +23,7 @@ class SellGoldRepo {
     debugPrint('Sell Gold Payload: $payload');
 
     final response = await network.post(
-      AppUrl.goalSellGoldUrl,
+      AppUrl.sellGoldUrl,
       headers: headers,
       body: payload,
     );

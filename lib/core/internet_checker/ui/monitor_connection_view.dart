@@ -37,7 +37,7 @@ class MonitorConnectionView extends ConsumerWidget {
       left: 0,
       right: 0,
       child: Container(
-        color: isDark ? Colors.black : Colors.white,
+        color: Colors.red.withOpacity(0.9),
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
