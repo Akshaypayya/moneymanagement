@@ -236,11 +236,12 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
 
   Widget _buildOrderData(bool isDark, dynamic initiateSellData,
       double goldBalance, double walletBalance, double currentGoldPrice) {
-    const double goldSellPrice = 389.00; //to changee
+    // final double goldSellPrice = initiateSellData.sellPrice;
+    const double goldSellPrice = 389.00;
     final double convenienceFee = initiateSellData.chargeAmount;
     final double goldAmount = goldBalance * goldSellPrice;
     final double totalReceivable =
-        (goldAmount - convenienceFee) + walletBalance;
+        (goldAmount + walletBalance) - convenienceFee;
     final double totalWalletBalance = walletBalance - currentGoldPrice;
 
     return Column(
@@ -259,29 +260,28 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
         ),
         const SizedBox(height: 15),
         buildOrderDataRow(
-            "Gold Sell Price", "${goldSellPrice.toStringAsFixed(2)}/g", isDark),
+            "Gold Sell Price", "${goldSellPrice.toString()}/g", isDark),
         const SizedBox(height: 8),
         buildOrderDataRow(
-            "Gold Quantity", "${goldBalance.toStringAsFixed(3)} gm", isDark,
+            "Gold Quantity", "${goldBalance.toString()} gm", isDark,
             showSar: false),
         const SizedBox(height: 8),
         buildOrderDataRow("Gold Purity", "999.9", isDark, showSar: true),
         const SizedBox(height: 8),
         buildOrderDataRow(
-            "Wallet Balance", totalWalletBalance.toStringAsFixed(2), isDark,
+            "Wallet Balance", totalWalletBalance.toString(), isDark,
             showSar: true),
         const SizedBox(height: 8),
-        buildOrderDataRow("Gold Amount", goldAmount.toStringAsFixed(2), isDark),
+        buildOrderDataRow("Gold Amount", goldAmount.toString(), isDark),
         const SizedBox(height: 8),
-        buildOrderDataRow(
-            "Convenience Fee", convenienceFee.toStringAsFixed(2), isDark),
+        buildOrderDataRow("Convenience Fee", convenienceFee.toString(), isDark),
         const SizedBox(height: 8),
         buildOrderDataRow("Taxes", "0.00", isDark),
         const SizedBox(height: 8),
         Divider(color: isDark ? Colors.grey[600] : Colors.grey[300]),
         const SizedBox(height: 8),
-        buildOrderDataRow("Total Receivable Amount",
-            totalReceivable.toStringAsFixed(2), isDark,
+        buildOrderDataRow(
+            "Total Receivable Amount", totalReceivable.toString(), isDark,
             isBold: true),
       ],
     );
