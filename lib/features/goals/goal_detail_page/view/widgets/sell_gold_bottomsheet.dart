@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,6 +28,10 @@ class SellGoldBottomSheet extends ConsumerStatefulWidget {
 }
 
 class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
+  Timer? _timer;
+  int _remainingSeconds = 20;
+  bool _isTransactionExpired = false;
+
   @override
   void initState() {
     super.initState();
@@ -35,13 +40,56 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
     });
   }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    debugPrint('SELL GOLD TIMER: Starting 20-second countdown');
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {
+          if (_remainingSeconds > 0) {
+            _remainingSeconds--;
+            debugPrint('SELL GOLD TIMER: $_remainingSeconds seconds remaining');
+          } else {
+            _isTransactionExpired = true;
+            _timer?.cancel();
+            debugPrint('SELL GOLD TIMER: Transaction expired');
+
+            if (mounted) {
+              showGrowkSnackBar(
+                context: context,
+                ref: ref,
+                message: 'Transaction time expired. Please try again.',
+                type: SnackType.error,
+              );
+            }
+          }
+        });
+      }
+    });
+  }
+
   Future<void> _initiateSellGold() async {
     final controller = ref.read(initiateSellGoldControllerProvider);
-    await controller.initiateSellGold(
+    final result = await controller.initiateSellGold(
       context: context,
       goalName: widget.goalName,
       widgetRef: ref,
     );
+
+    if (result != null && mounted) {
+      _startTimer();
+    }
+  }
+
+  String _formatTime(int seconds) {
+    final minutes = seconds ~/ 60;
+    final remainingSeconds = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -66,6 +114,11 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
     if (goalDetailState.value?.data != null) {
       walletBalance = goalDetailState.value!.data!.walletBalance;
     }
+
+    final bool isConfirmDisabled = isSellLoading ||
+        isInitiateLoading ||
+        initiateSellData == null ||
+        _isTransactionExpired;
 
     return Container(
       decoration: BoxDecoration(
@@ -100,6 +153,57 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
             ),
           ),
           const SizedBox(height: 16),
+          if (initiateSellData != null && !isInitiateLoading)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: _isTransactionExpired
+                    ? Colors.red.withOpacity(0.1)
+                    : _remainingSeconds <= 5
+                        ? Colors.orange.withOpacity(0.1)
+                        : Colors.green.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: _isTransactionExpired
+                      ? Colors.red
+                      : _remainingSeconds <= 5
+                          ? Colors.orange
+                          : Colors.green,
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    _isTransactionExpired ? Icons.timer_off : Icons.timer,
+                    size: 16,
+                    color: _isTransactionExpired
+                        ? Colors.red
+                        : _remainingSeconds <= 5
+                            ? Colors.orange
+                            : Colors.green,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    _isTransactionExpired
+                        ? 'Transaction Expired'
+                        : 'Expires in ${_formatTime(_remainingSeconds)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      color: _isTransactionExpired
+                          ? Colors.red
+                          : _remainingSeconds <= 5
+                              ? Colors.orange
+                              : Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 16),
           Text(
             'Selling the gold in this goal will terminate the goal and credit the equivalent amount to your main wallet.',
             textAlign: TextAlign.center,
@@ -122,49 +226,66 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
           Row(children: [
             Expanded(
               child: GrowkButton(
-                title: 'Cancel',
+                title: _isTransactionExpired ? 'Close' : 'Cancel',
                 onTap: (isSellLoading || isInitiateLoading)
                     ? null
                     : () => Navigator.of(context).pop(),
               ),
             ),
             const SizedBox(width: 16),
-            Expanded(
-              child: GrowkButton(
-                title: 'Confirm',
-                onTap: (isSellLoading ||
-                        isInitiateLoading ||
-                        initiateSellData == null)
-                    ? null
-                    : () async {
-                        final responseMessage = await sellController.sellGold(
-                            context: context,
-                            goalName: widget.goalName,
-                            widgetRef: ref,
-                            transactionId: initiateSellData.transactionId);
-                        if (responseMessage == "No gold balance available." ||
-                            responseMessage == "Goal already completed.") {
-                          Navigator.of(context).pop(responseMessage);
-                          showGrowkSnackBar(
-                              context: context,
-                              ref: ref,
-                              message: responseMessage.toString(),
-                              type: responseMessage ==
-                                          "No gold balance available." ||
-                                      responseMessage ==
-                                          "Goal already completed."
-                                  ? SnackType.error
-                                  : SnackType.success);
-                          return;
-                        }
-                        Navigator.of(context).pop(responseMessage);
-                        if (widget.onConfirm != null) {
-                          widget.onConfirm!();
-                        }
-                      },
+            _isTransactionExpired == false
+                ? Expanded(
+                    child: GrowkButton(
+                      // title: _isTransactionExpired ? 'Expired' : 'Confirm',
+                      title: 'Confirm',
+                      onTap: isConfirmDisabled
+                          ? null
+                          : () async {
+                              final responseMessage =
+                                  await sellController.sellGold(
+                                      context: context,
+                                      goalName: widget.goalName,
+                                      widgetRef: ref,
+                                      transactionId:
+                                          initiateSellData!.transactionId);
+
+                              if (responseMessage ==
+                                      "No gold balance available." ||
+                                  responseMessage ==
+                                      "Goal already completed." ||
+                                  responseMessage ==
+                                      "Transaction time expired.") {
+                                Navigator.of(context).pop(responseMessage);
+                                showGrowkSnackBar(
+                                    context: context,
+                                    ref: ref,
+                                    message: responseMessage.toString(),
+                                    type: SnackType.error);
+                                return;
+                              }
+                              Navigator.of(context).pop(responseMessage);
+                              if (widget.onConfirm != null) {
+                                widget.onConfirm!();
+                              }
+                            },
+                    ),
+                  )
+                : SizedBox.shrink()
+          ]),
+          if (_isTransactionExpired)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(
+                'Please close and try again to initiate a new transaction.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  color: Colors.red,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ),
-          ]),
           const SizedBox(height: 16),
         ],
       ),
@@ -235,18 +356,12 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
 
   Widget _buildOrderData(bool isDark, dynamic initiateSellData,
       double goldBalance, double walletBalance, double currentGoldPrice) {
-    // final double goldSellPrice = 389.00;
     final double goldSellPrice = initiateSellData.sellPrice;
     final double convenienceFee = initiateSellData.chargeAmount;
 
     final double goldAmount = goldBalance * goldSellPrice;
-
-    // final double walletBal = walletBalance - (goldBalance * currentGoldPrice);
-
     final double totalReceivable =
         (goldAmount + walletBalance) - convenienceFee;
-
-    // final double totalWalletBalance = walletBalance - currentGoldPrice;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,

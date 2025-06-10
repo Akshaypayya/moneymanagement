@@ -91,27 +91,38 @@ class GoalItem extends ConsumerWidget {
                           width: 50,
                           height: 50,
                           child: iconWidget != null
-                              ? ClipOval(
-                                  child: SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: iconWidget!,
-                                  ),
+                              ? SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: iconWidget!,
                                 )
-                              : ClipOval(
-                                  child: Image.asset(
-                                    iconAsset ?? 'assets/customgoals.png',
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        'assets/customgoals.png',
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
+                              : Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.transparent,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Image.asset(
+                                      iconAsset ?? 'assets/customgoals.png',
+                                      width: 42,
+                                      height: 42,
+                                      fit: BoxFit.contain,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Image.asset(
+                                            'assets/customgoals.png',
+                                            width: 42,
+                                            height: 42,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                         ),

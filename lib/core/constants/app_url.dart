@@ -53,4 +53,7 @@ class AppUrl {
 
   static const String intitiateGoalSellTransactionUrl =
       "/user-service/user/initiateGoldTransaction";
+  static String getNotificationListUrl(int iDisplayStart, int iDisplayLength) {
+    return '/user-service/user/getNotificationList?iDisplayStart=$iDisplayStart&iDisplayLength=$iDisplayLength';
+  }
 }

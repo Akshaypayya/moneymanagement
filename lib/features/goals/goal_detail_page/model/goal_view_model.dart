@@ -1,10 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:growk_v2/core/services/icon_mapping_service.dart';
 
 class GoalViewModel {
@@ -201,17 +197,6 @@ class GoalData {
     }
   }
 
-  // double get progressPercent =>
-  //     targetAmount > 0 ? (availableBalance / targetAmount) : 0.0;
-
-  // String get progressText {
-  //   final totalMonths = duration * 12;
-  //   final currentMonths =
-  //       (availableBalance / (transactionAmount > 0 ? transactionAmount : 1))
-  //           .round();
-  //   return '$currentMonths/$totalMonths';
-  // }
-
   String get bankName => bankId ?? 'Arab National Bank';
   String get accountHolderName => accountName ?? 'Nexus Global Limited';
 
@@ -279,18 +264,34 @@ class GoalData {
     final assetPath = iconAsset;
     print('  - Building asset icon: $assetPath');
 
-    return Image.asset(
-      assetPath,
+    return Container(
       width: width,
       height: height,
-      errorBuilder: (context, error, stackTrace) {
-        print('  - ERROR loading asset $assetPath: $error');
-        return Image.asset(
-          'assets/customgoals.png',
-          width: width,
-          height: height,
-        );
-      },
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.transparent,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Image.asset(
+          assetPath,
+          width: width - 12,
+          height: height - 12,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            print('  - ERROR loading asset $assetPath: $error');
+            return Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Image.asset(
+                'assets/customgoals.png',
+                width: width - 12,
+                height: height - 12,
+                fit: BoxFit.contain,
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

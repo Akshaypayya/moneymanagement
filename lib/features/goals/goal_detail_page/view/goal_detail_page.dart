@@ -309,6 +309,7 @@ class GoalDetailPage extends ConsumerWidget {
           currentGold: '${goalData.formattedGoldBalance} gm',
           currentGoldPrice: goalData.currentPrice.toString(),
           virtualAccountNbr: goalData.linkedVA,
+          goldInvestmentStatus: goalData.goldInvestment,
           invested: goalData.investedAmount.toString(),
           goalStatus: goalStatus,
         ),

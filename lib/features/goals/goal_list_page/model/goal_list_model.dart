@@ -187,17 +187,6 @@ class GoalListItem {
         .clamp(0.0, 1.0);
   }
 
-  // double get progressPercent =>
-  //     targetAmount > 0 ? (availableBalance / targetAmount) : 0.0;
-
-  // String get progressText {
-  //   final totalMonths = duration * 12;
-  //   final currentMonths =
-  //       (availableBalance / (transactionAmount > 0 ? transactionAmount : 1))
-  //           .round();
-  //   return '$currentMonths/$totalMonths';
-  // }
-
   String get iconAsset {
     print('ICON ASSET for goal: $goalName');
     print('  - iconName: $iconName');
@@ -226,7 +215,7 @@ class GoalListItem {
     return 'assets/customgoals.png';
   }
 
-  Widget getIconWidget({double width = 60, double height = 60}) {
+  Widget getIconWidget({double width = 100, double height = 100}) {
     print('GET ICON WIDGET for: $goalName');
     print('  - Has goalPic: ${goalPic != null && goalPic!.isNotEmpty}');
     print('  - iconName: $iconName');
@@ -241,7 +230,7 @@ class GoalListItem {
             bytes,
             width: width,
             height: height,
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) {
               print('  - ERROR loading base64 image: $error');
               return _buildAssetIcon(width, height);
@@ -262,26 +251,52 @@ class GoalListItem {
     final assetPath = iconAsset;
     print('  - Building asset icon: $assetPath');
 
-    return Image.asset(
-      assetPath,
+    return Container(
       width: width,
       height: height,
-      errorBuilder: (context, error, stackTrace) {
-        print('  - ERROR loading asset $assetPath: $error');
-        return Image.asset(
-          'assets/customgoals.png',
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.transparent,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Image.asset(
+          assetPath,
           width: width,
           height: height,
-        );
-      },
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            print('  - ERROR loading asset $assetPath: $error');
+            return Padding(
+              padding: const EdgeInsets.all(80),
+              child: Image.asset(
+                'assets/customgoals.png',
+                width: width,
+                height: height,
+                fit: BoxFit.contain,
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
   Widget _getFallbackIcon(double width, double height) {
-    return Image.asset(
-      'assets/customgoals.png',
+    return Container(
       width: width,
       height: height,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.grey[100],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset(
+          'assets/customgoals.png',
+          fit: BoxFit.contain,
+        ),
+      ),
     );
   }
 }

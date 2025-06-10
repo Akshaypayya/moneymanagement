@@ -90,8 +90,8 @@ class GoalIconPicker extends ConsumerWidget {
       return ClipOval(
         child: Image.file(
           File(selectedImage.path),
-          width: 60,
-          height: 60,
+          width: 90,
+          height: 90,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             return _buildPlaceholder(isDark);

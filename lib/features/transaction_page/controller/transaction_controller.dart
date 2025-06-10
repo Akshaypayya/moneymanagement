@@ -10,7 +10,7 @@ class PaginatedTransactionNotifier
   PaginatedTransactionNotifier(this.ref)
       : super(TransactionPaginationState(
           currentPage: 0,
-          itemsPerPage: 10,
+          itemsPerPage: 100,
           isLoading: false,
           hasMore: true,
           transactions: [],

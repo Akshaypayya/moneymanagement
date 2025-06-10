@@ -75,7 +75,7 @@ class TransactionItem extends ConsumerWidget {
                     color: AppColors.current(isDark).text,
                     fontFamily: GoogleFonts.poppins().fontFamily,
                   ),
-                  maxLines: 2,
+                  maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),

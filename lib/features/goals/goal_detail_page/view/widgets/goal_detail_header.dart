@@ -38,6 +38,7 @@ class GoalHeader extends ConsumerWidget {
                       color: isDark ? Colors.white : Colors.black,
                       width: 1,
                     ),
+                    color: Colors.transparent,
                   ),
                   child: goalImageWidget != null
                       ? SizedBox(
@@ -46,25 +47,34 @@ class GoalHeader extends ConsumerWidget {
                           child: goalImageWidget!,
                         )
                       : goalIcon != null && goalIcon!.isNotEmpty
-                          ? Image.asset(
-                              goalIcon!,
-                              width: 56,
-                              height: 56,
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/customgoals.png',
-                                  width: 56,
-                                  height: 56,
-                                  fit: BoxFit.contain,
-                                );
-                              },
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(
+                                goalIcon!,
+                                width: 74,
+                                height: 74,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image.asset(
+                                      'assets/customgoals.png',
+                                      width: 74,
+                                      height: 74,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  );
+                                },
+                              ),
                             )
-                          : Image.asset(
-                              'assets/customgoals.png',
-                              width: 56,
-                              height: 56,
-                              fit: BoxFit.contain,
+                          : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(
+                                'assets/customgoals.png',
+                                width: 74,
+                                height: 74,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                 ),
               ),

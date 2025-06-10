@@ -7,7 +7,7 @@ import 'package:growk_v2/features/goals/edit_goal_page/view/edit_goal_page.dart'
 import 'package:growk_v2/features/gold_price_trends/view/gold_price_trends_page.dart';
 import 'package:growk_v2/features/kyc_verification/views/kyc_verification_page.dart';
 import 'package:growk_v2/features/nominee_details/views/nominee_details_screen.dart';
-import 'package:growk_v2/features/notifcation_page/notification_page.dart';
+import 'package:growk_v2/features/notifcation_page/view/notification_page.dart';
 import 'package:growk_v2/features/referral_rewards/view/referral_rewards_screen.dart';
 import 'package:growk_v2/features/saved_address/view/saved_address_screen.dart';
 import 'package:growk_v2/features/settings_page/widgets/help_screen.dart';
@@ -126,8 +126,6 @@ class AppRouter {
             body: Center(child: Text('No route defined')),
           ),
         );
-
-
     }
   }
 }

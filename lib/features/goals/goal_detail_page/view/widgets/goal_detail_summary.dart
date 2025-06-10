@@ -16,6 +16,7 @@ class GoalSummary extends ConsumerWidget {
   final String currentGoldPrice;
   final String invested;
   final String goalStatus;
+  final String goldInvestmentStatus;
 
   const GoalSummary({
     Key? key,
@@ -26,6 +27,7 @@ class GoalSummary extends ConsumerWidget {
     required this.currentGoldPrice,
     required this.invested,
     required this.goalStatus,
+    required this.goldInvestmentStatus,
   }) : super(key: key);
 
   @override
@@ -67,7 +69,8 @@ class GoalSummary extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           _buildGoldHoldingsSection(isDark),
-          // const SizedBox(height: 8),
+          const SizedBox(height: 8),
+          _buildGoalInvestmentSection(isDark)
           // _buildVirtualAccountSection(context, ref, isDark, controller),
         ],
       ),
@@ -169,41 +172,31 @@ class GoalSummary extends ConsumerWidget {
     );
   }
 
-  // Widget _buildVirtualAccountSection(BuildContext context, WidgetRef ref,
-  //     bool isDark, GoalSummaryController controller) {
-  //   return GestureDetector(
-  // onTap: () => controller.copyVirtualAccountToClipboard(
-  //     context, virtualAccountNbr, ref),
-  //     child: Row(
-  //       mainAxisSize: MainAxisSize.min,
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         Text(
-  //           'Virtual Account: ',
-  //           style: TextStyle(
-  //             fontSize: 14,
-  //             fontFamily: GoogleFonts.poppins().fontFamily,
-  //             color: isDark ? Colors.grey[300] : Colors.grey[800],
-  //           ),
-  //         ),
-  //         Text(
-  //           virtualAccountNbr,
-  //           style: TextStyle(
-  //             fontSize: 14,
-  //             fontWeight: FontWeight.bold,
-  //             fontFamily: GoogleFonts.poppins().fontFamily,
-  //             color: isDark ? Colors.white : Colors.black,
-  //           ),
-  //         ),
-  //         const SizedBox(width: 5),
-  //         Icon(
-  //           Icons.copy,
-  //           size: 16,
-  //           color: isDark ? Colors.grey[400] : Colors.grey[600],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget _buildGoalInvestmentSection(bool isDark) {
+    return Center(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Gold Investment Status: ',
+            style: TextStyle(
+              fontSize: 14,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              color: isDark ? Colors.grey[300] : Colors.grey[800],
+            ),
+          ),
+          Text(
+            goldInvestmentStatus == "Y" ? "Yes" : "No",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              color: isDark ? Colors.white : Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

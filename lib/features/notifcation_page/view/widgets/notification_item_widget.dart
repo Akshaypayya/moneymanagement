@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/constants/app_space.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
-import 'package:growk_v2/features/notifcation_page/notification_ui_model/notification_ui_model.dart';
+import 'package:growk_v2/features/notifcation_page/model/notification_model.dart';
 
-class NotificationItem extends ConsumerWidget {
-  final NotificationModel notification;
+class NotificationItemWidget extends ConsumerWidget {
+  final NotificationItem notification;
 
-  const NotificationItem({
+  const NotificationItemWidget({
     Key? key,
     required this.notification,
   }) : super(key: key);
@@ -17,10 +18,13 @@ class NotificationItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
 
-    bool titleNeedsSymbol = notification.title.trim().startsWith('5000');
+    bool titleNeedsSymbol =
+        notification.displayTitle.trim().startsWith('5000') ||
+            notification.displayTitle.toLowerCase().contains('sar') ||
+            _containsAmount(notification.displayTitle);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -38,17 +42,24 @@ class NotificationItem extends ConsumerWidget {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
-                width: 1,
+                color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
               ),
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
               child: Image.asset(
-                notification.icon,
+                notification.iconAsset,
                 width: 30,
                 height: 30,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.notifications,
+                    size: 30,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  );
+                },
               ),
             ),
           ),
@@ -64,7 +75,7 @@ class NotificationItem extends ConsumerWidget {
                               height: 14,
                               color: AppColors.current(isDark).primary),
                           Text(
-                            notification.title,
+                            notification.displayTitle,
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -75,7 +86,7 @@ class NotificationItem extends ConsumerWidget {
                         ],
                       )
                     : Text(
-                        notification.title,
+                        notification.displayTitle,
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -88,11 +99,20 @@ class NotificationItem extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset(AppImages.sarSymbol,
-                        height: 14, color: AppColors.current(isDark).primary),
+                    // Column(
+                    //   children: [
+                    //     const SizedBox(
+                    //       height: 2,
+                    //     ),
+                    //     Image.asset(AppImages.sarSymbol,
+                    //         height: 13,
+                    //         color: AppColors.current(isDark).primary),
+                    //   ],
+                    // ),
+                    // const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        notification.message,
+                        notification.displayMessage,
                         style: TextStyle(
                           fontSize: 13,
                           fontFamily: GoogleFonts.poppins().fontFamily,
@@ -106,7 +126,7 @@ class NotificationItem extends ConsumerWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    notification.timestamp,
+                    notification.formattedTime,
                     style: TextStyle(
                       fontSize: 12,
                       fontFamily: GoogleFonts.poppins().fontFamily,
@@ -120,5 +140,13 @@ class NotificationItem extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  bool _containsAmount(String text) {
+    return RegExp(r'\d+').hasMatch(text) &&
+        (text.toLowerCase().contains('converted') ||
+            text.toLowerCase().contains('amount') ||
+            text.toLowerCase().contains('deposited') ||
+            text.toLowerCase().contains('credited'));
   }
 }
