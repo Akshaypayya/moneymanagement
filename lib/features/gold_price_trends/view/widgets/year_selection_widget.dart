@@ -18,51 +18,44 @@ class YearSelectionWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final buttonWidth = (screenWidth - 60) /
-        buttonCount; // subtract padding/margins
-
     return ScalingFactor(
-      child: ReusableContainer(
-        height: 50,
-        width: double.infinity,
-        color: Colors.grey.shade100,
-        borderRadius: const BorderRadius.all(Radius.circular(30)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(buttonCount, (index) {
             final year = buttonNames[index];
             final isSelected = year == selectedYear;
+            final label = year == 0 ? "6M" : "${year}Y";
 
-            return GestureDetector(
-              onTap: () => onYearSelected(year),
-              child: Container(
-                height: 40,
-                width: buttonWidth.clamp(60.0, 120.0),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: isSelected ? Colors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: isSelected
-                      ? [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 6,
-                      offset: Offset(0, 2),
+            return Expanded(
+              child: GestureDetector(
+                onTap: () => onYearSelected(year),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    color: isSelected ? Colors.black : Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: isSelected
+                        ? [
+                      BoxShadow(
+                        color: Colors.teal.withOpacity(0.3),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      )
+                    ]
+                        : [],
+                  ),
+                  child: Center(
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ]
-                      : [],
-                ),
-                child: Text(
-                  '$year Y',
-                  style: TextStyle(
-                    color: isSelected ? Colors.black : Colors.black45,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight
-                        .normal,
                   ),
                 ),
               ),

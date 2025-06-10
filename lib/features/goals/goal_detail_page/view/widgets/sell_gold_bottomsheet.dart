@@ -62,10 +62,9 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
     if (goalDetailState.value?.data != null) {
       currentGoldPrice = goalDetailState.value!.data!.currentPrice;
     }
-
     double walletBalance = 0.0;
     if (goalDetailState.value?.data != null) {
-      walletBalance = goalDetailState.value!.data!.availableBalance;
+      walletBalance = goalDetailState.value!.data!.walletBalance;
     }
 
     return Container(
@@ -236,13 +235,18 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
 
   Widget _buildOrderData(bool isDark, dynamic initiateSellData,
       double goldBalance, double walletBalance, double currentGoldPrice) {
-    // final double goldSellPrice = initiateSellData.sellPrice;
-    const double goldSellPrice = 389.00;
+    // final double goldSellPrice = 389.00;
+    final double goldSellPrice = initiateSellData.sellPrice;
     final double convenienceFee = initiateSellData.chargeAmount;
+
     final double goldAmount = goldBalance * goldSellPrice;
+
+    // final double walletBal = walletBalance - (goldBalance * currentGoldPrice);
+
     final double totalReceivable =
         (goldAmount + walletBalance) - convenienceFee;
-    final double totalWalletBalance = walletBalance - currentGoldPrice;
+
+    // final double totalWalletBalance = walletBalance - currentGoldPrice;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -268,11 +272,10 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
         const SizedBox(height: 8),
         buildOrderDataRow("Gold Purity", "999.9", isDark, showSar: true),
         const SizedBox(height: 8),
-        buildOrderDataRow(
-            "Wallet Balance", totalWalletBalance.toString(), isDark,
+        buildOrderDataRow("Wallet Balance", walletBalance.toString(), isDark,
             showSar: true),
         const SizedBox(height: 8),
-        buildOrderDataRow("Gold Amount", goldAmount.toString(), isDark),
+        buildOrderDataRow("Gold Amount", goldAmount.toStringAsFixed(2), isDark),
         const SizedBox(height: 8),
         buildOrderDataRow("Convenience Fee", convenienceFee.toString(), isDark),
         const SizedBox(height: 8),
@@ -280,8 +283,8 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
         const SizedBox(height: 8),
         Divider(color: isDark ? Colors.grey[600] : Colors.grey[300]),
         const SizedBox(height: 8),
-        buildOrderDataRow(
-            "Total Receivable Amount", totalReceivable.toString(), isDark,
+        buildOrderDataRow("Total Receivable Amount",
+            totalReceivable.toStringAsFixed(2), isDark,
             isBold: true),
       ],
     );

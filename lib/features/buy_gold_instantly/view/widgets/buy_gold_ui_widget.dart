@@ -235,6 +235,7 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
         )
             : Text(displayValue,
             style: AppTextStyle.current(isDark).titleLrg),
+
         const SizedBox(height: 35),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,30 +301,48 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
     final useCase = ref.read(initiateGoldBuyUseCaseProvider);
     final inputText = amountController.text.trim();
 
-    if (inputText.isEmpty ||
-        double.tryParse(inputText) == null ||
-        double.parse(inputText) <= 0) {
+    if (inputText.isEmpty || double.tryParse(inputText) == null || double.parse(inputText) <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a valid amount')),
       );
       return;
     }
 
-    final inputAmount =
-    isBuyByWeight ? selectedAmount.toDouble() : double.parse(inputText);
+    final inputAmount = isBuyByWeight
+        ? selectedAmount.toDouble()
+        : double.parse(inputText);
+
+    if (inputAmount <= 0 || widget.goldPricePerGram <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gold price or amount is invalid')),
+      );
+      return;
+    }
 
     try {
       notifier.state = true;
-      final result = await useCase.call(inputAmount,0);
+
+      final result = await useCase.call(inputAmount, 0);
+
+      final transactionId = result.data?.transactionId;
+      final transactionAmount = result.data?.transactionAmount;
+
+      if (transactionId == null || transactionId.isEmpty || transactionAmount == null || transactionAmount <= 0) {
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'Transaction initiation failed. Please try again.',
+          type: SnackType.error,
+        );
+        return;
+      }
+
+      // ✅ Safely set provider only after confirming data is valid
       ref.read(initiateBuyGoldProvider.notifier).setTransaction(result);
 
-      showGrowkSnackBar(
-        context: context,
-        ref: ref,
-        message: 'Transaction initiated successfully',
-        type: SnackType.success,
-      );
+      // ✅ Now navigate
       Navigator.pushNamed(context, AppRouter.buyGoldSummary);
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Transaction failed: $e')),

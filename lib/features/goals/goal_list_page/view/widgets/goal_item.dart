@@ -40,13 +40,10 @@ class GoalItem extends ConsumerWidget {
     required this.goalStatus,
   }) : super(key: key);
 
-  // String profitVal = '';
-
   double getProfitVal(String amount, String invested) {
     double val1 = double.tryParse(amount) ?? 0;
     double val2 = double.tryParse(invested) ?? 0;
     double profitVal = val1 - val2;
-    // this.profitVal = profitVal.toString();
     debugPrint("profit value : $profitVal");
     return profitVal;
   }
@@ -90,12 +87,34 @@ class GoalItem extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        iconWidget ??
-                            Image.asset(
-                              iconAsset!,
-                              width: 35,
-                              height: 35,
-                            ),
+                        Container(
+                          width: 50,
+                          height: 50,
+                          child: iconWidget != null
+                              ? ClipOval(
+                                  child: SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: iconWidget!,
+                                  ),
+                                )
+                              : ClipOval(
+                                  child: Image.asset(
+                                    iconAsset ?? 'assets/customgoals.png',
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/customgoals.png',
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ),
                         const SizedBox(width: 10),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

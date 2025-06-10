@@ -5,15 +5,16 @@ class InitiateGoldBuyRepo {
   final NetworkService network;
   InitiateGoldBuyRepo(this.network);
 
-  Future<InitiateBuyGoldModel> initiateBuyGold(double amount,int operation) async {
+  Future<InitiateBuyGoldModel> initiateBuyGold(
+      double amount, int operation) async {
     final cleanedAmount = amount;
     final headers = {
       'Content-Type': 'application/json',
       'app': 'SA',
     };
     final payload = {
-      "transactionAmount" : cleanedAmount,
-      "operation":operation
+      "transactionAmount": cleanedAmount,
+      "operation": operation
     };
 
     debugPrint('Headers: $headers');

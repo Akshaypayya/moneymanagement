@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:growk_v2/views.dart';
 import 'package:growk_v2/core/widgets/sar_amount_widget.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/providers/buy_gold_instantly_screen_providers.dart';
@@ -202,21 +200,36 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
 
   void _proceed(BuildContext context) async {
     final notifier = ref.read(isButtonLoadingProvider.notifier);
-    final useCase = ref.read(initiateGoldBuyUseCaseProvider); // still reused
+    final useCase = ref.read(initiateGoldBuyUseCaseProvider);
     final inputText = amountController.text.trim();
+    final homeDataAsync = ref.watch(homeDetailsProvider);
 
     final goldInGrams = double.tryParse(inputText);
+    final walletGoldBalance = homeDataAsync.valueOrNull?.data?.wallet?.goldBalance ?? 0;
 
     if (goldInGrams == null || goldInGrams <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid gram value')),
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Please enter a valid gram value',
+        type: SnackType.error,
+      );
+      return;
+    }
+
+    if (goldInGrams > walletGoldBalance) {
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Insufficient gold balance in wallet',
+        type: SnackType.error,
       );
       return;
     }
 
     try {
       notifier.state = true;
-      final result = await useCase.call(goldInGrams, 1); // gram quantity passed to sell API
+      final result = await useCase.call(goldInGrams, 1);
       ref.read(initiateBuyGoldProvider.notifier).setTransaction(result);
 
       showGrowkSnackBar(
@@ -227,8 +240,11 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
       );
       Navigator.pushNamed(context, AppRouter.sellGoldSummaryPage);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Transaction failed: $e')),
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Transaction failed: $e',
+        type: SnackType.error,
       );
     } finally {
       notifier.state = false;

@@ -15,32 +15,60 @@ class GoalNameInput extends ConsumerWidget {
     return Center(
       child: SizedBox(
         width: 250,
-        child: TextField(
-          onChanged: (value) {
-            ref.read(goalNameProvider.notifier).state = value;
-          },
-          style: TextStyle(
-            color: isDark ? Colors.white : Colors.black,
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            fontSize: 14,
-          ),
-          textAlign: TextAlign.center,
-          cursorColor: isDark ? Colors.white : Colors.black,
-          decoration: InputDecoration(
-            hintText: 'Enter Goal Name (Eg: Education)',
-            hintStyle: TextStyle(
-              color: isDark ? Colors.grey[400] : Colors.grey[500],
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Enter Goal Name',
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const Text(
+                  ' *',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            border: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            errorBorder: InputBorder.none,
-            disabledBorder: InputBorder.none,
-            contentPadding: EdgeInsets.zero,
-          ),
+            const SizedBox(height: 8),
+            TextField(
+              onChanged: (value) {
+                ref.read(goalNameProvider.notifier).state = value;
+              },
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+              cursorColor: isDark ? Colors.white : Colors.black,
+              decoration: InputDecoration(
+                hintText: 'Eg: Education, Home, Wedding',
+                hintStyle: TextStyle(
+                  color: isDark ? Colors.grey[400] : Colors.grey[500],
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ],
         ),
       ),
     );

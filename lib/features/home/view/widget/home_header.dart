@@ -1,5 +1,6 @@
+import 'package:growk_v2/features/buy_gold_instantly/view/controller/buy_gold_instantly_screen_controller.dart';
+import 'package:growk_v2/features/home/view/widget/gold_price_display.dart';
 import 'package:growk_v2/features/wallet_page/provider/wallet_screen_providers.dart';
-
 import '../../../../views.dart';
 import 'package:intl/intl.dart';
 class HomeHeader extends ConsumerWidget {
@@ -10,159 +11,152 @@ class HomeHeader extends ConsumerWidget {
     final isDark = ref.watch(isDarkProvider);
     final totalSavings = ref.watch(totalSavingsProvider) ?? '0.00';
     final goldWeight = ref.watch(goldWeightProvider) ?? '0.000';
-    // final walletBalance = ref.watch(walletBalanceProvider) ?? '0.000';
     final walletAsync = ref.watch(getNewWalletBalanceProvider);
-
+    final livePriceAsync = ref.watch(liveGoldPriceProvider);
+    final formatter = NumberFormat.decimalPattern();
     final savingsDate = DateFormat('d MMM yyyy').format(DateTime.now());
+    final isKycIncomplete = totalSavings == '0.00' && goldWeight == '0.000';
 
-
-    final bool isKycIncomplete = totalSavings == '0.00' && goldWeight == '0.000';
+    final textColor = AppColors.current(isDark).text;
+    final primaryColor = AppColors.current(isDark).primary;
 
     return ScalingFactor(
       child: ReusableWhiteContainerWithPadding(
-        widget: ReusableColumn(
+        widget: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const ReusableSizedBox(height: 30),
+          children: [
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                livePriceAsync.when(
+                  data: (data) => GoldPriceDisplay(
+                    goldPrice: (data.data?.buyRate ?? 0).toDouble(),
+                    currency: 'SAR',
+                  ),
+                  loading: () => const GoldPriceDisplay(
+                    goldPrice: 0.00,
+                    currency: 'SAR',
+                  ),
+                  error: (err, _) => const GoldPriceDisplay(
+                    goldPrice: 0.00, // fallback on error
+                    currency: 'SAR',
+                  ),
+                ),
+                Row(
+                  children: [
+                    _iconButton(
+                      asset: AppImages.rewardsSymbol,
+                      color: primaryColor,
+                      onTap: () => Navigator.pushNamed(context, AppRouter.goldPriceTrends),
+                    ),
+                    const SizedBox(width: 12),
+                    _iconButton(
+                      asset: AppImages.notificationSymbol,
+                      color: primaryColor,
+                      onTap: () => Navigator.pushNamed(context, AppRouter.notificationScreen),
+                    ),
+                  ],
+                )
+              ],
+            ),
+
+            const SizedBox(height: 10),
             ReusableText(
               text: 'Total Savings',
-              style: AppTextStyle(textColor: AppColors.current(isDark).text).titleSmallMedium,
+              style: AppTextStyle(textColor: textColor).titleSmallMedium,
             ),
-            ReusableRow(
-              children: <Widget>[
-                ReusableRow(
-                  children: [
-                    Image.asset(
-                      AppImages.sarSymbol,
-                      height: 22,
-                      color: AppColors.current(isDark).primary,
-                    ),
-                    const ReusableSizedBox(width: 5),
-                    isKycIncomplete
-                        ? ReusableText(
-                      text: '0',
-                      style: AppTextStyle(
-                        textColor: AppColors.current(isDark).text,
-                      ).headlineLarge,
-                    )
-                        : ReusableText(
-                      text: totalSavings,
-                      style: AppTextStyle(
-                        textColor: AppColors.current(isDark).text,
-                      ).headlineLarge,
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                ReusableRow(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRouter.goldPriceTrends);
-                      },
-                      child: Image.asset(
-                        AppImages.rewardsSymbol,
-                        height: 30,
-                        color: AppColors.current(isDark).primary,
-                      ),
-                    ),
-                    const ReusableSizedBox(width: 15),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRouter.notificationScreen);
-                      },
-                      child: Image.asset(
-                        AppImages.notificationSymbol,
-                        height: 30,
-                        color: AppColors.current(isDark).primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            ReusableRow(
+            const SizedBox(height: 6),
+            Row(
               children: [
-                ReusableText(
-                  text: 'Gold savings as of $savingsDate:',
-                  style: AppTextStyle(textColor: AppColors.current(isDark).text).labelSmall,
+                Image.asset(
+                  AppImages.sarSymbol,
+                  height: 22,
+                  color: primaryColor,
                 ),
-                const ReusableSizedBox(width: 5),
-                isKycIncomplete
-                    ? ReusableText(
-                  text: '0',
-                  style: AppTextStyle(
-                    textColor: AppColors.current(isDark).text,
-                  ).titleSmall,
-                )
-                    : ReusableText(
-                  text: '$goldWeight gm',
-                  style: AppTextStyle(textColor: AppColors.current(isDark).text).titleSmall,
+                const SizedBox(width: 6),
+                ReusableText(
+                  text: formatter.format(double.tryParse(totalSavings) ?? 0),
+                  style: AppTextStyle(textColor: textColor).headlineLarge,
                 ),
               ],
             ),
-            ReusableSizedBox(
-              height: 5,
-            ),
+
+            const SizedBox(height: 6),
+
             GestureDetector(
               onTap: () async {
                 try {
-                  final result =
-                      await ref.refresh(homeDetailsProvider.future);
+                  await ref.refresh(homeDetailsProvider.future);
                   Navigator.pushNamed(context, AppRouter.walletPage);
                 } catch (e) {
-                  final errorMessage = e
-                      .toString()
-                      .contains('KYC not completed')
+                  final errorMessage = e.toString().contains('KYC')
                       ? 'KYC not verified. Please complete KYC to access this feature.'
                       : 'Something went wrong. Please try again later.';
-
                   showGrowkSnackBar(
                     context: context,
                     ref: ref,
                     message: errorMessage,
                     type: SnackType.error,
                   );
-                  await  Navigator.pushNamed(
-                      context, AppRouter.kycVerificationScreen);
+                  await Navigator.pushNamed(context, AppRouter.kycVerificationScreen);
                 }
               },
-              child: Container(
-                child: ReusableRow(
-                  children: [
-                    ReusableText(
-                      text: 'Wallet balance is:',
-                      style: AppTextStyle(textColor: AppColors.current(isDark).text).labelSmall,
+              child: ReusableRow(
+                children: [
+                  ReusableText(
+                    text: 'Wallet Balance:',
+                    style: AppTextStyle(textColor: textColor).labelSmall,
+                  ),
+                  const SizedBox(width: 6),
+                  walletAsync.when(
+                    data: (walletData) => ReusableText(
+                      text: formatter.format(walletData.data?.walletBalance ?? 0),
+                      style: AppTextStyle(textColor: textColor).titleSmall,
                     ),
-                    const ReusableSizedBox(width: 5),
-                    isKycIncomplete
-                        ? ReusableText(
-                      text: '0',
-                      style: AppTextStyle(
-                        textColor: AppColors.current(isDark).text,
-                      ).titleSmall,
-                    )
-                        :
-                    walletAsync.when(
-                      data: (walletData) =>
-                          ReusableText(
-                            text:"${walletData.data!.walletBalance}",
-                            style: AppTextStyle(textColor: AppColors.current(isDark).text).titleSmall,
-                          ),
-                      loading: () => ReusableText(
-                        text:"0.0",
-                        style: AppTextStyle(textColor: AppColors.current(isDark).text).titleSmall,
-                      ),
-                      error: (err, stack) => Text('Error: $err'),
+                    loading: () => ReusableText(
+                      text: '0.0',
+                      style: AppTextStyle(textColor: textColor).titleSmall,
                     ),
-                  ],
-                ),
+                    error: (_, __) => ReusableText(
+                      text: 'Error',
+                      style: AppTextStyle(textColor: textColor).titleSmall,
+                    ),
+                  ),
+                ],
               ),
+            ),
+
+            const SizedBox(height: 6),
+
+            ReusableRow(
+              children: [
+                ReusableText(
+                  text: 'Gold savings as of $savingsDate:',
+                  style: AppTextStyle(textColor: textColor).labelSmall,
+                ),
+                const SizedBox(width: 6),
+                ReusableText(
+                  text: isKycIncomplete ? '0' : '$goldWeight gm',
+                  style: AppTextStyle(textColor: textColor).titleSmall,
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget _iconButton({required String asset, required Color color, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Image.asset(
+        asset,
+        height: 24,
+        color: color,
+      ),
+    );
+  }
 }
+

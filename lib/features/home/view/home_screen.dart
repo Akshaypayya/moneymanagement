@@ -12,6 +12,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isFirstLoad = true;
 
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -29,11 +30,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
 
+
     return ScalingFactor(
       child: CustomScaffold(
         backgroundColor: AppColors.current(isDark).scaffoldBackground,
         body: GrowkRefreshIndicator(
-          providerToRefresh: homeDetailsProvider,
+          onRefreshCallback: (ref) async {
+            await ref.refresh(homeDetailsProvider.future);
+            await ref.refresh(getNewWalletBalanceProvider.future);
+            await ref.refresh(getNewWalletBalanceProvider.future);
+          },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: ReusableColumn(

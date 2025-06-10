@@ -227,33 +227,44 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
 
                     final useCase = ref.read(goldBuyUseCaseProvider);
                     final transaction = ref.read(initiateBuyGoldProvider);
-                    final debitAmount = transaction?.data?.transactionAmount ?? 0.0;
+                    final debitAmount = (transaction?.data?.transactionAmount ?? 0.0).toDouble();
                     final transactionId = transaction?.data?.transactionId ?? '';
+
+                    if (debitAmount <= 0 || transactionId.isEmpty) {
+                      showGrowkSnackBar(
+                        context: context,
+                        ref: ref,
+                        message: 'Invalid transaction details. Please try again.',
+                        type: SnackType.error,
+                      );
+                      loadingNotifier.state = false;
+                      return;
+                    }
+
                     final String goldQuantityText = _calculateGoldQuantity(investmentAmount, goldPrice);
 
                     try {
-                      final result = await useCase(double.parse(debitAmount.toString()), transactionId);
+                      final result = await useCase(debitAmount, transactionId);
 
                       if (result.status == 'Success') {
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
-                          isDismissible: false, // 🚫 Disable swipe down to dismiss
-                          enableDrag: false, // 🚫 Disable dragging to close
+                          isDismissible: false,
+                          enableDrag: false,
                           builder: (_) => WillPopScope(
                             onWillPop: () async => false,
                             child: SuccessBottomSheet(
                               title: 'Purchase Successful',
-                              description:
-                              'Your gold purchase has been completed successfully! The amount has been deducted from your GrowK Wallet, and your gold balance has been updated.',
+                              description: 'Your gold purchase has been completed successfully! The amount has been deducted from your GrowK Wallet, and your gold balance has been updated.',
                               details: {
                                 'Gold Quantity': goldQuantityText,
-                                'Investment Amount': '₱ ${debitAmount.toStringAsFixed(2)}',
-                                'Other Charges': '₱${(taxes + convenienceFee).toStringAsFixed(2)}',
-                                'Total Debited Amount': '₱${(debitAmount + taxes + convenienceFee).toStringAsFixed(2)}',
+                                'Investment Amount': 'SAR ${debitAmount.toStringAsFixed(2)}',
+                                'Other Charges': 'SAR ${(taxes + convenienceFee).toStringAsFixed(2)}',
+                                'Total Debited Amount': 'SAR ${(debitAmount + taxes + convenienceFee).toStringAsFixed(2)}',
                               },
-                              onClose: () => Navigator.pop(context), // ✅ Only this button can close
+                              onClose: () => Navigator.pop(context),
                             ),
                           ),
                         );

@@ -33,10 +33,13 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
     super.didChangeDependencies();
 
     if (!_isInitialized) {
-      ref.read(selectedGoldTabProvider.notifier).state = 'Buy Gold';
+      Future.microtask(() {
+        ref.read(selectedGoldTabProvider.notifier).state = 'Buy Gold';
+      });
       _isInitialized = true;
     }
   }
+
 
   @override
   void dispose() {

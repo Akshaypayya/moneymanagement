@@ -60,12 +60,14 @@ class InitiateSellGoldResponse {
 class InitiateSellGoldData {
   final double? transactionAmount;
   final double chargeAmount;
+  final double? sellPrice;
   final String transactionId;
 
   InitiateSellGoldData({
     this.transactionAmount,
     required this.chargeAmount,
     required this.transactionId,
+    required this.sellPrice,
   });
 
   factory InitiateSellGoldData.fromJson(Map<String, dynamic> json) {
@@ -73,6 +75,7 @@ class InitiateSellGoldData {
       transactionAmount: json['transactionAmount']?.toDouble(),
       chargeAmount: (json['chargeAmount'] ?? 0).toDouble(),
       transactionId: json['transactionId'] ?? '',
+      sellPrice: (json['sellPrice'] ?? 0).toDouble(),
     );
   }
 
@@ -81,15 +84,17 @@ class InitiateSellGoldData {
       'transactionAmount': transactionAmount,
       'chargeAmount': chargeAmount,
       'transactionId': transactionId,
+      'sellPrice': sellPrice,
     };
   }
 
   String get formattedTransactionAmount =>
       transactionAmount?.toStringAsFixed(2) ?? '0.00';
   String get formattedChargeAmount => chargeAmount.toStringAsFixed(2);
+  String get formattedSellPrice => sellPrice?.toStringAsFixed(2) ?? '0.00';
 
   @override
   String toString() {
-    return 'InitiateSellGoldData(transactionAmount: $transactionAmount, chargeAmount: $chargeAmount, transactionId: $transactionId)';
+    return 'InitiateSellGoldData(transactionAmount: $transactionAmount, chargeAmount: $chargeAmount, transactionId: $transactionId, sellPrice: $sellPrice)';
   }
 }

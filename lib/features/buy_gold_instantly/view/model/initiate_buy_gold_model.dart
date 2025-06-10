@@ -1,70 +1,73 @@
 class InitiateBuyGoldModel {
+  final InitiateBuyGoldData? data;
+  final String? status;
+  final String? message;
+
   InitiateBuyGoldModel({
-      this.data, 
-      this.status, 
-      this.message,});
+    this.data,
+    this.status,
+    this.message,
+  });
 
-  InitiateBuyGoldModel.fromJson(dynamic json) {
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
-    status = json['status'];
-    message = json['message'];
+  factory InitiateBuyGoldModel.fromJson(Map<String, dynamic> json) {
+    return InitiateBuyGoldModel(
+      data: json['data'] != null ? InitiateBuyGoldData.fromJson(json['data']) : null,
+      status: json['status'],
+      message: json['message'],
+    );
   }
-  Data? data;
-  String? status;
-  String? message;
-InitiateBuyGoldModel copyWith({  Data? data,
-  String? status,
-  String? message,
-}) => InitiateBuyGoldModel(  data: data ?? this.data,
-  status: status ?? this.status,
-  message: message ?? this.message,
-);
+
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    if (data != null) {
-      map['data'] = data?.toJson();
-    }
-    map['status'] = status;
-    map['message'] = message;
-    return map;
+    return {
+      'data': data?.toJson(),
+      'status': status,
+      'message': message,
+    };
   }
-
 }
 
-class Data {
-  Data({
-      this.transactionAmount, 
-      this.chargeAmount, 
-      this.transactionId, 
-      this.vATamount,});
+class InitiateBuyGoldData {
+  final num? transactionAmount;
+  final num? chargeAmount;
+  final num? sellPrice;
+  final String? transactionId;
 
-  Data.fromJson(dynamic json) {
-    transactionAmount = json['transactionAmount'];
-    chargeAmount = json['chargeAmount'];
-    transactionId = json['transactionId'];
-    vATamount = json['VATamount'];
+  InitiateBuyGoldData({
+    this.transactionAmount,
+    this.chargeAmount,
+    this.sellPrice,
+    this.transactionId,
+  });
+
+  factory InitiateBuyGoldData.fromJson(Map<String, dynamic> json) {
+    return InitiateBuyGoldData(
+      transactionAmount: json['transactionAmount'],
+      chargeAmount: json['chargeAmount'],
+      sellPrice: json['sellPrice'],
+      transactionId: json['transactionId'],
+    );
   }
 
-  num? transactionAmount;
-  num? chargeAmount;
-  String? transactionId;
-  num? vATamount;
-Data copyWith({  num? transactionAmount,
-  num? chargeAmount,
-  String? transactionId,
-  num? vATamount,
-}) => Data(  transactionAmount: transactionAmount ?? this.transactionAmount,
-  chargeAmount: chargeAmount ?? this.chargeAmount,
-  transactionId: transactionId ?? this.transactionId,
-  vATamount: vATamount ?? this.vATamount,
-);
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['transactionAmount'] = transactionAmount;
-    map['ChargeAmount'] = chargeAmount;
-    map['transactionId'] = transactionId;
-    map['VATamount'] = vATamount;
-    return map;
+    return {
+      'transactionAmount': transactionAmount,
+      'chargeAmount': chargeAmount,
+      'sellPrice': sellPrice,
+      'transactionId': transactionId,
+    };
   }
 
+  InitiateBuyGoldData copyWith({
+    num? transactionAmount,
+    num? chargeAmount,
+    num? sellPrice,
+    String? transactionId,
+  }) {
+    return InitiateBuyGoldData(
+      transactionAmount: transactionAmount ?? this.transactionAmount,
+      chargeAmount: chargeAmount ?? this.chargeAmount,
+      sellPrice: sellPrice ?? this.sellPrice,
+      transactionId: transactionId ?? this.transactionId,
+    );
+  }
 }

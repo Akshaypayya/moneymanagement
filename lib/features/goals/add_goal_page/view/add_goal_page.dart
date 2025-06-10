@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_app_bar.dart';
-import 'package:growk_v2/features/goals/add_goal_page/view/widget/frequency_slector.dart';
+import 'package:growk_v2/features/goals/add_goal_page/view/widget/frequency_selector.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/goal_icon_picker.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/goal_name_input.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/saving_amount_slider.dart';

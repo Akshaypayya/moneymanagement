@@ -2,12 +2,14 @@ import '../../../views.dart';
 
 class GrowkRefreshIndicator extends ConsumerWidget {
   final Widget child;
-  final FutureProvider providerToRefresh;
+  final FutureProvider? providerToRefresh;
+  final Future<void> Function(WidgetRef ref)? onRefreshCallback;
 
   const GrowkRefreshIndicator({
     super.key,
     required this.child,
-    required this.providerToRefresh,
+    this.providerToRefresh,
+    this.onRefreshCallback,
   });
 
   @override
@@ -21,7 +23,13 @@ class GrowkRefreshIndicator extends ConsumerWidget {
       strokeWidth: 2.5,
       edgeOffset: 10,
       onRefresh: () async {
-        await ref.refresh(providerToRefresh.future);
+        if (onRefreshCallback != null) {
+          await onRefreshCallback!(ref);
+        } else if (providerToRefresh != null) {
+          await ref.refresh(providerToRefresh!.future);
+        } else {
+          await Future.delayed(const Duration(milliseconds: 500)); // fallback
+        }
       },
       child: child,
     );

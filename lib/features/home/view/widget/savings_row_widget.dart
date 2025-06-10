@@ -10,7 +10,11 @@ class SavingsRowWidget extends ConsumerWidget {
   final String current;
   final String growth;
   final String actionIcon;
-  final bool ?received;
+  final bool? received;
+
+  final int index;
+  final BuildContext context;
+  final WidgetRef ref;
 
   const SavingsRowWidget({
     super.key,
@@ -23,8 +27,37 @@ class SavingsRowWidget extends ConsumerWidget {
     required this.current,
     required this.growth,
     required this.actionIcon,
-    this.received
+    required this.index,
+    required this.context,
+    required this.ref,
+    this.received,
   });
+
+  void _handleTap() async {
+    try {
+      await ref.refresh(homeDetailsProvider.future);
+      if (index == 0) {
+        Navigator.pushNamed(context, AppRouter.buyGoldInstantly);
+      } else if (index == 1) {
+        Navigator.pushNamed(context, AppRouter.createGoalScreen);
+      } else if (index == 2) {
+        Navigator.pushNamed(context, AppRouter.referralRewards);
+      }
+    } catch (e) {
+      final errorMessage = e.toString().contains('KYC not completed')
+          ? 'KYC not verified. Please complete KYC to access this feature.'
+          : 'Something went wrong. Please try again later.';
+
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: errorMessage,
+        type: SnackType.error,
+      );
+
+      await Navigator.pushNamed(context, AppRouter.kycVerificationScreen);
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,16 +80,26 @@ class SavingsRowWidget extends ConsumerWidget {
                 ),
               ],
             ),
-            ReusableRow(
-              children: [
-                Image.asset(actionIcon, height: 15),
-                const SizedBox(width: 5),
-                ReusableText(
-                    text: action,
-                    style:
-                        AppTextStyle(textColor: AppColors.current(isDark).text)
-                            .labelSmall),
-              ],
+            GestureDetector(
+              onTap: _handleTap,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: ReusableRow(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(actionIcon, height: 15,color: Colors.white,),
+                    const SizedBox(width: 5),
+                    ReusableText(
+                      text: action,
+                      style: AppTextStyle(textColor: Colors.white).labelSmall,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

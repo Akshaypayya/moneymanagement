@@ -8,7 +8,6 @@ export 'package:shared_preferences/shared_preferences.dart';
 export 'dart:convert';
 export 'dart:typed_data';
 export 'package:scaled_app/scaled_app.dart';
-export 'package:flutter/services.dart';
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 export 'package:firebase_core/firebase_core.dart';
 export 'package:growk_v2/core/notification/notification_services.dart';

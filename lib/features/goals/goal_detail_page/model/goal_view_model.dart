@@ -53,6 +53,9 @@ class GoalData {
   final double walletBalance;
   final String linkedVA;
   final double investedAmount;
+  final String? bankId;
+  final String? accountName;
+  final String? status;
 
   GoalData({
     required this.goalName,
@@ -74,6 +77,9 @@ class GoalData {
     required this.walletBalance,
     required this.linkedVA,
     required this.investedAmount,
+    this.bankId,
+    this.accountName,
+    this.status,
   });
 
   factory GoalData.fromJson(Map<String, dynamic> json) {
@@ -84,6 +90,9 @@ class GoalData {
     print('goalPicExtension: ${json['goalPicExtension']}');
     print('goalPicContentType: ${json['goalPicContentType']}');
     print('iconName: ${json['iconName']}');
+    print('bankId: ${json['bankId']}');
+    print('accountName: ${json['accountName']}');
+    print('status: ${json['status']}');
 
     return GoalData(
       goalName: json['goalName'] ?? '',
@@ -105,6 +114,9 @@ class GoalData {
       walletBalance: (json['walletBalance'] ?? 0).toDouble(),
       linkedVA: json['linkedVA'] ?? '',
       investedAmount: (json['investedAmount'] ?? 0).toDouble(),
+      bankId: json['bankId'],
+      accountName: json['accountName'],
+      status: json['status'],
     );
   }
 
@@ -129,6 +141,9 @@ class GoalData {
       'walletBalance': walletBalance,
       'linkedVA': linkedVA,
       'investedAmount': investedAmount,
+      'bankId': bankId,
+      'accountName': accountName,
+      'status': status,
     };
   }
 
@@ -196,6 +211,9 @@ class GoalData {
   //           .round();
   //   return '$currentMonths/$totalMonths';
   // }
+
+  String get bankName => bankId ?? 'Arab National Bank';
+  String get accountHolderName => accountName ?? 'Nexus Global Limited';
 
   String get iconAsset {
     print('GOAL DETAIL ICON ASSET for: $goalName');

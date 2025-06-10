@@ -30,8 +30,8 @@ class GoalHeader extends ConsumerWidget {
             children: [
               Center(
                 child: Container(
-                  width: 80,
-                  height: 80,
+                  width: 90,
+                  height: 90,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
@@ -39,28 +39,33 @@ class GoalHeader extends ConsumerWidget {
                       width: 1,
                     ),
                   ),
-                  child:
-                      // Image(
-                      //   image: NetworkImage(goalIcon ?? ''),
-                      //   width: 80,
-                      //   height: 80,
-                      //   fit: BoxFit.cover,
-                      // ),
-                      Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: goalImageWidget ??
-                        (goalIcon != null && goalIcon!.isNotEmpty
-                            ? Image.asset(
-                                goalIcon!,
-                                width: 80,
-                                height: 80,
-                              )
-                            : Image.asset(
-                                'assets/customgoals.png',
-                                width: 80,
-                                height: 80,
-                              )),
-                  ),
+                  child: goalImageWidget != null
+                      ? SizedBox(
+                          width: 90,
+                          height: 90,
+                          child: goalImageWidget!,
+                        )
+                      : goalIcon != null && goalIcon!.isNotEmpty
+                          ? Image.asset(
+                              goalIcon!,
+                              width: 56,
+                              height: 56,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/customgoals.png',
+                                  width: 56,
+                                  height: 56,
+                                  fit: BoxFit.contain,
+                                );
+                              },
+                            )
+                          : Image.asset(
+                              'assets/customgoals.png',
+                              width: 56,
+                              height: 56,
+                              fit: BoxFit.contain,
+                            ),
                 ),
               ),
             ],

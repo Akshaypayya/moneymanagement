@@ -23,6 +23,7 @@ GetWalletBalanceModel copyWith({  Data? data,
     final map = <String, dynamic>{};
     if (data != null) {
       map['data'] = data?.toJson();
+
     }
     map['status'] = status;
     map['message'] = message;
