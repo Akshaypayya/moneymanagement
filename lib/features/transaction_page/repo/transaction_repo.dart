@@ -13,7 +13,7 @@ class TransactionRepository {
 
   Future<TransactionModel> getAllTransactions({
     int iDisplayStart = 0,
-    int iDisplayLength = 100,
+    int iDisplayLength = 10,
   }) async {
     try {
       final token = SharedPreferencesHelper.getString("access_token");
@@ -25,6 +25,7 @@ class TransactionRepository {
         );
       }
 
+      // Use backend pagination parameters exactly as they expect
       final endpoint = '/user-service/goals/getAllTransaction'
           '?iDisplayStart=$iDisplayStart'
           '&iDisplayLength=$iDisplayLength';
@@ -69,6 +70,8 @@ class TransactionRepository {
                 } else {
                   debugPrint(
                       'TRANSACTION WARNING: aaData is empty but API returned success');
+                  debugPrint(
+                      'TRANSACTION: This might indicate end of pagination or backend issue');
                 }
               }
             }
@@ -96,29 +99,30 @@ class TransactionRepository {
 
           if (transactionModel.isSuccess) {
             if (transactionModel.data != null) {
+              final data = transactionModel.data!;
               debugPrint(
-                  'TRANSACTION: Successfully retrieved ${transactionModel.data!.aaData.length} transactions');
+                  'TRANSACTION: Successfully retrieved ${data.aaData.length} transactions');
+              debugPrint('TRANSACTION: Total records: ${data.iTotalRecords}');
               debugPrint(
-                  'TRANSACTION: Total records: ${transactionModel.data!.iTotalRecords}');
-              debugPrint(
-                  'TRANSACTION: iTotalDisplayRecords: ${transactionModel.data!.iTotalDisplayRecords}');
+                  'TRANSACTION: iTotalDisplayRecords: ${data.iTotalDisplayRecords}');
 
-              if (transactionModel.data!.aaData.isEmpty &&
-                  transactionModel.data!.iTotalRecords > 0) {
-                debugPrint('TRANSACTION ISSUE DETECTED:');
+              // Check for pagination issues
+              if (data.aaData.isEmpty &&
+                  data.iTotalRecords > 0 &&
+                  iDisplayStart < data.iTotalRecords) {
+                debugPrint('TRANSACTION PAGINATION ISSUE DETECTED:');
+                debugPrint('  - iTotalRecords: ${data.iTotalRecords}');
                 debugPrint(
-                    '  - iTotalRecords: ${transactionModel.data!.iTotalRecords}');
-                debugPrint(
-                    '  - iTotalDisplayRecords: ${transactionModel.data!.iTotalDisplayRecords}');
-                debugPrint(
-                    '  - aaData length: ${transactionModel.data!.aaData.length}');
+                    '  - iTotalDisplayRecords: ${data.iTotalDisplayRecords}');
+                debugPrint('  - aaData length: ${data.aaData.length}');
                 debugPrint(
                     '  - Request params: iDisplayStart=$iDisplayStart, iDisplayLength=$iDisplayLength');
-                debugPrint('  - This suggests a backend pagination issue');
+                debugPrint(
+                    '  - Expected: Should return data since iDisplayStart ($iDisplayStart) < iTotalRecords (${data.iTotalRecords})');
               }
 
-              if (transactionModel.data!.aaData.isNotEmpty) {
-                final firstTransaction = transactionModel.data!.aaData.first;
+              if (data.aaData.isNotEmpty) {
+                final firstTransaction = data.aaData.first;
                 debugPrint(
                     'TRANSACTION SAMPLE - Amount: ${firstTransaction.amount}');
                 debugPrint(

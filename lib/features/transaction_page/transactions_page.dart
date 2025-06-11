@@ -27,9 +27,10 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     super.initState();
     _scrollController.addListener(_onScroll);
 
-    // Load initial 10 transactions
+    // Load initial transactions
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint("TRANSACTIONS PAGE: Loading initial 10 transactions");
+      debugPrint(
+          "TRANSACTIONS PAGE: Initializing - loading first 10 transactions");
       ref.read(paginatedTransactionProvider.notifier).loadInitialTransactions();
     });
   }
@@ -44,17 +45,26 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   void _onScroll() {
     final state = ref.read(paginatedTransactionProvider);
 
-    // Check if user scrolled near bottom
+    // Check if user scrolled near bottom (200px threshold)
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       if (state.hasMore && !state.isAnyLoading) {
         debugPrint(
-            "TRANSACTIONS PAGE: Scroll reached bottom, loading 10 more items...");
+            "TRANSACTIONS PAGE: Scroll triggered - loading next ${state.itemsPerPage} items");
         debugPrint(
-            "TRANSACTIONS PAGE: Current items: ${state.transactions.length}");
-        debugPrint("TRANSACTIONS PAGE: Total available: ${state.totalRecords}");
+            "TRANSACTIONS PAGE: Current items: ${state.transactions.length}/${state.totalRecords}");
+        debugPrint(
+            "TRANSACTIONS PAGE: Next request will be: iDisplayStart=${state.transactions.length}, iDisplayLength=${state.itemsPerPage}");
 
         ref.read(paginatedTransactionProvider.notifier).loadMoreTransactions();
+      } else {
+        if (!state.hasMore) {
+          debugPrint(
+              "TRANSACTIONS PAGE: All transactions loaded (${state.transactions.length}/${state.totalRecords})");
+        } else if (state.isAnyLoading) {
+          debugPrint(
+              "TRANSACTIONS PAGE: Already loading, skipping scroll trigger");
+        }
       }
     }
   }
@@ -77,8 +87,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
           color: AppColors.current(isDark).background,
           child: RefreshIndicator(
             onRefresh: () async {
-              debugPrint(
-                  "TRANSACTIONS PAGE: Pull to refresh - loading fresh 10 items");
+              debugPrint("TRANSACTIONS PAGE: Pull to refresh triggered");
               await ref
                   .read(paginatedTransactionProvider.notifier)
                   .refreshTransactions();
@@ -92,28 +101,28 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
 
   Widget _buildTransactionContent(
       TransactionPaginationState state, bool isDark) {
-    // Show loading on initial load
+    // Initial loading state
     if (state.transactions.isEmpty && state.isLoading) {
-      debugPrint("TRANSACTIONS PAGE: Showing initial loading state");
+      debugPrint("TRANSACTIONS PAGE: Displaying initial loading state");
       return _buildLoadingState(isDark);
     }
 
-    // Show error if we have error and no transactions
+    // Error state (when no transactions and there's an error)
     if (state.transactions.isEmpty && state.errorMessage != null) {
       debugPrint(
-          "TRANSACTIONS PAGE: Showing error state: ${state.errorMessage}");
+          "TRANSACTIONS PAGE: Displaying error state: ${state.errorMessage}");
       return _buildErrorState(state.errorMessage!, isDark);
     }
 
-    // Show empty state if no transactions and no error
+    // Empty state (no transactions and no error)
     if (state.transactions.isEmpty && !state.isLoading) {
-      debugPrint("TRANSACTIONS PAGE: Showing empty state");
+      debugPrint("TRANSACTIONS PAGE: Displaying empty state");
       return _buildEmptyState(isDark);
     }
 
-    // Show transactions list with infinite scroll
+    // Success state with transactions
     debugPrint(
-        "TRANSACTIONS PAGE: Showing ${state.transactions.length} transactions");
+        "TRANSACTIONS PAGE: Displaying ${state.transactions.length} transactions");
     return _buildTransactionsList(state, isDark);
   }
 
@@ -125,20 +134,35 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
       physics: const AlwaysScrollableScrollPhysics(),
       child: Column(
         children: [
-          // Status info header
+          // Status header showing pagination info
           if (state.totalRecords > 0)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               color: isDark ? Colors.grey[900] : Colors.grey[50],
-              child: Text(
-                state.statusInfo,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.grey[300] : Colors.grey[700],
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    state.statusInfo,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      color: isDark ? Colors.grey[300] : Colors.grey[700],
+                    ),
+                  ),
+                  if (state.hasMore)
+                    Text(
+                      'Scroll for more',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                ],
               ),
             ),
 
@@ -161,7 +185,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
               );
             }),
 
-          // Loading more indicator at bottom
+          // Loading more indicator
           if (state.isLoadingMore)
             Container(
               padding: const EdgeInsets.symmetric(vertical: 20),
@@ -175,7 +199,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Loading 10 more transactions...',
+                    state.loadingMessage,
                     style: TextStyle(
                       fontSize: 14,
                       color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -183,6 +207,40 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                     ),
                   ),
                 ],
+              ),
+            ),
+
+          // Load more button (as backup for scroll)
+          if (state.hasMore &&
+              !state.isLoadingMore &&
+              state.transactions.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              child: SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () {
+                    debugPrint("TRANSACTIONS PAGE: Load more button pressed");
+                    debugPrint(
+                        "TRANSACTIONS PAGE: Will load next ${state.itemsPerPage} items (${state.transactions.length + state.itemsPerPage} total)");
+                    ref
+                        .read(paginatedTransactionProvider.notifier)
+                        .loadMoreTransactions();
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: Text(
+                    'Load Next ${state.itemsPerPage} Transactions',
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                    ),
+                  ),
+                ),
               ),
             ),
 
@@ -199,7 +257,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'All transactions loaded',
+                    'All ${state.totalRecords} transactions loaded',
                     style: TextStyle(
                       fontSize: 14,
                       color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -211,7 +269,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
               ),
             ),
 
-          // Bottom padding
+          // Bottom spacing
           const SizedBox(height: 40),
         ],
       ),
@@ -230,7 +288,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Loading transactions...',
+            'Loading your transactions...',
             style: TextStyle(
               color: isDark ? Colors.grey[300] : Colors.grey[600],
               fontFamily: GoogleFonts.poppins().fontFamily,
@@ -259,7 +317,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'No transactions found',
+                  'No Transactions Yet',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -270,7 +328,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Your transaction history will appear here once you start investing.',
+                  'Your transaction history will appear here once you start investing in goals and making transactions.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
