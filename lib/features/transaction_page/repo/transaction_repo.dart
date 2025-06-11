@@ -13,7 +13,7 @@ class TransactionRepository {
 
   Future<TransactionModel> getAllTransactions({
     int iDisplayStart = 0,
-    int iDisplayLength = 10,
+    int iDisplayLength = 100,
   }) async {
     try {
       final token = SharedPreferencesHelper.getString("access_token");
@@ -30,6 +30,8 @@ class TransactionRepository {
           '&iDisplayLength=$iDisplayLength';
 
       debugPrint('TRANSACTION REQUEST: GET $endpoint');
+      debugPrint(
+          'TRANSACTION REQUEST: iDisplayStart=$iDisplayStart, iDisplayLength=$iDisplayLength');
 
       final response = await _networkService.get(
         endpoint,
@@ -64,14 +66,23 @@ class TransactionRepository {
                 if (aaData.isNotEmpty) {
                   debugPrint(
                       'TRANSACTION FIRST ITEM KEYS: ${aaData[0]?.keys?.toList() ?? 'NO KEYS'}');
+                } else {
+                  debugPrint(
+                      'TRANSACTION WARNING: aaData is empty but API returned success');
                 }
               }
             }
             if (data.containsKey('iTotalRecords')) {
               debugPrint('TRANSACTION TOTAL RECORDS: ${data['iTotalRecords']}');
             }
+            if (data.containsKey('iTotalDisplayRecords')) {
+              debugPrint(
+                  'TRANSACTION TOTAL DISPLAY RECORDS: ${data['iTotalDisplayRecords']}');
+            }
           }
         }
+
+        debugPrint('TRANSACTION FULL RESPONSE: $response');
       }
 
       if (response != null && response is Map<String, dynamic>) {
@@ -89,6 +100,22 @@ class TransactionRepository {
                   'TRANSACTION: Successfully retrieved ${transactionModel.data!.aaData.length} transactions');
               debugPrint(
                   'TRANSACTION: Total records: ${transactionModel.data!.iTotalRecords}');
+              debugPrint(
+                  'TRANSACTION: iTotalDisplayRecords: ${transactionModel.data!.iTotalDisplayRecords}');
+
+              if (transactionModel.data!.aaData.isEmpty &&
+                  transactionModel.data!.iTotalRecords > 0) {
+                debugPrint('TRANSACTION ISSUE DETECTED:');
+                debugPrint(
+                    '  - iTotalRecords: ${transactionModel.data!.iTotalRecords}');
+                debugPrint(
+                    '  - iTotalDisplayRecords: ${transactionModel.data!.iTotalDisplayRecords}');
+                debugPrint(
+                    '  - aaData length: ${transactionModel.data!.aaData.length}');
+                debugPrint(
+                    '  - Request params: iDisplayStart=$iDisplayStart, iDisplayLength=$iDisplayLength');
+                debugPrint('  - This suggests a backend pagination issue');
+              }
 
               if (transactionModel.data!.aaData.isNotEmpty) {
                 final firstTransaction = transactionModel.data!.aaData.first;

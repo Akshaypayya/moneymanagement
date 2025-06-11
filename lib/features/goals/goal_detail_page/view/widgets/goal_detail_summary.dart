@@ -98,7 +98,7 @@ class GoalSummary extends ConsumerWidget {
         ),
         if (isProfitNegative) GapSpace.width5,
         Text(
-          formattedProfit,
+          ' $formattedProfit',
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,

@@ -72,7 +72,6 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
       }
     });
   }
-
   Future<void> _initiateSellGold() async {
     final controller = ref.read(initiateSellGoldControllerProvider);
     final result = await controller.initiateSellGold(

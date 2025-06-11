@@ -1,3 +1,4 @@
+import 'package:growk_v2/features/wallet_page/provider/wallet_screen_providers.dart';
 import 'package:growk_v2/views.dart';
 import 'package:growk_v2/core/widgets/sar_amount_widget.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/providers/buy_gold_instantly_screen_providers.dart';
@@ -299,22 +300,40 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
   void _proceed(BuildContext context) async {
     final notifier = ref.read(isButtonLoadingProvider.notifier);
     final useCase = ref.read(initiateGoldBuyUseCaseProvider);
+    final walletAsync = ref.read(getNewWalletBalanceProvider); // Use .read instead of .watch inside method
     final inputText = amountController.text.trim();
 
     if (inputText.isEmpty || double.tryParse(inputText) == null || double.parse(inputText) <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid amount')),
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Please enter a valid amount',
+        type: SnackType.error,
       );
       return;
     }
-
     final inputAmount = isBuyByWeight
         ? selectedAmount.toDouble()
         : double.parse(inputText);
 
     if (inputAmount <= 0 || widget.goldPricePerGram <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gold price or amount is invalid')),
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Gold price or amount is invalid',
+        type: SnackType.error,
+      );
+      return;
+    }
+
+    final walletBalance = walletAsync.asData?.value.data?.walletBalance?.toDouble() ?? 0.0;
+
+    if (walletBalance < inputAmount) {
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Insufficient wallet balance',
+        type: SnackType.error,
       );
       return;
     }
@@ -337,12 +356,9 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
         return;
       }
 
-      // ✅ Safely set provider only after confirming data is valid
       ref.read(initiateBuyGoldProvider.notifier).setTransaction(result);
 
-      // ✅ Now navigate
       Navigator.pushNamed(context, AppRouter.buyGoldSummary);
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Transaction failed: $e')),
@@ -351,4 +367,5 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
       notifier.state = false;
     }
   }
+
 }

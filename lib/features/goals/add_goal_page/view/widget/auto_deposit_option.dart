@@ -21,9 +21,11 @@ class AutoDepositOption extends ConsumerWidget {
           width: 24,
           height: 24,
           child: Checkbox(
-            value: isChecked,
+            // value: isChecked,
+            value: ref.watch(autoDepositProvider),
             onChanged: (value) {
               ref.read(autoDepositProvider.notifier).state = value ?? false;
+              print('Auto Deposit changed to: ${value ?? false}');
             },
             activeColor: Colors.teal,
             side: BorderSide(

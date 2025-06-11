@@ -27,7 +27,10 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      debugPrint(
+          "TRANSACTIONS PAGE: Loading initial transactions on page load");
       ref.read(paginatedTransactionProvider.notifier).loadInitialTransactions();
     });
   }
@@ -46,7 +49,16 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
             _scrollController.position.maxScrollExtent - 200 &&
         !state.isLoading &&
         state.hasMore) {
-      debugPrint("TRANSACTION: Loading more transactions...");
+      debugPrint(
+          "TRANSACTIONS PAGE: Scroll threshold reached, loading more...");
+      debugPrint(
+          "TRANSACTIONS PAGE: Current scroll: ${_scrollController.position.pixels}");
+      debugPrint(
+          "TRANSACTIONS PAGE: Max extent: ${_scrollController.position.maxScrollExtent}");
+      debugPrint(
+          "TRANSACTIONS PAGE: Current transactions: ${state.transactions.length}");
+      debugPrint("TRANSACTIONS PAGE: Total records: ${state.totalRecords}");
+
       ref.read(paginatedTransactionProvider.notifier).loadMoreTransactions();
     }
   }
@@ -57,11 +69,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     final transactionState = ref.watch(paginatedTransactionProvider);
 
     debugPrint(
-        'TRANSACTIONS PAGE: Current state - ${transactionState.transactions.length} transactions loaded');
-    debugPrint('TRANSACTIONS PAGE: isLoading: ${transactionState.isLoading}');
-    debugPrint('TRANSACTIONS PAGE: hasMore: ${transactionState.hasMore}');
-    debugPrint(
-        'TRANSACTIONS PAGE: errorMessage: ${transactionState.errorMessage}');
+        'TRANSACTIONS PAGE BUILD: Current state - ${transactionState.toString()}');
 
     return ScalingFactor(
       child: Scaffold(
@@ -74,6 +82,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
           color: AppColors.current(isDark).background,
           child: RefreshIndicator(
             onRefresh: () async {
+              debugPrint("TRANSACTIONS PAGE: Pull to refresh triggered");
               await ref
                   .read(paginatedTransactionProvider.notifier)
                   .refreshTransactions();
@@ -88,16 +97,23 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   Widget _buildTransactionContent(
       TransactionPaginationState state, bool isDark) {
     if (state.transactions.isEmpty && state.isLoading) {
+      debugPrint("TRANSACTIONS PAGE: Showing initial loading state");
       return _buildLoadingState(isDark);
     }
 
+    if (state.transactions.isEmpty && state.errorMessage != null) {
+      debugPrint(
+          "TRANSACTIONS PAGE: Showing error state: ${state.errorMessage}");
+      return _buildErrorState(state.errorMessage!, isDark);
+    }
+
     if (state.transactions.isEmpty && !state.isLoading) {
-      if (state.errorMessage != null) {
-        return _buildErrorState(state.errorMessage!, isDark);
-      }
+      debugPrint("TRANSACTIONS PAGE: Showing empty state");
       return _buildEmptyState(isDark);
     }
 
+    debugPrint(
+        "TRANSACTIONS PAGE: Showing transactions list with ${state.transactions.length} items");
     return _buildTransactionsList(state, isDark);
   }
 
@@ -105,10 +121,13 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     final groupedTransactions = _groupTransactionsByMonth(state.transactions);
 
     debugPrint(
-        'TRANSACTIONS PAGE: Processing ${state.transactions.length} transactions');
-    for (int i = 0; i < state.transactions.length && i < 5; i++) {
+        'TRANSACTIONS PAGE: Building list with ${state.transactions.length} transactions');
+    debugPrint(
+        'TRANSACTIONS PAGE: Grouped into ${groupedTransactions.length} months');
+
+    for (int i = 0; i < state.transactions.length && i < 3; i++) {
       final tx = state.transactions[i];
-      debugPrint('Transaction $i: ${tx.debugInfo}');
+      debugPrint('TRANSACTIONS PAGE: Transaction $i: ${tx.debugInfo}');
     }
 
     return SingleChildScrollView(
@@ -133,6 +152,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
             );
           }),
           _buildFooter(state, isDark),
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -148,6 +168,14 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
               isDark ? Colors.white : Colors.black,
             ),
           ),
+          const SizedBox(height: 16),
+          Text(
+            'Loading transactions...',
+            style: TextStyle(
+              color: isDark ? Colors.grey[300] : Colors.grey[600],
+              fontFamily: GoogleFonts.poppins().fontFamily,
+            ),
+          ),
         ],
       ),
     );
@@ -157,7 +185,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height - 200,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -190,7 +218,6 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                     color: isDark ? Colors.grey[300] : Colors.grey[600],
                   ),
                 ),
-                const SizedBox(height: 100),
               ],
             ),
           ),
@@ -199,74 +226,6 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     );
   }
 
-  // Widget _buildErrorState(String errorMessage, bool isDark) {
-  //   return SingleChildScrollView(
-  //     physics: const AlwaysScrollableScrollPhysics(),
-  //     child: SizedBox(
-  //       height: MediaQuery.of(context).size.height * 0.7,
-  //       child: Center(
-  //         child: Padding(
-  //           padding: const EdgeInsets.all(20.0),
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               Icon(
-  //                 Icons.error_outline,
-  //                 size: 64,
-  //                 color: isDark ? Colors.red[300] : Colors.red,
-  //               ),
-  //               const SizedBox(height: 16),
-  //               Text(
-  //                 'Error loading transactions',
-  //                 style: TextStyle(
-  //                   fontSize: 18,
-  //                   fontWeight: FontWeight.bold,
-  //                   fontFamily: GoogleFonts.poppins().fontFamily,
-  //                   color: isDark ? Colors.white : Colors.black,
-  //                 ),
-  //               ),
-  //               const SizedBox(height: 8),
-  //               Text(
-  //                 errorMessage,
-  //                 textAlign: TextAlign.center,
-  //                 style: TextStyle(
-  //                   fontSize: 14,
-  //                   fontFamily: GoogleFonts.poppins().fontFamily,
-  //                   color: isDark ? Colors.grey[300] : Colors.grey[600],
-  //                 ),
-  //               ),
-  //               const SizedBox(height: 20),
-  //               ElevatedButton(
-  //                 onPressed: () {
-  // ref
-  //     .read(paginatedTransactionProvider.notifier)
-  //     .refreshTransactions();
-  //                 },
-  //                 style: ElevatedButton.styleFrom(
-  //                   backgroundColor: Colors.teal,
-  //                   foregroundColor: Colors.white,
-  //                   shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(8),
-  //                   ),
-  //                   padding: const EdgeInsets.symmetric(
-  //                       horizontal: 24, vertical: 12),
-  //                 ),
-  //                 child: Text(
-  //                   'Retry',
-  //                   style: TextStyle(
-  //                     fontFamily: GoogleFonts.poppins().fontFamily,
-  //                     fontSize: 16,
-  //                     fontWeight: FontWeight.w600,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget _buildErrorState(String errorMessage, bool isDark) {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -280,16 +239,17 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
               children: [
                 Image.asset(
                   'assets/nogoal.png',
-                  height: 250,
-                  width: 250,
+                  height: 200,
+                  width: 200,
                   errorBuilder: (context, error, stackTrace) {
                     return Icon(
-                      Icons.receipt_long_outlined,
-                      size: 120,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      Icons.error_outline,
+                      size: 80,
+                      color: isDark ? Colors.red[300] : Colors.red,
                     );
                   },
                 ),
+                const SizedBox(height: 20),
                 ReusableText(
                   text: 'Something went wrong',
                   style: AppTextStyle(textColor: AppColors.current(isDark).text)
@@ -308,13 +268,15 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // GrowkButton(
-                //     title: 'Retry',
-                //     onTap: () {
-                //       ref
-                //           .read(paginatedTransactionProvider.notifier)
-                //           .refreshTransactions();
-                //     }),
+                GrowkButton(
+                  title: 'Retry',
+                  onTap: () {
+                    debugPrint("TRANSACTIONS PAGE: Retry button pressed");
+                    ref
+                        .read(paginatedTransactionProvider.notifier)
+                        .refreshTransactions();
+                  },
+                ),
               ],
             ),
           ),
@@ -330,17 +292,41 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
         child: Center(
           child: Column(
             children: [
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  isDark ? Colors.white : Colors.black,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Loading more transactions...',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                ),
               ),
             ],
           ),
         ),
       );
-    } else if (state.hasMore && state.transactions.isNotEmpty) {
-      return const SizedBox(height: 80);
+    } else if (!state.hasMore && state.transactions.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
+        child: Center(
+          child: Text(
+            'No more transactions to load',
+            style: TextStyle(
+              fontSize: 12,
+              color: isDark ? Colors.grey[500] : Colors.grey[500],
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+      );
     } else {
-      return const SizedBox.shrink();
+      return const SizedBox(height: 20);
     }
   }
 
@@ -386,7 +372,6 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
             'Error parsing transaction date: ${transaction.transactionDate}');
 
         final unknownKey = {'year': 'Unknown', 'month': 'Unknown'};
-
         Map<String, String>? existingUnknownKey;
         for (final key in grouped.keys) {
           if (key['year'] == 'Unknown' && key['month'] == 'Unknown') {

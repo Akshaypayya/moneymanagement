@@ -188,7 +188,7 @@ class CreateGoalController {
       final goalName = ref.read(goalNameProvider);
       final selectedFrequency = ref.read(frequencyProvider);
       final autoDeposit = ref.read(autoDepositProvider);
-
+      print('CONTROLLER: Auto Deposit Status: $autoDeposit');
       final selectedImage = ref.read(selectedImageFileProvider);
       final selectedIcon = ref.read(selectedGoalIconProvider);
 

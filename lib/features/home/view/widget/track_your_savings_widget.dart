@@ -98,9 +98,7 @@ class TrackYourSavingsWidget extends ConsumerWidget {
                     current: item['current'].toString(),
                     growth: item['growth'].toString(),
                     received: item['received'] as bool? ?? false,
-                    index: index,
-                    ref: ref,
-                    context: context,
+                    index: index
                   ),
                 ),
               );

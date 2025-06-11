@@ -60,4 +60,9 @@ class TransactionPaginationState {
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
+
+  @override
+  String toString() {
+    return 'TransactionPaginationState(currentPage: $currentPage, itemsPerPage: $itemsPerPage, isLoading: $isLoading, hasMore: $hasMore, transactionsCount: ${transactions.length}, totalRecords: $totalRecords, errorMessage: $errorMessage)';
+  }
 }
