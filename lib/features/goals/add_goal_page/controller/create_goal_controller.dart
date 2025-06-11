@@ -188,7 +188,6 @@ class CreateGoalController {
       final goalName = ref.read(goalNameProvider);
       final selectedFrequency = ref.read(frequencyProvider);
       final autoDeposit = ref.read(autoDepositProvider);
-      print('CONTROLLER: Auto Deposit Status: $autoDeposit');
       final selectedImage = ref.read(selectedImageFileProvider);
       final selectedIcon = ref.read(selectedGoalIconProvider);
 
@@ -200,7 +199,8 @@ class CreateGoalController {
       print('CONTROLLER: Frequency: $selectedFrequency');
       print('CONTROLLER: Target year: $targetYear');
       print('CONTROLLER: Target amount: $targetAmount');
-      print('CONTROLLER: Auto deposit: $autoDeposit');
+      print('CONTROLLER: Auto deposit (raw): $autoDeposit');
+      print('CONTROLLER: Auto deposit (will send): ${autoDeposit ? "Y" : "N"}');
       print('CONTROLLER: Selected icon: $selectedIcon');
       print('CONTROLLER: Has custom image: ${selectedImage != null}');
 
@@ -251,8 +251,13 @@ class CreateGoalController {
         if (selectedIcon.isNotEmpty && selectedImage == null)
           "iconName": selectedIcon,
       };
-
       print('CONTROLLER: Goal data prepared: $goalData');
+      print(
+          'CONTROLLER: goldInvestment field value: ${goalData["goldInvestment"]}');
+
+      final finalAutoDepositCheck = ref.read(autoDepositProvider);
+      print(
+          'CONTROLLER: Final autoDeposit check before API: $finalAutoDepositCheck');
 
       File formDataFile = await saveFileAsBytesTemp(
         context,

@@ -10,6 +10,7 @@ class TransactionModel {
     required this.status,
     this.message,
   });
+
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
     debugPrint('PARSING TransactionModel from: ${json.keys.toList()}');
     return TransactionModel(
@@ -19,6 +20,7 @@ class TransactionModel {
       message: json['message']?.toString(),
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
       'data': data?.toJson(),
@@ -49,37 +51,20 @@ class TransactionData {
     List<TransactionApiModel> transactions = [];
 
     if (json.containsKey('iTotalRecords')) {
-      totalRecords = json['iTotalRecords'] as int? ?? 0;
-    } else if (json.containsKey('totalRecords')) {
-      totalRecords = json['totalRecords'] as int? ?? 0;
-    } else if (json.containsKey('total')) {
-      totalRecords = json['total'] as int? ?? 0;
+      totalRecords = (json['iTotalRecords'] as num?)?.toInt() ?? 0;
     }
 
     if (json.containsKey('iTotalDisplayRecords')) {
-      displayRecords = json['iTotalDisplayRecords'] as int? ?? 0;
-    } else if (json.containsKey('displayRecords')) {
-      displayRecords = json['displayRecords'] as int? ?? 0;
-    } else {
-      displayRecords = totalRecords;
+      displayRecords = (json['iTotalDisplayRecords'] as num?)?.toInt() ?? 0;
     }
 
-    List<dynamic>? transactionArray;
-    if (json.containsKey('aaData')) {
-      transactionArray = json['aaData'] as List<dynamic>?;
-    } else if (json.containsKey('data')) {
-      transactionArray = json['data'] as List<dynamic>?;
-    } else if (json.containsKey('transactions')) {
-      transactionArray = json['transactions'] as List<dynamic>?;
-    } else if (json.containsKey('items')) {
-      transactionArray = json['items'] as List<dynamic>?;
-    }
-
-    if (transactionArray != null) {
+    if (json.containsKey('aaData') && json['aaData'] is List) {
+      final aaDataList = json['aaData'] as List;
       debugPrint(
-          'PARSING: Found ${transactionArray.length} transactions in array');
+          'PARSING: Found ${aaDataList.length} transactions in aaData array');
+
       try {
-        transactions = transactionArray
+        transactions = aaDataList
             .map((item) =>
                 TransactionApiModel.fromJson(item as Map<String, dynamic>))
             .toList();
@@ -88,7 +73,7 @@ class TransactionData {
       } catch (e) {
         debugPrint('PARSING ERROR: Failed to parse transactions: $e');
         debugPrint(
-            'PARSING ERROR: Sample item: ${transactionArray.isNotEmpty ? transactionArray.first : 'EMPTY'}');
+            'PARSING ERROR: Sample item: ${aaDataList.isNotEmpty ? aaDataList.first : 'EMPTY'}');
       }
     }
 
@@ -109,8 +94,8 @@ class TransactionData {
 }
 
 class TransactionApiModel {
-  final int amount;
-  final int? operationPrice;
+  final double amount;
+  final double? operationPrice;
   final String paymentMode;
   final String bankReference;
   final String currencyCode;
@@ -121,8 +106,8 @@ class TransactionApiModel {
   final String? accountGroup;
   final String accountSubGroup;
   final String transactionCode;
-  final int? chargeAmount;
-  final int? vatAmount;
+  final double? chargeAmount;
+  final double? vatAmount;
 
   TransactionApiModel({
     required this.amount,
@@ -146,8 +131,8 @@ class TransactionApiModel {
 
     try {
       return TransactionApiModel(
-        amount: _parseNumber(json['amount']) ?? 0,
-        operationPrice: _parseNumber(json['operationPrice']),
+        amount: _parseDouble(json['amount']) ?? 0.0,
+        operationPrice: _parseDouble(json['operationPrice']),
         paymentMode: json['paymentMode']?.toString() ?? 'Unknown',
         bankReference: json['bankReference']?.toString() ?? '',
         currencyCode: json['currencyCode']?.toString() ?? 'SAR',
@@ -155,13 +140,13 @@ class TransactionApiModel {
             json['operationCurrencyCode']?.toString() ?? 'SAR',
         transactionDate: json['transactionDate']?.toString() ??
             DateTime.now().toIso8601String(),
-        drcrFlag: _parseNumber(json['drcrFlag']) ?? 0,
-        sequence: _parseNumber(json['sequence']) ?? 0,
+        drcrFlag: _parseInt(json['drcrFlag']) ?? 0,
+        sequence: _parseInt(json['sequence']) ?? 0,
         accountGroup: json['accountGroup']?.toString(),
         accountSubGroup: json['accountSubGroup']?.toString() ?? '',
         transactionCode: json['transactionCode']?.toString() ?? '',
-        chargeAmount: _parseNumber(json['chargeAmount']),
-        vatAmount: _parseNumber(json['vatAmount']),
+        chargeAmount: _parseDouble(json['chargeAmount']),
+        vatAmount: _parseDouble(json['vatAmount']),
       );
     } catch (e) {
       debugPrint('PARSING ERROR for TransactionApiModel: $e');
@@ -170,15 +155,22 @@ class TransactionApiModel {
     }
   }
 
-  static int? _parseNumber(dynamic value) {
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) {
+      return double.tryParse(value);
+    }
+    return null;
+  }
+
+  static int? _parseInt(dynamic value) {
     if (value == null) return null;
     if (value is int) return value;
     if (value is double) return value.round();
     if (value is String) {
-      final parsed = int.tryParse(value);
-      if (parsed != null) return parsed;
-      final parsedDouble = double.tryParse(value);
-      if (parsedDouble != null) return parsedDouble.round();
+      return int.tryParse(value);
     }
     return null;
   }
@@ -204,8 +196,7 @@ class TransactionApiModel {
 
   String get formattedAmount {
     try {
-      final displayAmount = amount;
-      return displayAmount.toStringAsFixed(2).replaceAllMapped(
+      return amount.toStringAsFixed(2).replaceAllMapped(
             RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
             (Match m) => '${m[1]},',
           );

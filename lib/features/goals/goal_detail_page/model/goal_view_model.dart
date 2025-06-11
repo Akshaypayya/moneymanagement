@@ -52,6 +52,7 @@ class GoalData {
   final String? bankId;
   final String? accountName;
   final String? status;
+  final double? withdrawalAmount;
 
   GoalData({
     required this.goalName,
@@ -76,6 +77,7 @@ class GoalData {
     this.bankId,
     this.accountName,
     this.status,
+    this.withdrawalAmount,
   });
 
   factory GoalData.fromJson(Map<String, dynamic> json) {
@@ -89,6 +91,7 @@ class GoalData {
     print('bankId: ${json['bankId']}');
     print('accountName: ${json['accountName']}');
     print('status: ${json['status']}');
+    print('withdrawalAmount: ${json['withdrawalAmount']}');
 
     return GoalData(
       goalName: json['goalName'] ?? '',
@@ -113,6 +116,7 @@ class GoalData {
       bankId: json['bankId'],
       accountName: json['accountName'],
       status: json['status'],
+      withdrawalAmount: (json['withdrawalAmount'] ?? 0).toDouble(),
     );
   }
 
@@ -140,6 +144,7 @@ class GoalData {
       'bankId': bankId,
       'accountName': accountName,
       'status': status,
+      'withdrawalAmount': withdrawalAmount,
     };
   }
 

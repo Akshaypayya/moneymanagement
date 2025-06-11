@@ -112,7 +112,8 @@ class TransactionItem extends ConsumerWidget {
                   ),
                   const ReusableSizedBox(width: 3),
                   ReusableText(
-                    text: transactionData.formattedAmount,
+                    // text: transactionData.formattedAmount,
+                    text: transactionData.amount.toString(),
                     style: AppTextStyle(textColor: amountColor).titleRegular,
                   ),
                 ],

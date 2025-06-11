@@ -21,11 +21,14 @@ class AutoDepositOption extends ConsumerWidget {
           width: 24,
           height: 24,
           child: Checkbox(
-            // value: isChecked,
-            value: ref.watch(autoDepositProvider),
+            value: isChecked,
             onChanged: (value) {
-              ref.read(autoDepositProvider.notifier).state = value ?? false;
-              print('Auto Deposit changed to: ${value ?? false}');
+              final newValue = value ?? false;
+              ref.read(autoDepositProvider.notifier).state = newValue;
+
+              print('Auto Deposit changed to: $newValue');
+              print(
+                  'autoDepositProvider state is now: ${ref.read(autoDepositProvider)}');
             },
             activeColor: Colors.teal,
             side: BorderSide(
@@ -37,7 +40,11 @@ class AutoDepositOption extends ConsumerWidget {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              ref.read(autoDepositProvider.notifier).state = !isChecked;
+              final newValue = !isChecked;
+              ref.read(autoDepositProvider.notifier).state = newValue;
+              print('Auto Deposit toggled to: $newValue');
+              print(
+                  'autoDepositProvider state is now: ${ref.read(autoDepositProvider)}');
             },
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

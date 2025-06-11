@@ -65,7 +65,6 @@ class TransactionPaginationState {
     );
   }
 
-  // Helper getters
   bool get isEmpty => transactions.isEmpty && !isLoading;
   bool get isAnyLoading => isLoading || isLoadingMore;
   bool get isFirstLoad => currentPage == 0 && isLoading;
@@ -73,16 +72,16 @@ class TransactionPaginationState {
   String get statusInfo {
     if (totalRecords == 0) return 'No transactions';
     if (transactions.length >= totalRecords) {
-      return 'Showing all ${totalRecords} transactions';
+      return 'Showing all $totalRecords transactions';
     }
-    return 'Showing ${transactions.length} of ${totalRecords} transactions';
+    return 'Showing ${transactions.length} of $totalRecords transactions';
   }
 
   String get loadingMessage {
     if (isLoading && transactions.isEmpty) {
       return 'Loading transactions...';
     } else if (isLoadingMore) {
-      return 'Loading ${itemsPerPage} more transactions...';
+      return 'Loading $itemsPerPage more transactions...';
     }
     return '';
   }

@@ -10,7 +10,7 @@ class PaginatedTransactionNotifier
   PaginatedTransactionNotifier(this.ref)
       : super(TransactionPaginationState(
           currentPage: 0,
-          itemsPerPage: 10, // 10 items per page
+          itemsPerPage: 10,
           isLoading: false,
           hasMore: true,
           transactions: [],
@@ -20,7 +20,7 @@ class PaginatedTransactionNotifier
 
   Future<void> loadInitialTransactions() async {
     debugPrint(
-        'TRANSACTION PAGINATION: Loading initial 10 transactions (page 0)');
+        'TRANSACTION PAGINATION: Loading initial 10 transactions (iDisplayStart=0)');
 
     state = state.copyWith(
       isLoading: true,
@@ -34,10 +34,9 @@ class PaginatedTransactionNotifier
     try {
       final repository = ref.read(transactionRepositoryProvider);
 
-      // Start from the beginning: iDisplayStart=0, iDisplayLength=10
       final transactionModel = await repository.getAllTransactions(
         iDisplayStart: 0,
-        iDisplayLength: state.itemsPerPage,
+        iDisplayLength: 10,
       );
 
       debugPrint('TRANSACTION PAGINATION: Initial API call completed');
@@ -51,10 +50,7 @@ class PaginatedTransactionNotifier
             'TRANSACTION PAGINATION: Received ${loadedTransactions.length} transactions');
         debugPrint(
             'TRANSACTION PAGINATION: Total available: ${data.iTotalRecords}');
-        debugPrint(
-            'TRANSACTION PAGINATION: iTotalDisplayRecords: ${data.iTotalDisplayRecords}');
 
-        // Check for backend issues
         if (loadedTransactions.isEmpty && data.iTotalRecords > 0) {
           debugPrint(
               'TRANSACTION PAGINATION: ⚠️ BACKEND ISSUE: iTotalRecords=${data.iTotalRecords} but received empty aaData');
@@ -64,22 +60,20 @@ class PaginatedTransactionNotifier
             totalRecords: data.iTotalRecords,
             hasMore: false,
             errorMessage:
-                'Backend issue: ${data.iTotalRecords} transactions available but none returned. This suggests a pagination parameter mismatch.',
+                'Backend issue: ${data.iTotalRecords} transactions available but none returned.',
           );
           return;
         }
 
-        // Normal success case
         if (loadedTransactions.isNotEmpty) {
-          // Determine if there are more records to load
-          final hasMore = data.iTotalRecords > loadedTransactions.length;
+          final hasMore = loadedTransactions.length < data.iTotalRecords;
 
           state = state.copyWith(
             isLoading: false,
             transactions: loadedTransactions,
             totalRecords: data.iTotalRecords,
             hasMore: hasMore,
-            currentPage: 1, // We've loaded page 1
+            currentPage: 1,
             errorMessage: null,
           );
 
@@ -90,7 +84,6 @@ class PaginatedTransactionNotifier
           debugPrint(
               'TRANSACTION PAGINATION: Total records: ${data.iTotalRecords}');
         } else {
-          // Empty but no error - legitimate empty state
           state = state.copyWith(
             isLoading: false,
             transactions: [],
@@ -143,23 +136,19 @@ class PaginatedTransactionNotifier
     debugPrint(
         'TRANSACTION PAGINATION: Total available: ${state.totalRecords}');
 
-    // Calculate the next batch start index
-    // Since we already have state.transactions.length items,
-    // the next batch should start at that index
-    final nextStartIndex = state.transactions.length;
+    final nextDisplayStart = state.currentPage;
 
     debugPrint(
-        'TRANSACTION PAGINATION: Requesting next ${state.itemsPerPage} items starting from index $nextStartIndex');
+        'TRANSACTION PAGINATION: Requesting next 10 items with iDisplayStart=$nextDisplayStart');
 
     state = state.copyWith(isLoadingMore: true);
 
     try {
       final repository = ref.read(transactionRepositoryProvider);
 
-      // Request next batch: iDisplayStart = current length, iDisplayLength = 10
       final transactionModel = await repository.getAllTransactions(
-        iDisplayStart: nextStartIndex,
-        iDisplayLength: state.itemsPerPage,
+        iDisplayStart: nextDisplayStart,
+        iDisplayLength: 10,
       );
 
       debugPrint('TRANSACTION PAGINATION: LoadMore API call completed');
@@ -173,44 +162,18 @@ class PaginatedTransactionNotifier
             'TRANSACTION PAGINATION: Received ${newTransactions.length} more transactions');
 
         if (newTransactions.isEmpty) {
-          debugPrint('TRANSACTION PAGINATION: Received empty response');
           debugPrint(
-              'TRANSACTION PAGINATION: Current loaded: ${state.transactions.length}');
-          debugPrint(
-              'TRANSACTION PAGINATION: Total available: ${data.iTotalRecords}');
-
-          // Check if we should have more data
-          if (state.transactions.length < data.iTotalRecords) {
-            debugPrint(
-                'TRANSACTION PAGINATION: ⚠️ BACKEND ISSUE: Expected more data but got empty array');
-            debugPrint(
-                'TRANSACTION PAGINATION: Expected: ${data.iTotalRecords - state.transactions.length} more transactions');
-
-            // This suggests a backend pagination issue - don't mark as complete
-            state = state.copyWith(
-              isLoadingMore: false,
-              hasMore: false, // Stop trying since backend is not returning data
-              errorMessage:
-                  'Backend pagination issue: Expected ${data.iTotalRecords - state.transactions.length} more transactions but received empty response',
-              totalRecords: data.iTotalRecords,
-            );
-          } else {
-            debugPrint(
-                'TRANSACTION PAGINATION: All transactions loaded successfully');
-            state = state.copyWith(
-              isLoadingMore: false,
-              hasMore: false,
-              totalRecords: data.iTotalRecords,
-            );
-          }
+              'TRANSACTION PAGINATION: Received empty response - no more data');
+          state = state.copyWith(
+            isLoadingMore: false,
+            hasMore: false,
+            totalRecords: data.iTotalRecords,
+          );
           return;
         }
 
-        // Combine existing with new transactions
         final allTransactions = [...state.transactions, ...newTransactions];
 
-        // Check if there are more records to load
-        // We have more if: our total loaded < backend's total records
         final hasMore = allTransactions.length < data.iTotalRecords;
 
         state = state.copyWith(
@@ -226,6 +189,8 @@ class PaginatedTransactionNotifier
         debugPrint(
             'TRANSACTION PAGINATION: Total loaded: ${allTransactions.length}');
         debugPrint('TRANSACTION PAGINATION: Has more: $hasMore');
+        debugPrint(
+            'TRANSACTION PAGINATION: Next iDisplayStart will be: ${state.currentPage}');
         debugPrint(
             'TRANSACTION PAGINATION: Total available: ${data.iTotalRecords}');
       } else {
@@ -255,7 +220,6 @@ class PaginatedTransactionNotifier
     await loadInitialTransactions();
   }
 
-  // Helper method to get current status info
   String get statusInfo {
     if (state.totalRecords == 0) return 'No transactions';
     if (state.transactions.length >= state.totalRecords) {
@@ -264,7 +228,6 @@ class PaginatedTransactionNotifier
     return 'Showing ${state.transactions.length} of ${state.totalRecords} transactions';
   }
 
-  // Debug method to print current state
   void debugCurrentState() {
     debugPrint('TRANSACTION STATE DEBUG:');
     debugPrint('  - Current page: ${state.currentPage}');
@@ -275,5 +238,6 @@ class PaginatedTransactionNotifier
     debugPrint('  - Is loading: ${state.isLoading}');
     debugPrint('  - Is loading more: ${state.isLoadingMore}');
     debugPrint('  - Error message: ${state.errorMessage}');
+    debugPrint('  - Next iDisplayStart will be: ${state.currentPage}');
   }
 }

@@ -25,7 +25,6 @@ class TransactionRepository {
         );
       }
 
-      // Use backend pagination parameters exactly as they expect
       final endpoint = '/user-service/goals/getAllTransaction'
           '?iDisplayStart=$iDisplayStart'
           '&iDisplayLength=$iDisplayLength';
@@ -44,11 +43,9 @@ class TransactionRepository {
 
       debugPrint(
           'TRANSACTION RESPONSE STATUS: ${response != null ? 'SUCCESS' : 'NULL'}');
-      debugPrint('TRANSACTION RESPONSE TYPE: ${response.runtimeType}');
 
-      if (response != null) {
-        debugPrint(
-            'TRANSACTION RESPONSE KEYS: ${response.keys?.toList() ?? 'NO KEYS'}');
+      if (response != null && response is Map<String, dynamic>) {
+        debugPrint('TRANSACTION RESPONSE KEYS: ${response.keys.toList()}');
 
         if (response.containsKey('status')) {
           debugPrint('TRANSACTION API STATUS: ${response['status']}');
@@ -56,39 +53,35 @@ class TransactionRepository {
 
         if (response.containsKey('data')) {
           final data = response['data'];
-          debugPrint('TRANSACTION DATA TYPE: ${data?.runtimeType}');
           if (data != null && data is Map) {
-            debugPrint('TRANSACTION DATA KEYS: ${data.keys?.toList()}');
+            debugPrint('TRANSACTION DATA KEYS: ${data.keys.toList()}');
+
+            if (data.containsKey('iTotalRecords')) {
+              debugPrint('TRANSACTION TOTAL RECORDS: ${data['iTotalRecords']}');
+            }
+
+            if (data.containsKey('iTotalDisplayRecords')) {
+              debugPrint(
+                  'TRANSACTION TOTAL DISPLAY RECORDS: ${data['iTotalDisplayRecords']}');
+            }
+
             if (data.containsKey('aaData')) {
               final aaData = data['aaData'];
-              debugPrint('TRANSACTION aaData TYPE: ${aaData?.runtimeType}');
               if (aaData is List) {
                 debugPrint('TRANSACTION aaData LENGTH: ${aaData.length}');
                 if (aaData.isNotEmpty) {
                   debugPrint(
                       'TRANSACTION FIRST ITEM KEYS: ${aaData[0]?.keys?.toList() ?? 'NO KEYS'}');
                 } else {
+                  debugPrint('TRANSACTION WARNING: aaData is empty');
                   debugPrint(
-                      'TRANSACTION WARNING: aaData is empty but API returned success');
-                  debugPrint(
-                      'TRANSACTION: This might indicate end of pagination or backend issue');
+                      'TRANSACTION: This might indicate end of pagination');
                 }
               }
-            }
-            if (data.containsKey('iTotalRecords')) {
-              debugPrint('TRANSACTION TOTAL RECORDS: ${data['iTotalRecords']}');
-            }
-            if (data.containsKey('iTotalDisplayRecords')) {
-              debugPrint(
-                  'TRANSACTION TOTAL DISPLAY RECORDS: ${data['iTotalDisplayRecords']}');
             }
           }
         }
 
-        debugPrint('TRANSACTION FULL RESPONSE: $response');
-      }
-
-      if (response != null && response is Map<String, dynamic>) {
         try {
           final transactionModel = TransactionModel.fromJson(response);
 
@@ -106,10 +99,9 @@ class TransactionRepository {
               debugPrint(
                   'TRANSACTION: iTotalDisplayRecords: ${data.iTotalDisplayRecords}');
 
-              // Check for pagination issues
               if (data.aaData.isEmpty &&
                   data.iTotalRecords > 0 &&
-                  iDisplayStart < data.iTotalRecords) {
+                  iDisplayStart == 0) {
                 debugPrint('TRANSACTION PAGINATION ISSUE DETECTED:');
                 debugPrint('  - iTotalRecords: ${data.iTotalRecords}');
                 debugPrint(
@@ -117,8 +109,6 @@ class TransactionRepository {
                 debugPrint('  - aaData length: ${data.aaData.length}');
                 debugPrint(
                     '  - Request params: iDisplayStart=$iDisplayStart, iDisplayLength=$iDisplayLength');
-                debugPrint(
-                    '  - Expected: Should return data since iDisplayStart ($iDisplayStart) < iTotalRecords (${data.iTotalRecords})');
               }
 
               if (data.aaData.isNotEmpty) {
@@ -142,11 +132,11 @@ class TransactionRepository {
         } catch (parseError, parseStackTrace) {
           debugPrint('TRANSACTION PARSE ERROR: $parseError');
           debugPrint('TRANSACTION PARSE STACK: $parseStackTrace');
-          debugPrint('TRANSACTION RAW RESPONSE: $response');
 
           return TransactionModel(
             status: 'failed',
             data: null,
+            message: 'Failed to parse response: $parseError',
           );
         }
       } else {
@@ -156,6 +146,7 @@ class TransactionRepository {
         return TransactionModel(
           status: 'failed',
           data: null,
+          message: 'Invalid response format',
         );
       }
     } catch (e, stackTrace) {
@@ -164,6 +155,7 @@ class TransactionRepository {
       return TransactionModel(
         status: 'failed',
         data: null,
+        message: e.toString(),
       );
     }
   }
