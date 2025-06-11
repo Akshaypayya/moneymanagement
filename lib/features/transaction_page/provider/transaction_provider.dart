@@ -26,6 +26,7 @@ class TransactionPaginationState {
   final int currentPage;
   final int itemsPerPage;
   final bool isLoading;
+  final bool isLoadingMore;
   final bool hasMore;
   final List<TransactionApiModel> transactions;
   final int totalRecords;
@@ -35,6 +36,7 @@ class TransactionPaginationState {
     required this.currentPage,
     required this.itemsPerPage,
     required this.isLoading,
+    required this.isLoadingMore,
     required this.hasMore,
     required this.transactions,
     required this.totalRecords,
@@ -45,6 +47,7 @@ class TransactionPaginationState {
     int? currentPage,
     int? itemsPerPage,
     bool? isLoading,
+    bool? isLoadingMore,
     bool? hasMore,
     List<TransactionApiModel>? transactions,
     int? totalRecords,
@@ -54,6 +57,7 @@ class TransactionPaginationState {
       currentPage: currentPage ?? this.currentPage,
       itemsPerPage: itemsPerPage ?? this.itemsPerPage,
       isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasMore: hasMore ?? this.hasMore,
       transactions: transactions ?? this.transactions,
       totalRecords: totalRecords ?? this.totalRecords,
@@ -61,8 +65,20 @@ class TransactionPaginationState {
     );
   }
 
+  // Helper getters
+  bool get isEmpty => transactions.isEmpty && !isLoading;
+  bool get isAnyLoading => isLoading || isLoadingMore;
+
+  String get statusInfo {
+    if (totalRecords == 0) return 'No transactions';
+    if (transactions.length >= totalRecords) {
+      return 'Showing all ${totalRecords} transactions';
+    }
+    return 'Showing ${transactions.length} of ${totalRecords} transactions';
+  }
+
   @override
   String toString() {
-    return 'TransactionPaginationState(currentPage: $currentPage, itemsPerPage: $itemsPerPage, isLoading: $isLoading, hasMore: $hasMore, transactionsCount: ${transactions.length}, totalRecords: $totalRecords, errorMessage: $errorMessage)';
+    return 'TransactionPaginationState(currentPage: $currentPage, itemsPerPage: $itemsPerPage, isLoading: $isLoading, isLoadingMore: $isLoadingMore, transactionsCount: ${transactions.length}, totalRecords: $totalRecords, hasMore: $hasMore, errorMessage: $errorMessage)';
   }
 }

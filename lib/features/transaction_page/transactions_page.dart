@@ -6,7 +6,6 @@ import 'package:growk_v2/core/theme/app_text_styles.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_app_bar.dart';
 import 'package:growk_v2/core/widgets/growk_button.dart';
-import 'package:growk_v2/core/widgets/reusable_sized_box.dart';
 import 'package:growk_v2/core/widgets/reusable_text.dart';
 import 'package:growk_v2/features/transaction_page/widgets/month_header.dart';
 import 'package:growk_v2/features/transaction_page/widgets/transaction_item.dart';
@@ -26,40 +25,37 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
+    _scrollController.addListener(_onScroll);
 
+    // Load initial 10 transactions
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint(
-          "TRANSACTIONS PAGE: Loading initial transactions on page load");
+      debugPrint("TRANSACTIONS PAGE: Loading initial 10 transactions");
       ref.read(paginatedTransactionProvider.notifier).loadInitialTransactions();
     });
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_scrollListener);
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
 
-  void _scrollListener() {
+  void _onScroll() {
     final state = ref.read(paginatedTransactionProvider);
 
+    // Check if user scrolled near bottom
     if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200 &&
-        !state.isLoading &&
-        state.hasMore) {
-      debugPrint(
-          "TRANSACTIONS PAGE: Scroll threshold reached, loading more...");
-      debugPrint(
-          "TRANSACTIONS PAGE: Current scroll: ${_scrollController.position.pixels}");
-      debugPrint(
-          "TRANSACTIONS PAGE: Max extent: ${_scrollController.position.maxScrollExtent}");
-      debugPrint(
-          "TRANSACTIONS PAGE: Current transactions: ${state.transactions.length}");
-      debugPrint("TRANSACTIONS PAGE: Total records: ${state.totalRecords}");
+        _scrollController.position.maxScrollExtent - 200) {
+      if (state.hasMore && !state.isAnyLoading) {
+        debugPrint(
+            "TRANSACTIONS PAGE: Scroll reached bottom, loading 10 more items...");
+        debugPrint(
+            "TRANSACTIONS PAGE: Current items: ${state.transactions.length}");
+        debugPrint("TRANSACTIONS PAGE: Total available: ${state.totalRecords}");
 
-      ref.read(paginatedTransactionProvider.notifier).loadMoreTransactions();
+        ref.read(paginatedTransactionProvider.notifier).loadMoreTransactions();
+      }
     }
   }
 
@@ -68,8 +64,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     final isDark = ref.watch(isDarkProvider);
     final transactionState = ref.watch(paginatedTransactionProvider);
 
-    debugPrint(
-        'TRANSACTIONS PAGE BUILD: Current state - ${transactionState.toString()}');
+    debugPrint('TRANSACTIONS PAGE BUILD: ${transactionState.toString()}');
 
     return ScalingFactor(
       child: Scaffold(
@@ -82,7 +77,8 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
           color: AppColors.current(isDark).background,
           child: RefreshIndicator(
             onRefresh: () async {
-              debugPrint("TRANSACTIONS PAGE: Pull to refresh triggered");
+              debugPrint(
+                  "TRANSACTIONS PAGE: Pull to refresh - loading fresh 10 items");
               await ref
                   .read(paginatedTransactionProvider.notifier)
                   .refreshTransactions();
@@ -96,63 +92,127 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
 
   Widget _buildTransactionContent(
       TransactionPaginationState state, bool isDark) {
+    // Show loading on initial load
     if (state.transactions.isEmpty && state.isLoading) {
       debugPrint("TRANSACTIONS PAGE: Showing initial loading state");
       return _buildLoadingState(isDark);
     }
 
+    // Show error if we have error and no transactions
     if (state.transactions.isEmpty && state.errorMessage != null) {
       debugPrint(
           "TRANSACTIONS PAGE: Showing error state: ${state.errorMessage}");
       return _buildErrorState(state.errorMessage!, isDark);
     }
 
+    // Show empty state if no transactions and no error
     if (state.transactions.isEmpty && !state.isLoading) {
       debugPrint("TRANSACTIONS PAGE: Showing empty state");
       return _buildEmptyState(isDark);
     }
 
+    // Show transactions list with infinite scroll
     debugPrint(
-        "TRANSACTIONS PAGE: Showing transactions list with ${state.transactions.length} items");
+        "TRANSACTIONS PAGE: Showing ${state.transactions.length} transactions");
     return _buildTransactionsList(state, isDark);
   }
 
   Widget _buildTransactionsList(TransactionPaginationState state, bool isDark) {
     final groupedTransactions = _groupTransactionsByMonth(state.transactions);
 
-    debugPrint(
-        'TRANSACTIONS PAGE: Building list with ${state.transactions.length} transactions');
-    debugPrint(
-        'TRANSACTIONS PAGE: Grouped into ${groupedTransactions.length} months');
-
-    for (int i = 0; i < state.transactions.length && i < 3; i++) {
-      final tx = state.transactions[i];
-      debugPrint('TRANSACTIONS PAGE: Transaction $i: ${tx.debugInfo}');
-    }
-
     return SingleChildScrollView(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       child: Column(
         children: [
-          ...groupedTransactions.entries.map((entry) {
-            final monthYear = entry.key;
-            final transactions = entry.value;
-
-            return Column(
-              children: [
-                MonthHeader(
-                  year: monthYear['year']!,
-                  month: monthYear['month']!,
+          // Status info header
+          if (state.totalRecords > 0)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              color: isDark ? Colors.grey[900] : Colors.grey[50],
+              child: Text(
+                state.statusInfo,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  color: isDark ? Colors.grey[300] : Colors.grey[700],
                 ),
-                ...transactions.map((transactionData) => TransactionItem(
-                      transactionData: transactionData,
-                    )),
-              ],
-            );
-          }),
-          _buildFooter(state, isDark),
-          const SizedBox(height: 20),
+              ),
+            ),
+
+          // Transactions grouped by month
+          if (groupedTransactions.isNotEmpty)
+            ...groupedTransactions.entries.map((entry) {
+              final monthYear = entry.key;
+              final transactions = entry.value;
+
+              return Column(
+                children: [
+                  MonthHeader(
+                    year: monthYear['year']!,
+                    month: monthYear['month']!,
+                  ),
+                  ...transactions.map((transactionData) => TransactionItem(
+                        transactionData: transactionData,
+                      )),
+                ],
+              );
+            }),
+
+          // Loading more indicator at bottom
+          if (state.isLoadingMore)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                children: [
+                  CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Loading 10 more transactions...',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // End of list indicator
+          if (!state.hasMore && state.transactions.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.check_circle_outline,
+                    size: 32,
+                    color: isDark ? Colors.green[400] : Colors.green[600],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'All transactions loaded',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // Bottom padding
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -230,7 +290,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.8,
+        height: MediaQuery.of(context).size.height * 0.7,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
@@ -285,61 +345,18 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     );
   }
 
-  Widget _buildFooter(TransactionPaginationState state, bool isDark) {
-    if (state.isLoading && state.transactions.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0),
-        child: Center(
-          child: Column(
-            children: [
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  isDark ? Colors.white : Colors.black,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Loading more transactions...',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    } else if (!state.hasMore && state.transactions.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0),
-        child: Center(
-          child: Text(
-            'No more transactions to load',
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? Colors.grey[500] : Colors.grey[500],
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ),
-      );
-    } else {
-      return const SizedBox(height: 20);
-    }
-  }
-
+  // Group transactions by month and year
   Map<Map<String, String>, List<TransactionApiModel>> _groupTransactionsByMonth(
       List<TransactionApiModel> transactions) {
     final Map<Map<String, String>, List<TransactionApiModel>> grouped = {};
 
+    // Sort transactions by date (newest first)
     final sortedTransactions = List<TransactionApiModel>.from(transactions);
     sortedTransactions.sort((a, b) {
       try {
         final dateA = DateTime.parse(a.transactionDate);
         final dateB = DateTime.parse(b.transactionDate);
-        return dateB.compareTo(dateA);
+        return dateB.compareTo(dateA); // Descending order (newest first)
       } catch (e) {
         return 0;
       }
@@ -353,6 +370,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
           'month': _getMonthName(date.month),
         };
 
+        // Find existing key or create new one
         Map<String, String>? existingKey;
         for (final key in grouped.keys) {
           if (key['year'] == monthYear['year'] &&
@@ -371,6 +389,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
         debugPrint(
             'Error parsing transaction date: ${transaction.transactionDate}');
 
+        // Add to unknown category
         final unknownKey = {'year': 'Unknown', 'month': 'Unknown'};
         Map<String, String>? existingUnknownKey;
         for (final key in grouped.keys) {
@@ -388,6 +407,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
       }
     }
 
+    // Sort transactions within each month (newest first)
     for (final entry in grouped.entries) {
       entry.value.sort((a, b) {
         try {
