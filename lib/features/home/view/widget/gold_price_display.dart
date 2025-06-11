@@ -45,7 +45,7 @@ class GoldPriceDisplay extends ConsumerWidget {
           // SAR 400.00
           SarAmountWidget(
             isWhite: true,
-            text: goldPrice==0.00?'Loading..' :'${goldPrice.toStringAsFixed(2)}/g',
+            text: '${goldPrice.toStringAsFixed(2)}/g',
             height: 12,
             style: const TextStyle(
               fontSize: 12,

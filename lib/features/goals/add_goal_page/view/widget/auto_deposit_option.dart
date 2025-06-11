@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/core/constants/app_images.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
-
-final autoDepositProvider = StateProvider<bool>((ref) => false);
+import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart'; // Import the main provider file
 
 class AutoDepositOption extends ConsumerWidget {
   const AutoDepositOption({Key? key}) : super(key: key);
@@ -25,7 +24,6 @@ class AutoDepositOption extends ConsumerWidget {
             onChanged: (value) {
               final newValue = value ?? false;
               ref.read(autoDepositProvider.notifier).state = newValue;
-
               print('Auto Deposit changed to: $newValue');
               print(
                   'autoDepositProvider state is now: ${ref.read(autoDepositProvider)}');

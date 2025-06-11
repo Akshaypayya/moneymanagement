@@ -1,4 +1,3 @@
-import 'package:growk_v2/features/buy_gold_instantly/view/controller/buy_gold_instantly_screen_controller.dart';
 import 'package:growk_v2/features/wallet_page/provider/wallet_screen_providers.dart';
 
 import '../../../views.dart';
@@ -21,7 +20,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.refresh(homeDetailsProvider);
         ref.refresh(getNewWalletBalanceProvider);
-        ref.refresh(liveGoldPriceProvider);
+
       });
       _isFirstLoad = false;
     }
@@ -39,7 +38,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           onRefreshCallback: (ref) async {
             await ref.refresh(homeDetailsProvider.future);
             await ref.refresh(getNewWalletBalanceProvider.future);
-            await ref.refresh(liveGoldPriceProvider.future);
+            await ref.refresh(getNewWalletBalanceProvider.future);
           },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),

@@ -1,6 +1,6 @@
 import '../../../../views.dart';
 
-class SavingsRowWidget extends ConsumerStatefulWidget {
+class SavingsRowWidget extends ConsumerWidget {
   final String emoji;
   final String title;
   final String profit;
@@ -11,7 +11,10 @@ class SavingsRowWidget extends ConsumerStatefulWidget {
   final String growth;
   final String actionIcon;
   final bool? received;
+
   final int index;
+  final BuildContext context;
+  final WidgetRef ref;
 
   const SavingsRowWidget({
     super.key,
@@ -25,30 +28,20 @@ class SavingsRowWidget extends ConsumerStatefulWidget {
     required this.growth,
     required this.actionIcon,
     required this.index,
+    required this.context,
+    required this.ref,
     this.received,
   });
 
-  @override
-  ConsumerState<SavingsRowWidget> createState() => _SavingsRowWidgetState();
-}
-
-class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
-  bool _isNavigating = false;
-
-  Future<void> _handleTap() async {
-    if (_isNavigating) return;
-
-    setState(() => _isNavigating = true);
-
+  void _handleTap() async {
     try {
       await ref.refresh(homeDetailsProvider.future);
-
-      if (widget.index == 0) {
-        await Navigator.pushNamed(context, AppRouter.buyGoldInstantly);
-      } else if (widget.index == 1) {
-        await Navigator.pushNamed(context, AppRouter.createGoalScreen);
-      } else if (widget.index == 2) {
-        await Navigator.pushNamed(context, AppRouter.referralRewards);
+      if (index == 0) {
+        Navigator.pushNamed(context, AppRouter.buyGoldInstantly);
+      } else if (index == 1) {
+        Navigator.pushNamed(context, AppRouter.createGoalScreen);
+      } else if (index == 2) {
+        Navigator.pushNamed(context, AppRouter.referralRewards);
       }
     } catch (e) {
       final errorMessage = e.toString().contains('KYC not completed')
@@ -63,15 +56,12 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
       );
 
       await Navigator.pushNamed(context, AppRouter.kycVerificationScreen);
-    } finally {
-      if (mounted) setState(() => _isNavigating = false);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -80,11 +70,11 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
           children: [
             Row(
               children: [
-                Image.asset(widget.emoji,
-                    height: widget.emoji == AppImages.instantGold ? 12 : 20),
+                Image.asset(emoji,
+                    height: emoji == AppImages.instantGold ? 12 : 20),
                 const SizedBox(width: 8),
                 ReusableText(
-                  text: widget.title,
+                  text: title,
                   style: AppTextStyle(textColor: AppColors.current(isDark).text)
                       .titleSmall,
                 ),
@@ -101,10 +91,10 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                 child: ReusableRow(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(widget.actionIcon, height: 15, color: Colors.white),
+                    Image.asset(actionIcon, height: 15,color: Colors.white,),
                     const SizedBox(width: 5),
                     ReusableText(
-                      text: widget.action,
+                      text: action,
                       style: AppTextStyle(textColor: Colors.white).labelSmall,
                     ),
                   ],
@@ -127,18 +117,18 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                     ReusableText(
                       text: 'Profit',
                       style: AppTextStyle(
-                        textColor: AppColors.current(isDark).text,
-                      ).labelSmall,
+                              textColor: AppColors.current(isDark).text)
+                          .labelSmall,
                     ),
                     Row(
                       children: [
                         Image.asset(AppImages.sarSymbol,
-                            color: widget.profitColor, height: 15),
+                            color: profitColor, height: 15),
                         const SizedBox(width: 2),
                         ReusableText(
-                          text: widget.profit,
+                          text: profit,
                           style: TextStyle(
-                            color: widget.profitColor,
+                            color: profitColor,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
@@ -147,16 +137,16 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                     ),
                   ],
                 ),
-                const Spacer(),
+                Spacer(),
                 Row(
                   children: [
                     Image.asset(AppImages.upGreen, height: 10),
                     const SizedBox(width: 2),
                     Text(
-                      widget.growth,
+                      growth,
                       style: AppTextStyle(
-                        textColor: AppColors.current(isDark).text,
-                      ).titleSmall,
+                              textColor: AppColors.current(isDark).text)
+                          .titleSmall,
                     ),
                   ],
                 ),
@@ -170,32 +160,14 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
           children: [
             Row(
               children: [
-                Text(
-                  widget.received == true ? 'Received: ' : 'Invested: ',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.current(isDark).text,
-                  ),
-                ),
+                Text(received==true?'Received: ':'Invested: ', style:  TextStyle(fontSize: 13,color: AppColors.current(isDark).text)),
                 Image.asset(AppImages.sarSymbol,
                     color: AppColors.current(isDark).text, height: 10),
                 const SizedBox(width: 2),
-                Text(
-                  widget.invested,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.current(isDark).text,
-                  ),
-                ),
+                Text(invested, style:  TextStyle(fontSize: 13,color: AppColors.current(isDark).text)),
               ],
             ),
-            Text(
-              'Current: ${widget.current}',
-              style: TextStyle(
-                fontSize: 13,
-                color: AppColors.current(isDark).text,
-              ),
-            ),
+            Text('Current: $current', style:  TextStyle(fontSize: 13,color:  AppColors.current(isDark).text)),
           ],
         ),
       ],

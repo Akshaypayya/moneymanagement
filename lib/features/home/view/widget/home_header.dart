@@ -13,17 +13,12 @@ class HomeHeader extends ConsumerWidget {
     final goldWeight = ref.watch(goldWeightProvider) ?? '0.000';
     final walletAsync = ref.watch(getNewWalletBalanceProvider);
     final livePriceAsync = ref.watch(liveGoldPriceProvider);
-    final formatter = NumberFormat.currency(
-      locale: 'en_IN', // or 'en_US' if preferred
-      symbol: '',      // No currency symbol, since you're showing SAR separately
-      decimalDigits: 2,
-    );
+    final formatter = NumberFormat.decimalPattern();
     final savingsDate = DateFormat('d MMM yyyy').format(DateTime.now());
     final isKycIncomplete = totalSavings == '0.00' && goldWeight == '0.000';
 
     final textColor = AppColors.current(isDark).text;
     final primaryColor = AppColors.current(isDark).primary;
-
 
     return ScalingFactor(
       child: ReusableWhiteContainerWithPadding(
@@ -152,7 +147,6 @@ class HomeHeader extends ConsumerWidget {
       ),
     );
   }
-
 
   Widget _iconButton({required String asset, required Color color, required VoidCallback onTap}) {
     return GestureDetector(

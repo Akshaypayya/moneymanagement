@@ -133,35 +133,61 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
 
     final notifications = notificationModel.data!.aaData;
 
+    // return RefreshIndicator(
+    //   onRefresh: () async {
+    //     await ref
+    //         .read(notificationStateProvider.notifier)
+    //         .refreshNotifications();
+    //   },
+    //   child: Column(
+    //     children: [
+    //       Expanded(
+    //         child: ListView.builder(
+    //           controller: _scrollController,
+    //           itemCount: notifications.length + (isLoadingMore ? 1 : 0),
+    //           itemBuilder: (context, index) {
+    //             if (index == notifications.length) {
+    //               return Container(
+    //                 padding: const EdgeInsets.all(16),
+    //                 alignment: Alignment.center,
+    //                 child: CircularProgressIndicator(
+    //                   color: isDark ? Colors.white : Colors.black,
+    //                 ),
+    //               );
+    //             }
+
+    //             final notification = notifications[index];
+    //             return NotificationItemWidget(notification: notification);
+    //           },
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
     return RefreshIndicator(
       onRefresh: () async {
         await ref
             .read(notificationStateProvider.notifier)
             .refreshNotifications();
       },
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              itemCount: notifications.length + (isLoadingMore ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index == notifications.length) {
-                  return Container(
-                    padding: const EdgeInsets.all(16),
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator(
-                      color: isDark ? Colors.white : Colors.black,
-                    ),
-                  );
-                }
+      child: ListView.builder(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: notifications.length + (isLoadingMore ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index == notifications.length) {
+            return Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(
+                color: isDark ? Colors.white : Colors.black,
+              ),
+            );
+          }
 
-                final notification = notifications[index];
-                return NotificationItemWidget(notification: notification);
-              },
-            ),
-          ),
-        ],
+          final notification = notifications[index];
+          return NotificationItemWidget(notification: notification);
+        },
       ),
     );
   }

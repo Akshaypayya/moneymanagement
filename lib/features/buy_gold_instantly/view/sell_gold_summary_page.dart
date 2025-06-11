@@ -90,7 +90,7 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                "The gold price has been locked for 20 seconds. Complete the sale before the timer expires to get this rate.",
+                "The gold price has been locked for 1 minute. Complete the sale before the timer expires to get this rate.",
                 style: AppTextStyle(textColor: AppColors.current(isDark).text)
                     .labelSmall,
               ),

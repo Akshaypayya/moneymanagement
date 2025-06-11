@@ -11,6 +11,7 @@ final selectedImageFileProvider = StateProvider<XFile?>((ref) => null);
 final yearSliderProvider = StateProvider<double>((ref) => 0.12);
 final amountSliderProvider = StateProvider<double>((ref) => 0.091);
 final frequencyProvider = StateProvider<String>((ref) => 'Monthly');
+
 final autoDepositProvider = StateProvider<bool>((ref) => false);
 
 final calculatedAmountProvider = Provider<double>((ref) {
@@ -23,6 +24,7 @@ final calculatedAmountProvider = Provider<double>((ref) {
 
   return exactAmount;
 });
+
 final calculatedYearProvider = Provider<int>((ref) {
   final yearValue = ref.watch(yearSliderProvider);
   return 2025 + (yearValue * 25).round();

@@ -101,7 +101,7 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                "The gold price has been locked for 20 seconds to ensure a secure transaction. Complete your payment before the timer expires to secure this rate.",
+                "The gold price has been locked for 1 minute to ensure a secure transaction. Complete your payment before the timer expires to secure this rate.",
                 style: AppTextStyle(textColor: AppColors.current(isDark).text).labelSmall,
               ),
               const SizedBox(height: 20),
