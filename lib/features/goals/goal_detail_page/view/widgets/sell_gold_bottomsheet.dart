@@ -58,7 +58,6 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
             _isTransactionExpired = true;
             _timer?.cancel();
             debugPrint('SELL GOLD TIMER: Transaction expired');
-
             if (mounted) {
               showGrowkSnackBar(
                 context: context,
@@ -72,7 +71,6 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
       }
     });
   }
-
   Future<void> _initiateSellGold() async {
     final controller = ref.read(initiateSellGoldControllerProvider);
     final result = await controller.initiateSellGold(

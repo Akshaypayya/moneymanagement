@@ -103,6 +103,7 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
                             : (input * widget.goldSellPricePerGram).round();
                       });
                     },
+
                   ),
                 ),
               ),

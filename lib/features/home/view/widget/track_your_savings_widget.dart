@@ -27,11 +27,13 @@ class TrackYourSavingsWidget extends ConsumerWidget {
             ? Colors.green
             : Colors.red,
         'action': 'Buy/sell',
-        'invested': "${formatter.format(wallet.buyPrice ?? 0)}(${(wallet.goldBalance ?? 0).toStringAsFixed(2)}g)",
+        'invested': "${(wallet.goldBalance ?? 0).toStringAsFixed(2)}g ",
         'current': formatter.format(wallet.currentPrice ?? 0),
         'growth': (wallet.buyPrice ?? 0) != 0
             ? '${((((wallet.currentPrice ?? 0) - wallet.buyPrice!) / wallet.buyPrice!) * 100).toStringAsFixed(1)}%'
             : '0%',
+        'goldSavings':true,
+        'goldAmount':formatter.format(wallet.buyPrice ?? 0)
       },
       {
         'emoji': AppImages.goalDashboard,
@@ -44,11 +46,13 @@ class TrackYourSavingsWidget extends ConsumerWidget {
             : Colors.red,
         'action': 'Create New',
         'invested':
-        "${formatter.format(goals.buyPrice ?? 0)}(${(goals.goldBalance ?? 0).toStringAsFixed(2)}g)",
+        "${(goals.goldBalance ?? 0).toStringAsFixed(2)}g ",
         'current': formatter.format(goals.currentPrice ?? 0),
         'growth': (goals.buyPrice ?? 0) != 0
             ? '${((((goals.currentPrice ?? 0) - goals.buyPrice!) / goals.buyPrice!) * 100).toStringAsFixed(1)}%'
             : '0%',
+        'goldSavings':true,
+        'goldAmount':formatter.format(goals.buyPrice ?? 0)
       },
       {
         'emoji': AppImages.referralDark,
@@ -61,7 +65,7 @@ class TrackYourSavingsWidget extends ConsumerWidget {
             : Colors.red,
         'action': 'Invite Now',
         'invested':
-        "${formatter.format(referral.buyPrice ?? 0)}(${(referral.goldBalance ?? 0).toStringAsFixed(2)}g)",
+        "${formatter.format(referral.buyPrice ?? 0)} (${(referral.goldBalance ?? 0).toStringAsFixed(2)}g)",
         'current': formatter.format(referral.currentPrice ?? 0),
         'growth': (referral.buyPrice ?? 0) != 0
             ? '${((((referral.currentPrice ?? 0) - referral.buyPrice!) / referral.buyPrice!) * 100).toStringAsFixed(1)}%'
@@ -98,9 +102,9 @@ class TrackYourSavingsWidget extends ConsumerWidget {
                     current: item['current'].toString(),
                     growth: item['growth'].toString(),
                     received: item['received'] as bool? ?? false,
+                    goldSavings: item['goldSavings'] as bool? ?? false,
                     index: index,
-                    ref: ref,
-                    context: context,
+                    goldAmount:  item['goldAmount'].toString(),
                   ),
                 ),
               );

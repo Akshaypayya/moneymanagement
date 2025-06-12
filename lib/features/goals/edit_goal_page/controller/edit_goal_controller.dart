@@ -308,7 +308,14 @@ class EditGoalController {
       print('EDIT CONTROLLER: Has custom image: ${selectedImage != null}');
 
       final targetYear = 2025 + (yearValue * 25).round();
-      final targetAmount = 10000 + (amountValue * (1000000 - 10000)).round();
+      final minAmount = 10000.0;
+      final maxAmount = 1000000.0;
+      final targetAmount =
+          (minAmount + (amountValue * (maxAmount - minAmount))).round();
+
+      print('EDIT CONTROLLER: Calculated values');
+      print('EDIT CONTROLLER: Target year: $targetYear');
+      print('EDIT CONTROLLER: Target amount: $targetAmount');
 
       final durationInYears = (targetYear - 2025);
       final duration = durationInYears > 3 ? 3 : durationInYears;
@@ -333,9 +340,6 @@ class EditGoalController {
           break;
       }
 
-      print('EDIT CONTROLLER: Calculated values');
-      print('EDIT CONTROLLER: Target year: $targetYear');
-      print('EDIT CONTROLLER: Target amount: $targetAmount');
       print(
           'EDIT CONTROLLER: Duration: $duration years ($actualDurationInMonths months)');
       print(
@@ -373,7 +377,6 @@ class EditGoalController {
 
       final accessToken =
           SharedPreferencesHelper.getString('access_token') ?? '';
-
       if (accessToken.isEmpty) {
         print('EDIT CONTROLLER ERROR: No access token found');
         _showSnackBar(context, 'Please login first');
@@ -381,13 +384,61 @@ class EditGoalController {
       }
 
       print('EDIT CONTROLLER: Access token found, proceeding with API call');
-
       _showLoadingDialog(context);
 
       final repository = ref.read(editGoalRepositoryProvider);
+
+      XFile? validImageFile;
+      if (selectedImage != null) {
+        print('EDIT CONTROLLER: Original image path: ${selectedImage.path}');
+
+        if (selectedImage.path.startsWith('/9j/') ||
+            selectedImage.path.startsWith('data:') ||
+            selectedImage.path.contains('4AAQSkZJRgAB')) {
+          print(
+              'EDIT CONTROLLER: Detected base64 data in path, need to create proper file');
+
+          try {
+            final bytes = base64Decode(selectedImage.path);
+
+            final tempDir = await getTemporaryDirectory();
+            final tempFile = File(
+                '${tempDir.path}/edit_goal_image_${DateTime.now().millisecondsSinceEpoch}.jpg');
+            await tempFile.writeAsBytes(bytes);
+
+            validImageFile = XFile(tempFile.path);
+            print(
+                'EDIT CONTROLLER: Created temporary file at: ${tempFile.path}');
+          } catch (e) {
+            print(
+                'EDIT CONTROLLER ERROR: Failed to create file from base64: $e');
+            if (context.mounted) {
+              Navigator.of(context).pop();
+            }
+            _showSnackBar(context, 'Error processing selected image');
+            return;
+          }
+        } else {
+          final file = File(selectedImage.path);
+          if (await file.exists()) {
+            validImageFile = selectedImage;
+            print(
+                'EDIT CONTROLLER: Using existing file at: ${selectedImage.path}');
+          } else {
+            print(
+                'EDIT CONTROLLER ERROR: File does not exist at: ${selectedImage.path}');
+            if (context.mounted) {
+              Navigator.of(context).pop();
+            }
+            _showSnackBar(context, 'Selected image file not found');
+            return;
+          }
+        }
+      }
+
       final result = await repository.updateGoalApi(
         accessToken,
-        selectedImage,
+        validImageFile,
         formDataFile,
       );
 
@@ -402,36 +453,21 @@ class EditGoalController {
       if (result.isSuccess) {
         print('EDIT CONTROLLER: Goal updated successfully');
 
-        if (selectedIcon.isNotEmpty && selectedImage == null) {
+        final selectedIcon = ref.read(editSelectedGoalIconProvider);
+        if (selectedIcon.isNotEmpty) {
           IconMappingService.storeGoalIcon(goalName, selectedIcon);
           print(
-              'EDIT CONTROLLER: Stored icon mapping - $goalName -> $selectedIcon');
-        } else if (selectedImage != null) {
-          IconMappingService.clearMapping(goalName);
-          print(
-              'EDIT CONTROLLER: Cleared icon mapping for custom image - $goalName');
-        }
-
-        if (originalGoalName != goalName) {
-          final storedIcon = IconMappingService.getStoredIcon(originalGoalName);
-          if (storedIcon != null) {
-            IconMappingService.clearMapping(originalGoalName);
-            if (selectedIcon.isNotEmpty && selectedImage == null) {
-              IconMappingService.storeGoalIcon(goalName, selectedIcon);
-            }
-            print(
-                'EDIT CONTROLLER: Updated mapping due to name change: $originalGoalName -> $goalName');
-          }
+              'EDIT CONTROLLER: Updated icon mapping - $goalName -> $selectedIcon');
         }
 
         _showSnackBar(context, 'Goal updated successfully!');
 
         if (context.mounted) {
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(true);
         }
       } else if (result.isValidationFailed) {
         print('EDIT CONTROLLER ERROR: Validation failed');
-        _showSnackBar(context, 'Validation Error: ${result.message}');
+        _showSnackBar(context, 'Validation Error: ${result.validationErrors}');
       } else {
         print('EDIT CONTROLLER ERROR: Goal update failed');
         _showSnackBar(context, result.message);
@@ -440,10 +476,11 @@ class EditGoalController {
       print('EDIT CONTROLLER EXCEPTION: $e');
       print('EDIT CONTROLLER STACK TRACE: $stackTrace');
 
+      if (context.mounted && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+
       if (context.mounted) {
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
-        }
         _showSnackBar(context, 'Error updating goal: ${e.toString()}');
       }
     }
@@ -509,53 +546,114 @@ class EditGoalController {
       },
     );
   }
+}
 
-  Widget showGoalIcon({
-    required String image,
-    required BuildContext context,
-    required WidgetRef ref,
-    required VoidCallback onTap,
-    required String label,
-  }) {
-    final isDark = ref.watch(isDarkProvider);
-    final selectedIcon = ref.watch(editSelectedGoalIconProvider);
-    final isSelected = selectedIcon == image;
+Future<File> saveFileAsBytesTemp(BuildContext context, String fileName,
+    String extension, Map<String, dynamic> data) async {
+  Directory directory;
+  if (Platform.isAndroid) {
+    directory = await getApplicationCacheDirectory();
+  } else {
+    directory = await getApplicationDocumentsDirectory();
+  }
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
-      onTap: onTap,
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 26,
-            backgroundColor: isSelected
-                ? Colors.teal
-                : isDark
-                    ? Colors.grey[800]
-                    : Colors.grey[200],
-            child: Image.asset(
-              'assets/$image',
-              height: 30,
-              width: 30,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 13.5,
-              fontWeight: FontWeight.w500,
-              color: isSelected
-                  ? Colors.teal
-                  : isDark
-                      ? Colors.white70
-                      : Colors.black87,
-            ),
-          ),
-        ],
+  final exPath = directory.path;
+  print("Saved Path: $exPath");
+  await Directory(exPath).create(recursive: true);
+  final jsonString = jsonEncode(data);
+  final file = File('$exPath/$fileName.$extension');
+  await file.writeAsString(jsonString);
+
+  print("File saved at: ${file.path}");
+  return file;
+}
+
+void _showSnackBar(BuildContext context, String message) {
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.black87,
       ),
     );
   }
+}
+
+void _showLoadingDialog(BuildContext context) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: isDark ? Colors.grey[900] : Colors.white,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                isDark ? Colors.white : Colors.black,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Updating goal...',
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+Widget showGoalIcon({
+  required String image,
+  required BuildContext context,
+  required WidgetRef ref,
+  required VoidCallback onTap,
+  required String label,
+}) {
+  final isDark = ref.watch(isDarkProvider);
+  final selectedIcon = ref.watch(editSelectedGoalIconProvider);
+  final isSelected = selectedIcon == image;
+
+  return InkWell(
+    borderRadius: BorderRadius.circular(10),
+    onTap: onTap,
+    child: Column(
+      children: [
+        CircleAvatar(
+          radius: 26,
+          backgroundColor: isSelected
+              ? Colors.teal
+              : isDark
+                  ? Colors.grey[800]
+                  : Colors.grey[200],
+          child: Image.asset(
+            'assets/$image',
+            height: 30,
+            width: 30,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 13.5,
+            fontWeight: FontWeight.w500,
+            color: isSelected
+                ? Colors.teal
+                : isDark
+                    ? Colors.white70
+                    : Colors.black87,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class MinimalOption extends StatelessWidget {

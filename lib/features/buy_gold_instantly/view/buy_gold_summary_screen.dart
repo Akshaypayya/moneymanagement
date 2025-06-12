@@ -1,15 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/controller/buy_gold_instantly_screen_controller.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/providers/buy_gold_instantly_screen_providers.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/widgets/success_bottomsheet.dart';
-import 'package:growk_v2/features/wallet_page/wallet_page.dart';
 import 'package:growk_v2/views.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
-import 'package:growk_v2/core/theme/app_text_styles.dart';
-import 'package:growk_v2/core/theme/app_theme.dart';
-import 'package:growk_v2/core/widgets/growk_app_bar.dart';
 import 'package:growk_v2/core/widgets/sar_amount_widget.dart';
 import '../../wallet_page/provider/wallet_screen_providers.dart';
 
@@ -101,7 +93,7 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                "The gold price has been locked for 1 minute to ensure a secure transaction. Complete your payment before the timer expires to secure this rate.",
+                "The gold price has been locked for 20 seconds to ensure a secure transaction. Complete your payment before the timer expires to secure this rate.",
                 style: AppTextStyle(textColor: AppColors.current(isDark).text).labelSmall,
               ),
               const SizedBox(height: 20),
