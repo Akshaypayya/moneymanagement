@@ -47,22 +47,39 @@ class GoalHeader extends ConsumerWidget {
                           child: goalImageWidget!,
                         )
                       : goalIcon != null && goalIcon!.isNotEmpty
-                          ? Padding(
-                              padding: const EdgeInsets.all(8.0),
+                          ?
+                          // Padding(
+                          //     padding: const EdgeInsets.all(8.0),
+                          //     child: Image.asset(
+                          //       goalIcon!,
+                          //       width: 74,
+                          //       height: 74,
+                          //       fit: BoxFit.contain,
+                          //       errorBuilder: (context, error, stackTrace) {
+                          //         return Padding(
+                          //           padding: const EdgeInsets.all(8.0),
+                          //           child: Image.asset(
+                          //             'assets/customgoals.png',
+                          //             width: 74,
+                          //             height: 74,
+                          //             fit: BoxFit.contain,
+                          //           ),
+                          //         );
+                          //       },
+                          //     ),
+                          //   )
+                          ClipOval(
                               child: Image.asset(
                                 goalIcon!,
-                                width: 74,
-                                height: 74,
-                                fit: BoxFit.contain,
+                                width: 90,
+                                height: 90,
+                                fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Image.asset(
-                                      'assets/customgoals.png',
-                                      width: 74,
-                                      height: 74,
-                                      fit: BoxFit.contain,
-                                    ),
+                                  return Image.asset(
+                                    'assets/customgoals.png',
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover,
                                   );
                                 },
                               ),

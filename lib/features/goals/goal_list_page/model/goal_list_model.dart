@@ -225,17 +225,8 @@ class GoalListItem {
       print('  - Using base64 image from goalPic');
       try {
         final bytes = base64Decode(goalPic!);
-        return ClipOval(
-          child: Image.memory(
-            bytes,
-            width: width,
-            height: height,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) {
-              print('  - ERROR loading base64 image: $error');
-              return _buildAssetIcon(width, height);
-            },
-          ),
+        return CircleAvatar(
+          backgroundImage: MemoryImage(bytes, scale: 10),
         );
       } catch (e) {
         print('  - ERROR decoding base64: $e');

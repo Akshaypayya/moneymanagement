@@ -105,15 +105,19 @@ class TransactionItem extends ConsumerWidget {
                         fontFamily: GoogleFonts.poppins().fontFamily,
                       ),
                     ),
-                  Image.asset(
-                    AppImages.sarSymbol,
-                    height: 16,
-                    color: sarSymbolColor,
-                  ),
+                  transactionData.currencyCode == "XAU"
+                      ? const SizedBox()
+                      : Image.asset(
+                          AppImages.sarSymbol,
+                          height: 16,
+                          color: sarSymbolColor,
+                        ),
                   const ReusableSizedBox(width: 3),
                   ReusableText(
                     // text: transactionData.formattedAmount,
-                    text: transactionData.amount.toString(),
+                    text: transactionData.currencyCode == "XAU"
+                        ? "${transactionData.amount.toStringAsFixed(2)} gm"
+                        : transactionData.amount.toStringAsFixed(2),
                     style: AppTextStyle(textColor: amountColor).titleRegular,
                   ),
                 ],

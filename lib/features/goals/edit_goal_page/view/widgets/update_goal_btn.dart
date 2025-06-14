@@ -1,6 +1,9 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/features/goals/edit_goal_page/controller/edit_goal_controller.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/controller/goal_detail_controller.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
+import 'package:growk_v2/features/goals/goal_detail_page/provider/goal_transaction_provider.dart';
+import 'package:growk_v2/features/goals/goal_list_page/provider/goal_list_page_provider.dart';
 import 'package:growk_v2/views.dart';
 
 class UpdateGoalButton extends ConsumerStatefulWidget {
@@ -20,8 +23,17 @@ class _UpdateGoalButtonState extends ConsumerState<UpdateGoalButton> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () =>
-            controller.updateGoal(context, widget.goalData!.goalName),
+        onPressed: () {
+          controller.updateGoal(context, widget.goalData!.goalName);
+          ref.read(goalListStateProvider.notifier).refreshGoals();
+          ref
+              .read(goalDetailStateProvider(widget.goalData!.goalName).notifier)
+              .refreshGoalDetail();
+          ref
+              .read(goalTransactionStateProvider(widget.goalData!.goalName)
+                  .notifier)
+              .refreshTransactions();
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: isDark ? Colors.black : Colors.black,
           foregroundColor: Colors.white,

@@ -138,9 +138,17 @@ class GoalDetailPage extends ConsumerWidget {
           ),
         ),
       ).then((_) {
+        // ref
+        //     .read(goalDetailStateProvider(goalName).notifier)
+        //     .refreshGoalDetail();
+
+        ref.read(goalListStateProvider.notifier).refreshGoals();
         ref
             .read(goalDetailStateProvider(goalName).notifier)
             .refreshGoalDetail();
+        ref
+            .read(goalTransactionStateProvider(goalName).notifier)
+            .refreshTransactions();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -263,6 +271,11 @@ class GoalDetailPage extends ConsumerWidget {
               ref
                   .read(goalDetailStateProvider(goalName).notifier)
                   .refreshGoalDetail();
+              ref.read(goalListStateProvider.notifier).refreshGoals();
+
+              ref
+                  .read(goalTransactionStateProvider(goalName).notifier)
+                  .refreshTransactions();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.teal,

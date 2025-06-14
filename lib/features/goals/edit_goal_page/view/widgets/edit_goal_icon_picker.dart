@@ -27,22 +27,38 @@ class _EditGoalIconPickerState extends ConsumerState<EditGoalIconPicker> {
     return Center(
       child: Stack(
         children: [
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isDark ? Colors.white : Colors.black,
-                width: 1,
+          // Container(
+          //   width: 100,
+          //   height: 100,
+          //   decoration: BoxDecoration(
+          //     shape: BoxShape.circle,
+          //     border: Border.all(
+          //       color: isDark ? Colors.white : Colors.black,
+          //       width: 1,
+          //     ),
+          //   ),
+          //   child: GestureDetector(
+          //     onTap: () => controller.pickGoalImageActionSheet(context, ref),
+          //     child: Center(
+          //       child: _buildIconOrImage(
+          //           selectedIcon, selectedImage, widget.goalData!),
+          //     ),
+          //   ),
+          // ),
+          GestureDetector(
+            onTap: () => controller.pickGoalImageActionSheet(context, ref),
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isDark ? Colors.white : Colors.black,
+                  width: 1,
+                ),
               ),
-            ),
-            child: GestureDetector(
-              onTap: () => controller.pickGoalImageActionSheet(context, ref),
-              child: Center(
-                child: _buildIconOrImage(
-                    selectedIcon, selectedImage, widget.goalData!),
-              ),
+              child: _buildIconOrImage(
+                  selectedIcon, selectedImage, widget.goalData!),
             ),
           ),
           Positioned(
@@ -80,8 +96,8 @@ class _EditGoalIconPickerState extends ConsumerState<EditGoalIconPicker> {
       return ClipOval(
         child: Image.file(
           File(selectedImage.path),
-          width: 60,
-          height: 60,
+          width: 90,
+          height: 90,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             print(
@@ -95,16 +111,19 @@ class _EditGoalIconPickerState extends ConsumerState<EditGoalIconPicker> {
     if (selectedIcon.isNotEmpty) {
       print('BUILD ICON: Using selected preset icon: assets/$selectedIcon');
       return ClipOval(
-        child: Image.asset(
-          'assets/$selectedIcon',
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            print(
-                'BUILD ICON ERROR: Failed to load asset $selectedIcon, falling back to goal data widget');
-            return goalData.getIconWidget(width: 60, height: 60);
-          },
+        child: Padding(
+          padding: const EdgeInsets.all(17),
+          child: Image.asset(
+            'assets/$selectedIcon',
+            width: 90,
+            height: 90,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) {
+              print(
+                  'BUILD ICON ERROR: Failed to load asset $selectedIcon, falling back to goal data widget');
+              return goalData.getIconWidget(width: 60, height: 60);
+            },
+          ),
         ),
       );
     }

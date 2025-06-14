@@ -75,8 +75,8 @@ class GoalItem extends ConsumerWidget {
               color: goalStatus == "COMPLETED"
                   ? Colors.grey[300]
                   : isDark
-                      ? Colors.black
-                      : Colors.white,
+                  ? Colors.black
+                  : Colors.white,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,39 +92,39 @@ class GoalItem extends ConsumerWidget {
                           height: 50,
                           child: iconWidget != null
                               ? SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: iconWidget!,
-                                )
+                            width: 50,
+                            height: 50,
+                            child: iconWidget!,
+                          )
                               : Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.transparent,
-                                  ),
-                                  child: Padding(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.transparent,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Image.asset(
+                                iconAsset ?? 'assets/customgoals.png',
+                                width: 42,
+                                height: 42,
+                                fit: BoxFit.contain,
+                                errorBuilder:
+                                    (context, error, stackTrace) {
+                                  return Padding(
                                     padding: const EdgeInsets.all(4.0),
                                     child: Image.asset(
-                                      iconAsset ?? 'assets/customgoals.png',
+                                      'assets/customgoals.png',
                                       width: 42,
                                       height: 42,
                                       fit: BoxFit.contain,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Image.asset(
-                                            'assets/customgoals.png',
-                                            width: 42,
-                                            height: 42,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        );
-                                      },
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
                         ),
                         const SizedBox(width: 10),
                         Column(
@@ -168,39 +168,39 @@ class GoalItem extends ConsumerWidget {
                         goalStatus == "COMPLETED"
                             ? const SizedBox()
                             : ReusableRow(
-                                children: [
-                                  ReusableText(
-                                    text: '(Profit: ',
-                                    style: AppTextStyle(textColor: textColor)
-                                        .bodyRegular,
-                                  ),
-                                  Image.asset(
-                                    AppImages.sarSymbol,
-                                    height: 13,
-                                    color: getProfitVal(amount, invested) < 0
-                                        ? Colors.red
-                                        : Colors.green,
-                                  ),
-                                  ReusableSizedBox(
-                                    width: 3,
-                                  ),
-                                  ReusableText(
-                                    text: getProfitVal(amount, invested)
-                                        .toStringAsFixed(2),
-                                    style: AppTextStyle(
-                                      textColor:
-                                          getProfitVal(amount, invested) < 0
-                                              ? Colors.red
-                                              : Colors.green,
-                                    ).titleSmall,
-                                  ),
-                                  ReusableText(
-                                    text: ')',
-                                    style: AppTextStyle(textColor: textColor)
-                                        .bodyRegular,
-                                  ),
-                                ],
-                              )
+                          children: [
+                            ReusableText(
+                              text: '(Profit: ',
+                              style: AppTextStyle(textColor: textColor)
+                                  .bodyRegular,
+                            ),
+                            Image.asset(
+                              AppImages.sarSymbol,
+                              height: 13,
+                              color: getProfitVal(amount, invested) < 0
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
+                            ReusableSizedBox(
+                              width: 3,
+                            ),
+                            ReusableText(
+                              text: getProfitVal(amount, invested)
+                                  .toStringAsFixed(2),
+                              style: AppTextStyle(
+                                textColor:
+                                getProfitVal(amount, invested) < 0
+                                    ? Colors.red
+                                    : Colors.green,
+                              ).titleSmall,
+                            ),
+                            ReusableText(
+                              text: ')',
+                              style: AppTextStyle(textColor: textColor)
+                                  .bodyRegular,
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ],
@@ -296,7 +296,7 @@ class GoalItem extends ConsumerWidget {
                         ? Colors.white
                         : Colors.grey[300],
                     valueColor:
-                        const AlwaysStoppedAnimation<Color>(Colors.teal),
+                    const AlwaysStoppedAnimation<Color>(Colors.teal),
                   ),
                 ),
                 const SizedBox(height: 5),

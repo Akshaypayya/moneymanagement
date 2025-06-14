@@ -308,7 +308,7 @@ class CreateGoalController {
           print('CONTROLLER: Stored icon mapping - $goalName -> $selectedIcon');
         }
 
-        resetFormState();
+        // resetFormState();
         print('CONTROLLER: Form reset completed - all fields back to default');
 
         _showSnackBar(context, 'Goal created successfully!');
@@ -325,6 +325,7 @@ class CreateGoalController {
             selectedFrequency,
             goalName,
             onClose: () {
+              resetFormState();
               Navigator.of(context).pop();
               ref.read(goalsRefreshTriggerProvider.notifier).state++;
             },

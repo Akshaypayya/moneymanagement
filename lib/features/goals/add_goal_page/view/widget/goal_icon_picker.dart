@@ -133,23 +133,47 @@ class GoalIconPicker extends ConsumerWidget {
     );
   }
 
-  Widget buildGoalImage({
-    required ImageProvider imageProvider,
-    double size = 60,
-    double borderRadius = 12,
-  }) {
+  // Widget buildGoalImage({
+  //   required ImageProvider imageProvider,
+  //   double size = 60,
+  //   double borderRadius = 12,
+  // }) {
+  //   return ClipRRect(
+  //     borderRadius: BorderRadius.circular(borderRadius),
+  //     child: Container(
+  //       width: size,
+  //       height: size,
+  //       color: Colors.grey[200],
+  //       child: Image(
+  //         image: imageProvider,
+  //         fit: BoxFit.cover,
+  //         width: size,
+  //         height: size,
+  //       ),
+  //     ),
+  //   );
+  // }
+  Widget buildGoalImage(String? imagePath, {bool isAsset = false}) {
+    final imageWidget = isAsset
+        ? Image.asset(
+            imagePath!,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          )
+        : Image.file(
+            File(imagePath!),
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          );
+
     return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: Container(
-        width: size,
-        height: size,
-        color: Colors.grey[200],
-        child: Image(
-          image: imageProvider,
-          fit: BoxFit.cover,
-          width: size,
-          height: size,
-        ),
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        width: 80,
+        height: 80,
+        child: imageWidget,
       ),
     );
   }
