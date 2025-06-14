@@ -30,8 +30,8 @@ class GoalHeader extends ConsumerWidget {
             children: [
               Center(
                 child: Container(
-                  width: 90,
-                  height: 90,
+                  width: 100,
+                  height: 100,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
@@ -47,49 +47,27 @@ class GoalHeader extends ConsumerWidget {
                           child: goalImageWidget!,
                         )
                       : goalIcon != null && goalIcon!.isNotEmpty
-                          ?
-                          // Padding(
-                          //     padding: const EdgeInsets.all(8.0),
-                          //     child: Image.asset(
-                          //       goalIcon!,
-                          //       width: 74,
-                          //       height: 74,
-                          //       fit: BoxFit.contain,
-                          //       errorBuilder: (context, error, stackTrace) {
-                          //         return Padding(
-                          //           padding: const EdgeInsets.all(8.0),
-                          //           child: Image.asset(
-                          //             'assets/customgoals.png',
-                          //             width: 74,
-                          //             height: 74,
-                          //             fit: BoxFit.contain,
-                          //           ),
-                          //         );
-                          //       },
-                          //     ),
-                          //   )
-                          ClipOval(
+                          ? ClipOval(
                               child: Image.asset(
                                 goalIcon!,
                                 width: 90,
                                 height: 90,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Image.asset(
                                     'assets/customgoals.png',
                                     width: 90,
                                     height: 90,
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.contain,
                                   );
                                 },
                               ),
                             )
-                          : Padding(
-                              padding: const EdgeInsets.all(8.0),
+                          : ClipOval(
                               child: Image.asset(
                                 'assets/customgoals.png',
-                                width: 74,
-                                height: 74,
+                                width: 90,
+                                height: 90,
                                 fit: BoxFit.contain,
                               ),
                             ),

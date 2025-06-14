@@ -215,8 +215,31 @@ class GoalListItem {
     return 'assets/customgoals.png';
   }
 
-  Widget getIconWidget({double width = 100, double height = 100}) {
-    print('GET ICON WIDGET for: $goalName');
+  Widget _buildAssetIcon(double width, double height) {
+    final assetPath = iconAsset;
+    print('  - Building asset icon: $assetPath');
+
+    return ClipOval(
+      child: Image.asset(
+        assetPath,
+        width: width,
+        height: height,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          print('  - ERROR loading asset $assetPath: $error');
+          return Image.asset(
+            'assets/customgoals.png',
+            width: width,
+            height: height,
+            fit: BoxFit.contain,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget getIconWidget({double width = 60, double height = 60}) {
+    print('GOAL LIST GET ICON WIDGET for: $goalName');
     print('  - Has goalPic: ${goalPic != null && goalPic!.isNotEmpty}');
     print('  - iconName: $iconName');
     print('  - goalPicContentType: $goalPicContentType');
@@ -225,8 +248,17 @@ class GoalListItem {
       print('  - Using base64 image from goalPic');
       try {
         final bytes = base64Decode(goalPic!);
-        return CircleAvatar(
-          backgroundImage: MemoryImage(bytes, scale: 10),
+        return ClipOval(
+          child: Image.memory(
+            bytes,
+            width: width,
+            height: height,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              print('  - ERROR loading base64 image: $error');
+              return _buildAssetIcon(width, height);
+            },
+          ),
         );
       } catch (e) {
         print('  - ERROR decoding base64: $e');
@@ -236,41 +268,6 @@ class GoalListItem {
 
     print('  - Using asset icon');
     return _buildAssetIcon(width, height);
-  }
-
-  Widget _buildAssetIcon(double width, double height) {
-    final assetPath = iconAsset;
-    print('  - Building asset icon: $assetPath');
-
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.transparent,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: Image.asset(
-          assetPath,
-          width: width,
-          height: height,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) {
-            print('  - ERROR loading asset $assetPath: $error');
-            return Padding(
-              padding: const EdgeInsets.all(80),
-              child: Image.asset(
-                'assets/customgoals.png',
-                width: width,
-                height: height,
-                fit: BoxFit.contain,
-              ),
-            );
-          },
-        ),
-      ),
-    );
   }
 
   Widget _getFallbackIcon(double width, double height) {

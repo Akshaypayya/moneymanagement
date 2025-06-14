@@ -233,6 +233,29 @@ class GoalData {
     return 'assets/customgoals.png';
   }
 
+  Widget _buildAssetIcon(double width, double height) {
+    final assetPath = iconAsset;
+    print('  - Building asset icon: $assetPath');
+
+    return ClipOval(
+      child: Image.asset(
+        assetPath,
+        width: width,
+        height: height,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          print('  - ERROR loading asset $assetPath: $error');
+          return Image.asset(
+            'assets/customgoals.png',
+            width: width,
+            height: height,
+            fit: BoxFit.contain,
+          );
+        },
+      ),
+    );
+  }
+
   Widget getIconWidget({double width = 60, double height = 60}) {
     print('GOAL DETAIL GET ICON WIDGET for: $goalName');
     print('  - Has goalPic: ${goalPic != null && goalPic!.isNotEmpty}');
@@ -263,40 +286,5 @@ class GoalData {
 
     print('  - Using asset icon');
     return _buildAssetIcon(width, height);
-  }
-
-  Widget _buildAssetIcon(double width, double height) {
-    final assetPath = iconAsset;
-    print('  - Building asset icon: $assetPath');
-
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.transparent,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: Image.asset(
-          assetPath,
-          width: width - 12,
-          height: height - 12,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) {
-            print('  - ERROR loading asset $assetPath: $error');
-            return Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Image.asset(
-                'assets/customgoals.png',
-                width: width - 12,
-                height: height - 12,
-                fit: BoxFit.contain,
-              ),
-            );
-          },
-        ),
-      ),
-    );
   }
 }
