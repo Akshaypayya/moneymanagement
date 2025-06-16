@@ -16,7 +16,8 @@ class OtpScreen extends ConsumerWidget {
               const SizedBox(height: 100),
               GrowkButton(
                 title: 'Verify',
-                onTap: () => ref.read(otpControllerProvider).validateOtp(context),
+                onTap: () =>
+                    ref.read(otpControllerProvider).validateOtp(context, ref),
               ),
               LoginBottomText(),
             ],

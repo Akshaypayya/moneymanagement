@@ -584,18 +584,16 @@ class CreateGoalController {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     showGoalIcon(
-                        // image: 'home.png',
-                        image: 'home.jpg',
+                        image: 'homepng.png',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          // _selectPresetIcon('home.png');
                           _selectPresetIcon('home.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Home'),
                     showGoalIcon(
-                        image: 'education.jpg',
+                        image: 'educationpng.png',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
@@ -604,7 +602,7 @@ class CreateGoalController {
                         },
                         label: 'Education'),
                     showGoalIcon(
-                        image: 'wedding.jpg',
+                        image: 'weddingpng.png',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
@@ -619,7 +617,7 @@ class CreateGoalController {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     showGoalIcon(
-                        image: 'trip.jpg',
+                        image: 'trippng.png',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
@@ -628,7 +626,7 @@ class CreateGoalController {
                         },
                         label: 'Trip'),
                     showGoalIcon(
-                        image: 'customgoals.jpg',
+                        image: 'customgoalspng.png',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
@@ -1058,7 +1056,8 @@ class CreateGoalController {
   }) {
     final isDark = ref.watch(isDarkProvider);
     final selectedIcon = ref.watch(selectedGoalIconProvider);
-    final isSelected = selectedIcon == image;
+    // final isSelected = selectedIcon == image;
+    final isSelected = selectedIcon == image.replaceAll('png.png', '.jpg');
 
     return InkWell(
       borderRadius: BorderRadius.circular(10),
