@@ -40,37 +40,40 @@ class GoalHeader extends ConsumerWidget {
                     ),
                     color: Colors.transparent,
                   ),
-                  child: goalImageWidget != null
-                      ? SizedBox(
-                          width: 90,
-                          height: 90,
-                          child: goalImageWidget!,
-                        )
-                      : goalIcon != null && goalIcon!.isNotEmpty
-                          ? ClipOval(
-                              child: Image.asset(
-                                goalIcon!,
-                                width: 90,
-                                height: 90,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'assets/customgoals.png',
-                                    width: 90,
-                                    height: 90,
-                                    fit: BoxFit.contain,
-                                  );
-                                },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: goalImageWidget != null
+                        ? SizedBox(
+                            width: 90,
+                            height: 90,
+                            child: goalImageWidget!,
+                          )
+                        : goalIcon != null && goalIcon!.isNotEmpty
+                            ? ClipOval(
+                                child: Image.asset(
+                                  goalIcon!,
+                                  width: 90,
+                                  height: 90,
+                                  fit: BoxFit.scaleDown,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/customgoals.jpg',
+                                      width: 90,
+                                      height: 90,
+                                      fit: BoxFit.contain,
+                                    );
+                                  },
+                                ),
+                              )
+                            : ClipOval(
+                                child: Image.asset(
+                                  'assets/customgoals.jpg',
+                                  width: 90,
+                                  height: 90,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
-                            )
-                          : ClipOval(
-                              child: Image.asset(
-                                'assets/customgoals.png',
-                                width: 90,
-                                height: 90,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
+                  ),
                 ),
               ),
             ],

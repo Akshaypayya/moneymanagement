@@ -229,8 +229,8 @@ class GoalData {
       }
     }
 
-    print('  - Using default icon: assets/customgoals.png');
-    return 'assets/customgoals.png';
+    print('  - Using default icon: assets/customgoals.jpg');
+    return 'assets/customgoals.jpg';
   }
 
   Widget _buildAssetIcon(double width, double height) {
@@ -246,7 +246,7 @@ class GoalData {
         errorBuilder: (context, error, stackTrace) {
           print('  - ERROR loading asset $assetPath: $error');
           return Image.asset(
-            'assets/customgoals.png',
+            'assets/customgoals.jpg',
             width: width,
             height: height,
             fit: BoxFit.contain,

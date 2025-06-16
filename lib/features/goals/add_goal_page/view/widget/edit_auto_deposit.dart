@@ -24,7 +24,18 @@ class _EditAutoDepositState extends ConsumerState<EditAutoDeposit> {
           child: Checkbox(
             value: autoDeposit,
             onChanged: (value) {
-              ref.read(editAutoDepositProvider.notifier).state = value ?? false;
+              final newValue = value ?? false;
+              print('EDIT_AUTO_DEPOSIT: Previous value: $autoDeposit');
+              print('EDIT_AUTO_DEPOSIT: New value: $newValue');
+              print(
+                  'EDIT_AUTO_DEPOSIT: Gold Investment will be: ${newValue ? "Y" : "N"}');
+
+              ref.read(editAutoDepositProvider.notifier).state = newValue;
+
+              final updatedState = ref.read(editAutoDepositProvider);
+              print('EDIT_AUTO_DEPOSIT: State after update: $updatedState');
+              print(
+                  'EDIT_AUTO_DEPOSIT: State verification: ${updatedState == newValue ? "SUCCESS" : "FAILED"}');
             },
             activeColor: Colors.teal,
             side: BorderSide(
@@ -36,7 +47,18 @@ class _EditAutoDepositState extends ConsumerState<EditAutoDeposit> {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              ref.read(editAutoDepositProvider.notifier).state = !autoDeposit;
+              final currentValue = ref.read(editAutoDepositProvider);
+              final newValue = !currentValue;
+
+              print('=== TAP GESTURE ===');
+              print(
+                  'EDIT_AUTO_DEPOSIT: Tap detected - Current: $currentValue, New: $newValue');
+
+              ref.read(editAutoDepositProvider.notifier).state = newValue;
+
+              final verificationState = ref.read(editAutoDepositProvider);
+              print(
+                  'EDIT_AUTO_DEPOSIT: Tap state after update: $verificationState');
             },
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

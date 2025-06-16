@@ -168,7 +168,7 @@ class NotificationItem {
         return 'assets/bank.jpg';
       case 'goal':
       case 'goal_created':
-        return 'assets/customgoals.png';
+        return 'assets/customgoals.jpg';
       default:
         if (wallet) {
           return 'assets/bhim.png';

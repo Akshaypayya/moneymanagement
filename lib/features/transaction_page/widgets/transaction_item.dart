@@ -149,18 +149,22 @@ class TransactionItem extends ConsumerWidget {
     final paymentMode = transactionData.paymentMode.toLowerCase();
     final transactionCode = transactionData.transactionCode.toLowerCase();
 
-    if (transactionData.isCredit && transactionData.currencyCode == 'XAU') {
+    if (transactionData.currencyCode == 'XAU') {
       return 'assets/goldbsct.png';
     }
 
+    // if (transactionData.isCredit && transactionData.currencyCode == 'XAU') {
+    //   return 'assets/goldbsct.png';
+    // }
+
     if (subGroup.contains('education') || subGroup.contains('study')) {
-      return 'assets/education.png';
+      return 'assets/education.jpg';
     } else if (subGroup.contains('home') || subGroup.contains('house')) {
-      return 'assets/home.png';
+      return 'assets/home.jpg';
     } else if (subGroup.contains('wedding') || subGroup.contains('marriage')) {
-      return 'assets/wedding.png';
+      return 'assets/wedding.jpg';
     } else if (subGroup.contains('trip') || subGroup.contains('travel')) {
-      return 'assets/trip.png';
+      return 'assets/trip.jpg';
     } else if (paymentMode.contains('upi')) {
       return 'assets/bhim.png';
     } else if (paymentMode.contains('bank') ||
@@ -170,7 +174,7 @@ class TransactionItem extends ConsumerWidget {
         transactionCode.contains('gold')) {
       return 'assets/goldbsct.png';
     } else {
-      return 'assets/customgoals.png';
+      return 'assets/customgoals.jpg';
     }
   }
 
@@ -189,6 +193,9 @@ class TransactionItem extends ConsumerWidget {
   }
 
   String _getTransactionCategory() {
+    if (transactionData.currencyCode == 'XAU') {
+      return 'Gold';
+    }
     if (transactionData.accountSubGroup.isNotEmpty) {
       return transactionData.accountSubGroup
           .split(' ')

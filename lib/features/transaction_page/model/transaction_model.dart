@@ -256,13 +256,14 @@ class TransactionApiModel {
     final subGroup = accountSubGroup.toLowerCase();
 
     if (subGroup.contains('education') || subGroup.contains('study')) {
-      return 'assets/education.png';
+      return 'assets/education.jpg';
     } else if (subGroup.contains('home') || subGroup.contains('house')) {
-      return 'assets/home.png';
+      // return 'assets/home.png';
+      return 'assets/home.jpg';
     } else if (subGroup.contains('wedding') || subGroup.contains('marriage')) {
-      return 'assets/wedding.png';
+      return 'assets/wedding.jpg';
     } else if (subGroup.contains('trip') || subGroup.contains('travel')) {
-      return 'assets/trip.png';
+      return 'assets/trip.jpg';
     } else {
       return transactionIcon;
     }
@@ -289,31 +290,43 @@ class TransactionApiModel {
   String get transactionDescription {
     if (accountSubGroup.isNotEmpty) {
       if (isCredit) {
-        return currencyCode == 'XAU'
-            ? 'Gold purchased for your ${accountSubGroup}. Amount auto-debited from your account.'
-            : 'Amount deposited to your ${accountSubGroup} savings.';
+        if (currencyCode == 'XAU') {
+          return 'Gold credited to your ${accountSubGroup}. Amount auto-debited from your account.';
+        } else {
+          return 'Amount deposited to your ${accountSubGroup} savings.';
+        }
       } else if (isDebit) {
         int flagToUse = drcrFlag == 0 ? sequence : drcrFlag;
         switch (flagToUse) {
           case 2:
-            return 'Amount withdrawn from your ${accountSubGroup}.';
+            return currencyCode == 'XAU'
+                ? 'Gold withdrawn from your ${accountSubGroup}.'
+                : 'Amount withdrawn from your ${accountSubGroup}.';
           case 3:
             return 'Transaction charges applied to your ${accountSubGroup}.';
           case 4:
             return 'VAT charges applied to your ${accountSubGroup}.';
           default:
-            return 'Amount debited from your ${accountSubGroup}.';
+            return currencyCode == 'XAU'
+                ? 'Gold debited from your ${accountSubGroup}.'
+                : 'Amount debited from your ${accountSubGroup}.';
         }
       }
     }
 
     if (isCredit) {
-      return 'Amount credited via $paymentMode';
+      return currencyCode == 'XAU'
+          ? 'Gold credited'
+          : 'Amount credited via $paymentMode';
     } else if (isDebit) {
-      return 'Amount debited via $paymentMode';
+      return currencyCode == 'XAU'
+          ? 'Gold debited'
+          : 'Amount debited via $paymentMode';
     }
 
-    return 'Transaction processed via $paymentMode';
+    return currencyCode == 'XAU'
+        ? 'Gold transaction processed via $paymentMode'
+        : 'Transaction processed via $paymentMode';
   }
 
   String get displayCategory {

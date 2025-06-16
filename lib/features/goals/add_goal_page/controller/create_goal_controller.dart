@@ -572,7 +572,7 @@ class CreateGoalController {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Choose Photo',
+                  'Choose Goal Picture',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -584,29 +584,31 @@ class CreateGoalController {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     showGoalIcon(
-                        image: 'home.png',
+                        // image: 'home.png',
+                        image: 'home.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('home.png');
+                          // _selectPresetIcon('home.png');
+                          _selectPresetIcon('home.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Home'),
                     showGoalIcon(
-                        image: 'education.png',
+                        image: 'education.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('education.png');
+                          _selectPresetIcon('education.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Education'),
                     showGoalIcon(
-                        image: 'wedding.png',
+                        image: 'wedding.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('wedding.png');
+                          _selectPresetIcon('wedding.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Wedding'),
@@ -617,20 +619,20 @@ class CreateGoalController {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     showGoalIcon(
-                        image: 'trip.png',
+                        image: 'trip.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('trip.png');
+                          _selectPresetIcon('trip.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Trip'),
                     showGoalIcon(
-                        image: 'customgoals.png',
+                        image: 'customgoals.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('customgoals.png');
+                          _selectPresetIcon('customgoals.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Custom Goal'),
@@ -639,7 +641,7 @@ class CreateGoalController {
                 GapSpace.height30,
                 Divider(
                   thickness: 0.2,
-                  color: isDark ? Colors.grey[700] : Colors.grey[300],
+                  color: isDark ? Colors.white : Colors.black,
                 ),
                 GapSpace.height30,
                 Row(

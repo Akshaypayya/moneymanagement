@@ -43,7 +43,7 @@ class CreateGoalRepository {
         );
       } else {
         print('CREATE GOAL: Using preset icon or default');
-        String iconToUse = 'customgoals.png';
+        String iconToUse = 'customgoals.jpg';
         if (goalData.containsKey('iconName') && goalData['iconName'] != null) {
           iconToUse = goalData['iconName'] as String;
           print('CREATE GOAL: Using preset icon: $iconToUse');

@@ -40,7 +40,7 @@ class GoalDetailStateNotifier extends StateNotifier<AsyncValue<GoalViewModel>> {
       } else {
         state = AsyncValue.error(
           goalViewModel.status == 'failed'
-              ? 'Failed to load goal details'
+              ? 'Failed to load goal details for: $goalName'
               : goalViewModel.status,
           StackTrace.current,
         );

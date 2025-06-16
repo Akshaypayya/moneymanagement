@@ -249,7 +249,7 @@ class GoalDetailPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Failed to load goal details',
+            'Failed to load goal details for $goalName',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,

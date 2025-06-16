@@ -794,18 +794,18 @@ class EditGoalController {
   String _getIconFromGoalName(String goalName) {
     final lowercaseName = goalName.toLowerCase();
     if (lowercaseName.contains('home') || lowercaseName.contains('house')) {
-      return 'home.png';
+      return 'home.jpg';
     } else if (lowercaseName.contains('education') ||
         lowercaseName.contains('study')) {
-      return 'education.png';
+      return 'education.jpg';
     } else if (lowercaseName.contains('wedding') ||
         lowercaseName.contains('marriage')) {
-      return 'wedding.png';
+      return 'wedding.jpg';
     } else if (lowercaseName.contains('trip') ||
         lowercaseName.contains('travel')) {
-      return 'trip.png';
+      return 'trip.jpg';
     } else {
-      return 'customgoals.png';
+      return 'customgoals.jpg';
     }
   }
 
@@ -826,7 +826,7 @@ class EditGoalController {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Choose Photo',
+                  'Choose Goal Picture',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -838,29 +838,29 @@ class EditGoalController {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     showGoalIcon(
-                        image: 'home.png',
+                        image: 'home.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('home.png');
+                          _selectPresetIcon('home.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Home'),
                     showGoalIcon(
-                        image: 'education.png',
+                        image: 'education.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('education.png');
+                          _selectPresetIcon('education.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Education'),
                     showGoalIcon(
-                        image: 'wedding.png',
+                        image: 'wedding.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('wedding.png');
+                          _selectPresetIcon('wedding.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Wedding'),
@@ -871,20 +871,20 @@ class EditGoalController {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     showGoalIcon(
-                        image: 'trip.png',
+                        image: 'trip.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('trip.png');
+                          _selectPresetIcon('trip.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Trip'),
                     showGoalIcon(
-                        image: 'customgoals.png',
+                        image: 'customgoals.jpg',
                         context: context,
                         ref: widgetRef,
                         onTap: () {
-                          _selectPresetIcon('customgoals.png');
+                          _selectPresetIcon('customgoals.jpg');
                           Navigator.of(context).pop();
                         },
                         label: 'Custom Goal'),
@@ -893,7 +893,7 @@ class EditGoalController {
                 GapSpace.height30,
                 Divider(
                   thickness: 0.2,
-                  color: isDark ? Colors.grey[700] : Colors.grey[300],
+                  color: isDark ? Colors.white : Colors.black,
                 ),
                 GapSpace.height30,
                 Row(

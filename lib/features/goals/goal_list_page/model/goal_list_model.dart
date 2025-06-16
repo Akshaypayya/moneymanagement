@@ -211,8 +211,8 @@ class GoalListItem {
       }
     }
 
-    print('  - Using default icon: assets/customgoals.png');
-    return 'assets/customgoals.png';
+    print('  - Using default icon: assets/customgoals.jpg');
+    return 'assets/customgoals.jpg';
   }
 
   Widget _buildAssetIcon(double width, double height) {
@@ -228,7 +228,7 @@ class GoalListItem {
         errorBuilder: (context, error, stackTrace) {
           print('  - ERROR loading asset $assetPath: $error');
           return Image.asset(
-            'assets/customgoals.png',
+            'assets/customgoals.jpg',
             width: width,
             height: height,
             fit: BoxFit.contain,
@@ -281,7 +281,7 @@ class GoalListItem {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Image.asset(
-          'assets/customgoals.png',
+          'assets/customgoals.jpg',
           fit: BoxFit.contain,
         ),
       ),

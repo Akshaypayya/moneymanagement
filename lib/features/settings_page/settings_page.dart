@@ -99,7 +99,8 @@ class SettingsPage extends ConsumerWidget {
                   ),
                   SettingsItem(
                     onTap: () {
-                      Navigator.pushNamed(context, AppRouter.termsAndConditions);
+                      Navigator.pushNamed(
+                          context, AppRouter.termsAndConditions);
                     },
                     img: !isDark
                         ? 'settings_terms_light.png'
@@ -377,7 +378,7 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'A secure money management application for tracking finances, setting goals, and investing in gold.',
+                  'Start Saving in 24K Digital Gold - From Just 100 SAR or 1 Gram. Turn everyday savings into lasting wealth. With GrowK, you can automate your gold investments starting with as little as 100 SAR.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: GoogleFonts.poppins().fontFamily,

@@ -426,37 +426,86 @@ class GoalItem extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
+                        // Container(
+                        //   width: 50,
+                        //   height: 50,
+                        //   decoration: BoxDecoration(
+                        //     shape: BoxShape.circle,
+                        //     color: Colors.red,
+                        //   ),
+                        //   child: iconWidget != null
+                        //       ? Container(
+                        //           width: 50,
+                        //           height: 50,
+                        //           decoration: BoxDecoration(
+                        //             shape: BoxShape.circle,
+                        //             color: Colors.red,
+                        //           ),
+                        //           child: iconWidget!,
+                        //         )
+                        //       : Image.asset(
+                        //           iconAsset ?? 'assets/customgoals.jpg',
+                        //           width: 50,
+                        //           height: 50,
+                        //           fit: BoxFit.contain,
+                        //           errorBuilder: (context, error, stackTrace) {
+                        //             return Image.asset(
+                        //               'assets/customgoals.jpg',
+                        //               width: 50,
+                        //               height: 50,
+                        //               fit: BoxFit.contain,
+                        //             );
+                        //           },
+                        //         ),
+                        // ),
                         Container(
                           width: 50,
                           height: 50,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isDark
+                                  ? (Colors.grey[800] ?? Colors.grey)
+                                  : (Colors.grey[400] ?? Colors.grey),
+                              width: 1,
+                            ),
                             color: Colors.transparent,
                           ),
-                          child: iconWidget != null
-                              ? ClipOval(
-                                  child: SizedBox(
-                                    width: 50,
-                                    height: 50,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: iconWidget != null
+                                ? SizedBox(
+                                    width: 90,
+                                    height: 90,
                                     child: iconWidget!,
-                                  ),
-                                )
-                              : ClipOval(
-                                  child: Image.asset(
-                                    iconAsset ?? 'assets/customgoals.png',
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        'assets/customgoals.png',
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.contain,
-                                      );
-                                    },
-                                  ),
-                                ),
+                                  )
+                                : iconAsset != null && iconAsset!.isNotEmpty
+                                    ? ClipOval(
+                                        child: Image.asset(
+                                          iconAsset!,
+                                          width: 90,
+                                          height: 90,
+                                          fit: BoxFit.scaleDown,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Image.asset(
+                                              'assets/customgoals.jpg',
+                                              width: 90,
+                                              height: 90,
+                                              fit: BoxFit.contain,
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    : ClipOval(
+                                        child: Image.asset(
+                                          'assets/customgoals.jpg',
+                                          width: 90,
+                                          height: 90,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                          ),
                         ),
                         const SizedBox(width: 10),
                         Column(
