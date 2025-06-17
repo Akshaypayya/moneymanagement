@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../../../views.dart';
 
 class SavingsRowWidget extends ConsumerStatefulWidget {
@@ -38,6 +40,11 @@ class SavingsRowWidget extends ConsumerStatefulWidget {
 
 class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
   bool _isNavigating = false;
+  final formatter = NumberFormat.currency(
+    locale: 'en_IN', // or 'en_US' if preferred
+    symbol: '',      // No currency symbol, since you're showing SAR separately
+    decimalDigits: 2,
+  );
 
   Future<void> _handleTap() async {
     if (_isNavigating) return;

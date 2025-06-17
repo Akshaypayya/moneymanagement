@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/biometric/biometric_provider.dart';
+import 'package:growk_v2/core/widgets/reusable_snackbar.dart';
 
 class BiometricSettingsTile extends ConsumerWidget {
   const BiometricSettingsTile({Key? key}) : super(key: key);
@@ -96,17 +97,18 @@ class BiometricSettingsTile extends ConsumerWidget {
                           .read(biometricEnabledProvider.notifier)
                           .toggleBiometric(true);
                       _showSnackBar(
-                          context, 'Biometric authentication enabled');
+                          context, 'Biometric authentication enabled', ref);
                     } else {
                       _showSnackBar(context,
-                          'Failed to enable biometrics: ${result.message}',
+                          'Failed to enable biometrics: ${result.message}', ref,
                           isError: true);
                     }
                   } else {
                     ref
                         .read(biometricEnabledProvider.notifier)
                         .toggleBiometric(false);
-                    _showSnackBar(context, 'Biometric authentication disabled');
+                    _showSnackBar(
+                        context, 'Biometric authentication disabled', ref);
                   }
                 },
                 activeColor: Colors.teal,
@@ -248,23 +250,31 @@ class BiometricSettingsTile extends ConsumerWidget {
     }
   }
 
-  void _showSnackBar(BuildContext context, String message,
+  void _showSnackBar(BuildContext context, String message, WidgetRef ref,
       {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message.contains('app configuration issue')
-            ? 'Could not enable biometrics due to app configuration. Please restart the app.'
-            : message),
-        backgroundColor: isError ? Colors.red : Colors.black,
-        duration: const Duration(seconds: 2),
-        action: message.contains('app configuration issue')
-            ? SnackBarAction(
-                label: 'OK',
-                textColor: Colors.white,
-                onPressed: () {},
-              )
-            : null,
-      ),
+    showGrowkSnackBar(
+      context: context,
+      ref: ref,
+      message: message.contains('app configuration issue')
+          ? 'Could not enable biometrics due to app configuration. Please restart the app.'
+          : message,
+      type: SnackType.error,
     );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     content: Text(message.contains('app configuration issue')
+    //         ? 'Could not enable biometrics due to app configuration. Please restart the app.'
+    //         : message),
+    //     backgroundColor: isError ? Colors.red : Colors.black,
+    //     duration: const Duration(seconds: 2),
+    //     action: message.contains('app configuration issue')
+    //         ? SnackBarAction(
+    //             label: 'OK',
+    //             textColor: Colors.white,
+    //             onPressed: () {},
+    //           )
+    //         : null,
+    //   ),
+    // );
   }
 }

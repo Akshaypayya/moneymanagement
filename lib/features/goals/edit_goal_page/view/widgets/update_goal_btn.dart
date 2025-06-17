@@ -24,7 +24,7 @@ class _UpdateGoalButtonState extends ConsumerState<UpdateGoalButton> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          controller.updateGoal(context, widget.goalData!.goalName);
+          controller.updateGoal(context, widget.goalData!.goalName, ref);
           ref.read(goalListStateProvider.notifier).refreshGoals();
           ref
               .read(goalDetailStateProvider(widget.goalData!.goalName).notifier)

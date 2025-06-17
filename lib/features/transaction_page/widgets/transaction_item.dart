@@ -149,22 +149,19 @@ class TransactionItem extends ConsumerWidget {
     final paymentMode = transactionData.paymentMode.toLowerCase();
     final transactionCode = transactionData.transactionCode.toLowerCase();
 
+    // if (transactionData.isCredit && transactionData.currencyCode == 'XAU') {
     if (transactionData.currencyCode == 'XAU') {
       return 'assets/goldbsct.png';
     }
 
-    // if (transactionData.isCredit && transactionData.currencyCode == 'XAU') {
-    //   return 'assets/goldbsct.png';
-    // }
-
     if (subGroup.contains('education') || subGroup.contains('study')) {
-      return 'assets/education.jpg';
+      return 'assets/education.png';
     } else if (subGroup.contains('home') || subGroup.contains('house')) {
-      return 'assets/home.jpg';
+      return 'assets/home.png';
     } else if (subGroup.contains('wedding') || subGroup.contains('marriage')) {
-      return 'assets/wedding.jpg';
+      return 'assets/wedding.png';
     } else if (subGroup.contains('trip') || subGroup.contains('travel')) {
-      return 'assets/trip.jpg';
+      return 'assets/trip.png';
     } else if (paymentMode.contains('upi')) {
       return 'assets/bhim.png';
     } else if (paymentMode.contains('bank') ||
@@ -174,11 +171,14 @@ class TransactionItem extends ConsumerWidget {
         transactionCode.contains('gold')) {
       return 'assets/goldbsct.png';
     } else {
-      return 'assets/customgoals.jpg';
+      return 'assets/customgoals.png';
     }
   }
 
   IconData _getTransactionIconData() {
+    if (transactionData.currencyCode == 'XAU') {
+      return Icons.stars;
+    }
     switch (transactionData.paymentMode.toLowerCase()) {
       case 'upi':
         return Icons.account_balance_wallet;

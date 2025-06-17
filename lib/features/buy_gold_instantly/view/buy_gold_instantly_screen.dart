@@ -73,7 +73,10 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
           error: (err, _) => Center(child: Text("Error loading price: $err")),
           data: (livePriceData) {
             final double goldPricePerGram =
-            (livePriceData.data?.buyRate ?? 0).toDouble();
+            double.parse((livePriceData.data?.buyRate ?? 0).toStringAsFixed(2));
+            final String sellPricePerGramFormatted =
+            (livePriceData.data?.sellRate?.toDouble() ?? 0).toStringAsFixed(2);
+
 
             if (!_isInitialized && goldPricePerGram > 0) {
               selectedAmount = (1 * goldPricePerGram).round();

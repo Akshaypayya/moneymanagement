@@ -7,6 +7,7 @@ import 'package:growk_v2/core/theme/app_text_styles.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_app_bar.dart';
 import 'package:growk_v2/core/widgets/growk_button.dart';
+import 'package:growk_v2/core/widgets/reusable_snackbar.dart';
 import 'package:growk_v2/core/widgets/reusable_text.dart';
 import 'package:growk_v2/features/goals/goal_list_page/provider/goal_list_page_provider.dart';
 import 'package:growk_v2/features/goals/goal_list_page/view/goals_page.dart';
@@ -198,12 +199,12 @@ class _GoalPageWrapperState extends ConsumerState<GoalPageWrapper>
                           GrowkButton(
                             title: 'Complete KYC',
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'Please complete KYC verification from your profile'),
-                                  backgroundColor: Colors.orange,
-                                ),
+                              showGrowkSnackBar(
+                                context: context,
+                                ref: ref,
+                                message:
+                                    'Please complete KYC verification from your profile',
+                                type: SnackType.error,
                               );
                             },
                           ),

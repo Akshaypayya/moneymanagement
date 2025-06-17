@@ -1,5 +1,4 @@
-import 'package:growk_v2/core/biometric/biometeric_setting_provider.dart';
-import 'package:growk_v2/features/login/view/widgets/biometric_prompt.dart';
+import 'package:growk_v2/core/biometric/biometric_provider.dart';
 import 'package:growk_v2/views.dart';
 
 class OtpController {
@@ -7,7 +6,7 @@ class OtpController {
 
   OtpController(this.ref);
 
-  Future<void> validateOtp(BuildContext context, WidgetRef ref) async {
+  Future<void> validateOtp(BuildContext context) async {
     final cellNo = ref.read(phoneInputProvider);
     final enteredOtp = ref.read(otpInputProvider);
 
@@ -22,47 +21,47 @@ class OtpController {
     ref.read(isButtonLoadingProvider.notifier).state = true;
 
     try {
-      final response =
-          await ref.read(otpUseCaseProvider).call(cellNo, enteredOtp);
+      final response = await ref.read(otpUseCaseProvider).call(cellNo, enteredOtp);
 
-      // if (response.isSuccess) {
-      //   final data = response.data ?? {};
-      //   final isNewUser = data['isNewUser'] ?? false;
-      //   debugPrint('isNewUser: $isNewUser');
-
-      //   ref
-      //       .read(userDataProvider.notifier)
-      //       .setUserData(data, phoneNumber: cellNo);
-      //   ref.read(otpErrorProvider.notifier).state = null;
-
-      //   Navigator.pushNamedAndRemoveUntil(
-      //     context,
-      //     isNewUser ? AppRouter.applyReferralCode : AppRouter.mainScreen,
-      //         (route) => false,  // This removes all previous routes
-      //   );
-      // }
       if (response.isSuccess) {
         final data = response.data ?? {};
         final isNewUser = data['isNewUser'] ?? false;
         debugPrint('isNewUser: $isNewUser');
 
-        ref
-            .read(userDataProvider.notifier)
-            .setUserData(data, phoneNumber: cellNo);
+        ref.read(userDataProvider.notifier).setUserData(data, phoneNumber: cellNo);
         ref.read(otpErrorProvider.notifier).state = null;
+        ref.read(isButtonLoadingProvider.notifier).state = false;
 
-        final enableBiometric = await showBiometricEnableSheet(context, ref);
 
-        if (enableBiometric == true) {
-          ref.read(biometricEnabledProvider.notifier).toggleBiometric(true);
-        } else {
-          ref.read(biometricEnabledProvider.notifier).toggleBiometric(false);
+        if (isNewUser) {
+          final isSupported = await ref.read(biometricSupportedProvider.future);
+          final isAlreadyEnabled = ref.read(biometricEnabledProvider);
+          debugPrint('Biometric already enabled: $isAlreadyEnabled');
+          if (isSupported && !isAlreadyEnabled) {
+            final biometricService = ref.read(biometricServiceProvider);
+            final result = await biometricService.authenticate(
+              'Authenticate to enable biometric login',
+            );
+            if (result.success) {
+              ref.read(biometricEnabledProvider.notifier).toggleBiometric(true);
+              debugPrint('Biometric already enabled: $isAlreadyEnabled');
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Biometric authentication enabled')),
+              );
+              ref.read(isButtonLoadingProvider.notifier).state = false;
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to enable biometrics: ${result.message}')),
+              );
+            }
+          }
         }
-        Navigator.pushNamedAndRemoveUntil(
+        await Navigator.pushNamedAndRemoveUntil(
           context,
           isNewUser ? AppRouter.applyReferralCode : AppRouter.mainScreen,
-          (route) => false,
+              (route) => false,
         );
+        ref.read(isButtonLoadingProvider.notifier).state = true;
       } else {
         ref.read(otpErrorProvider.notifier).state =
             response.message ?? 'OTP verification failed';
@@ -100,7 +99,8 @@ class OtpController {
     } catch (e) {
       debugPrint("Resend OTP Error: $e");
       ref.read(otpErrorProvider.notifier).state =
-          "Something went wrong while resending OTP";
-    } finally {}
+      "Something went wrong while resending OTP";
+    } finally {
+    }
   }
 }

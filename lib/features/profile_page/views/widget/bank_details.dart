@@ -13,8 +13,12 @@ Widget bankDetails({required WidgetRef ref, required BuildContext context}) {
           isValue2Needed: false,
           isValue3Needed: false,
           onTap: userData?.kycVerified == false
-              ? () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Please verify your KYC details first')))
+              ? () => showGrowkSnackBar(
+                    context: context,
+                    ref: ref,
+                    message: 'Please verify your KYC details first',
+                    type: SnackType.error,
+                  )
               : () => Navigator.pushNamed(context, AppRouter.bankDetailsScreen),
         )
       : Column(
@@ -26,8 +30,12 @@ Widget bankDetails({required WidgetRef ref, required BuildContext context}) {
               value2:
                   '${bankData.ifsc}, ${bankData.nameOnAcc}, ${bankData.status}',
               onTap: userData?.kycVerified == false
-                  ? () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Please verify your KYC details first')))
+                  ? () => showGrowkSnackBar(
+                        context: context,
+                        ref: ref,
+                        message: 'Please verify your KYC details first',
+                        type: SnackType.error,
+                      )
                   : () =>
                       Navigator.pushNamed(context, AppRouter.bankDetailsScreen),
             ),

@@ -46,8 +46,8 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
     final String displayValue = isBuyByWeight
         ? (inputGrams * widget.goldPricePerGram).toStringAsFixed(2)
         : widget.goldPricePerGram == 0
-        ? "0.000 g"
-        : "${(selectedAmount / widget.goldPricePerGram).toStringAsFixed(3)} g";
+            ? "0.000 g"
+            : "${(selectedAmount / widget.goldPricePerGram).toStringAsFixed(3)} g";
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +58,7 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
         const SizedBox(height: 8),
         ReusableText(
           text:
-          "Switch between buying gold by amount or by weight (grams) for a seamless purchase experience.",
+              "Switch between buying gold by amount or by weight (grams) for a seamless purchase experience.",
           style: AppTextStyle.current(isDark).labelSmall,
           maxLines: 2,
         ),
@@ -71,14 +71,16 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
             borderRadius: const BorderRadius.all(Radius.circular(6)),
             child: Row(
               children: [
-                _toggleButton("Buy by Weight", isBuyByWeight, AppImages.buyByWeight, () {
+                _toggleButton(
+                    "Buy by Weight", isBuyByWeight, AppImages.buyByWeight, () {
                   setState(() {
                     isBuyByWeight = true;
                     selectedAmount = (1 * widget.goldPricePerGram).round();
                     amountController.text = '1';
                   });
                 }),
-                _toggleButton("Buy by Amount", !isBuyByWeight, AppImages.buyByAmount, () {
+                _toggleButton(
+                    "Buy by Amount", !isBuyByWeight, AppImages.buyByAmount, () {
                   setState(() {
                     isBuyByWeight = false;
                     selectedAmount = 1001;
@@ -120,10 +122,10 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
                     ],
                     SizedBox(
                       width: widget.calculateTextWidth(
-                          amountController.text.isEmpty
-                              ? "0"
-                              : amountController.text,
-                          AppTextStyle.current(isDark).titleLrg) +
+                              amountController.text.isEmpty
+                                  ? "0"
+                                  : amountController.text,
+                              AppTextStyle.current(isDark).titleLrg) +
                           20,
                       child: TextFormField(
                         controller: amountController,
@@ -132,7 +134,7 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
                             : AppInputFormatters.buyPriceFormatter(),
                         keyboardType: TextInputType.number,
                         textAlign:
-                        isBuyByWeight ? TextAlign.center : TextAlign.start,
+                            isBuyByWeight ? TextAlign.center : TextAlign.start,
                         style: AppTextStyle.current(isDark).titleLrg,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
@@ -145,8 +147,8 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
                             selectedAmount = input == null
                                 ? 0
                                 : isBuyByWeight
-                                ? (input * widget.goldPricePerGram).round()
-                                : input.round();
+                                    ? (input * widget.goldPricePerGram).round()
+                                    : input.round();
                           });
                         },
                       ),
@@ -199,9 +201,8 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
                   ),
                   child: Text(
                     isBuyByWeight ? "$value gram" : "SAR $value",
-                    style: AppTextStyle.current(isDark)
-                        .bodySmall
-                        .copyWith(color: isSelected ? Colors.white : Colors.black),
+                    style: AppTextStyle.current(isDark).bodySmall.copyWith(
+                        color: isSelected ? Colors.white : Colors.black),
                   ),
                 ),
               ),
@@ -230,23 +231,20 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
         const SizedBox(height: 5),
         isBuyByWeight
             ? SarAmountWidget(
-          text: displayValue,
-          height: 20,
-          style: AppTextStyle.current(isDark).titleLrg,
-        )
-            : Text(displayValue,
-            style: AppTextStyle.current(isDark).titleLrg),
-
+                text: displayValue,
+                height: 20,
+                style: AppTextStyle.current(isDark).titleLrg,
+              )
+            : Text(displayValue, style: AppTextStyle.current(isDark).titleLrg),
         const SizedBox(height: 35),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.info_outline,
-                color: Colors.orange, size: 20),
+            const Icon(Icons.info_outline, color: Colors.orange, size: 20),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                "Secure Your Gold Price for 1 Minute\nGold prices update every second based on market rates. Once you proceed, we’ll lock the price for 1 minute.",
+                "Secure Your Gold Price for 20 seconds Gold prices update every second based on market rates. Once you proceed, we’ll lock the price for 20 seconds.",
                 style: AppTextStyle.current(isDark).labelSmall,
               ),
             ),
@@ -262,11 +260,11 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
   }
 
   Widget _toggleButton(
-      String label,
-      bool isSelected,
-      String icon,
-      VoidCallback onTap,
-      ) {
+    String label,
+    bool isSelected,
+    String icon,
+    VoidCallback onTap,
+  ) {
     final isDark = ref.watch(isDarkProvider);
     return Expanded(
       child: GestureDetector(
@@ -287,8 +285,8 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
               Text(
                 label,
                 style: AppTextStyle.current(isDark).titleBottomNav.copyWith(
-                  color: isSelected ? Colors.white : Colors.black,
-                ),
+                      color: isSelected ? Colors.white : Colors.black,
+                    ),
               ),
             ],
           ),
@@ -300,10 +298,13 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
   void _proceed(BuildContext context) async {
     final notifier = ref.read(isButtonLoadingProvider.notifier);
     final useCase = ref.read(initiateGoldBuyUseCaseProvider);
-    final walletAsync = ref.read(getNewWalletBalanceProvider); // Use .read instead of .watch inside method
+    final walletAsync = ref.read(
+        getNewWalletBalanceProvider); // Use .read instead of .watch inside method
     final inputText = amountController.text.trim();
 
-    if (inputText.isEmpty || double.tryParse(inputText) == null || double.parse(inputText) <= 0) {
+    if (inputText.isEmpty ||
+        double.tryParse(inputText) == null ||
+        double.parse(inputText) <= 0) {
       showGrowkSnackBar(
         context: context,
         ref: ref,
@@ -312,9 +313,8 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
       );
       return;
     }
-    final inputAmount = isBuyByWeight
-        ? selectedAmount.toDouble()
-        : double.parse(inputText);
+    final inputAmount =
+        isBuyByWeight ? selectedAmount.toDouble() : double.parse(inputText);
 
     if (inputAmount <= 0 || widget.goldPricePerGram <= 0) {
       showGrowkSnackBar(
@@ -326,7 +326,8 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
       return;
     }
 
-    final walletBalance = walletAsync.asData?.value.data?.walletBalance?.toDouble() ?? 0.0;
+    final walletBalance =
+        walletAsync.asData?.value.data?.walletBalance?.toDouble() ?? 0.0;
 
     if (walletBalance < inputAmount) {
       showGrowkSnackBar(
@@ -346,7 +347,10 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
       final transactionId = result.data?.transactionId;
       final transactionAmount = result.data?.transactionAmount;
 
-      if (transactionId == null || transactionId.isEmpty || transactionAmount == null || transactionAmount <= 0) {
+      if (transactionId == null ||
+          transactionId.isEmpty ||
+          transactionAmount == null ||
+          transactionAmount <= 0) {
         showGrowkSnackBar(
           context: context,
           ref: ref,
@@ -358,14 +362,20 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
 
       ref.read(initiateBuyGoldProvider.notifier).setTransaction(result);
 
-      Navigator.pushNamed(context, AppRouter.buyGoldSummary);
+      if (context.mounted) {
+        Navigator.pushNamed(context, AppRouter.buyGoldSummary);
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Transaction failed: $e')),
-      );
+      if (context.mounted) {
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'Transaction failed: $e',
+          type: SnackType.error,
+        );
+      }
     } finally {
       notifier.state = false;
     }
   }
-
 }

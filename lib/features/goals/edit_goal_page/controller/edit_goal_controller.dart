@@ -208,7 +208,7 @@ class EditGoalController {
                       isDark: isDark,
                       onTap: () async {
                         Navigator.of(context).pop();
-                        await _pickImageFromCamera(context);
+                        await _pickImageFromCamera(context, widgetRef);
                       },
                     ),
                     MinimalOption(
@@ -217,7 +217,7 @@ class EditGoalController {
                       isDark: isDark,
                       onTap: () async {
                         Navigator.of(context).pop();
-                        await _pickImageFromGallery(context);
+                        await _pickImageFromGallery(context, widgetRef);
                       },
                     ),
                   ],
@@ -236,7 +236,7 @@ class EditGoalController {
     ref.read(editSelectedImageFileProvider.notifier).state = null;
   }
 
-  Future<void> _pickImageFromCamera(BuildContext context) async {
+  Future<void> _pickImageFromCamera(BuildContext context, WidgetRef ref) async {
     try {
       if (!context.mounted) return;
 
@@ -255,12 +255,18 @@ class EditGoalController {
     } catch (e) {
       print('Error picking image from camera: $e');
       if (context.mounted) {
-        _showSnackBar(context, 'Failed to capture image');
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'Failed to capture image',
+          type: SnackType.error,
+        );
       }
     }
   }
 
-  Future<void> _pickImageFromGallery(BuildContext context) async {
+  Future<void> _pickImageFromGallery(
+      BuildContext context, WidgetRef ref) async {
     try {
       if (!context.mounted) return;
 
@@ -279,7 +285,12 @@ class EditGoalController {
     } catch (e) {
       print('Error picking image from gallery: $e');
       if (context.mounted) {
-        _showSnackBar(context, 'Failed to select image');
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'Failed to select image',
+          type: SnackType.error,
+        );
       }
     }
   }
@@ -310,7 +321,8 @@ class EditGoalController {
     }
   }
 
-  Future<void> updateGoal(BuildContext context, String originalGoalName) async {
+  Future<void> updateGoal(
+      BuildContext context, String originalGoalName, WidgetRef ref) async {
     print('EDIT CONTROLLER: Starting goal update...');
     try {
       final goalName = ref.read(editGoalNameProvider);
@@ -372,7 +384,13 @@ class EditGoalController {
 
       if (goalName.isEmpty) {
         print('EDIT CONTROLLER ERROR: Goal name is empty');
-        _showSnackBar(context, 'Please enter a goal name');
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'Please enter a goal name',
+          type: SnackType.error,
+        );
+
         return;
       }
 
@@ -404,7 +422,15 @@ class EditGoalController {
           SharedPreferencesHelper.getString('access_token') ?? '';
       if (accessToken.isEmpty) {
         print('EDIT CONTROLLER ERROR: No access token found');
-        _showSnackBar(context, 'Please login first');
+        if (context.mounted) {
+          showGrowkSnackBar(
+            context: context,
+            ref: ref,
+            message: 'Please login first',
+            type: SnackType.error,
+          );
+        }
+
         return;
       }
 
@@ -440,7 +466,15 @@ class EditGoalController {
             if (context.mounted) {
               Navigator.of(context).pop();
             }
-            _showSnackBar(context, 'Error processing selected image');
+            if (context.mounted) {
+              showGrowkSnackBar(
+                context: context,
+                ref: ref,
+                message: 'Error processing selected image',
+                type: SnackType.error,
+              );
+            }
+
             return;
           }
         } else {
@@ -455,7 +489,15 @@ class EditGoalController {
             if (context.mounted) {
               Navigator.of(context).pop();
             }
-            _showSnackBar(context, 'Selected image file not found');
+            if (context.mounted) {
+              showGrowkSnackBar(
+                context: context,
+                ref: ref,
+                message: 'Selected image file not found',
+                type: SnackType.error,
+              );
+            }
+
             return;
           }
         }
@@ -484,18 +526,38 @@ class EditGoalController {
           print(
               'EDIT CONTROLLER: Updated icon mapping - $goalName -> $selectedIcon');
         }
-
-        _showSnackBar(context, 'Goal updated successfully!');
+        if (context.mounted) {
+          showGrowkSnackBar(
+            context: context,
+            ref: ref,
+            message: 'Goal updated successfully!',
+            type: SnackType.success,
+          );
+        }
 
         if (context.mounted) {
           Navigator.of(context).pop(true);
         }
       } else if (result.isValidationFailed) {
         print('EDIT CONTROLLER ERROR: Validation failed');
-        _showSnackBar(context, 'Validation Error: ${result.validationErrors}');
+        if (context.mounted) {
+          showGrowkSnackBar(
+            context: context,
+            ref: ref,
+            message: 'Validation Error: ${result.validationErrors}',
+            type: SnackType.error,
+          );
+        }
       } else {
         print('EDIT CONTROLLER ERROR: Goal update failed');
-        _showSnackBar(context, result.message);
+        if (context.mounted) {
+          showGrowkSnackBar(
+            context: context,
+            ref: ref,
+            message: result.message,
+            type: SnackType.error,
+          );
+        }
       }
     } catch (e, stackTrace) {
       print('EDIT CONTROLLER EXCEPTION: $e');
@@ -506,7 +568,12 @@ class EditGoalController {
       }
 
       if (context.mounted) {
-        _showSnackBar(context, 'Error updating goal: ${e.toString()}');
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'Error updating goal: ${e.toString()}',
+          type: SnackType.error,
+        );
       }
     }
   }
@@ -529,17 +596,6 @@ class EditGoalController {
 
     print("File saved at: ${file.path}");
     return file;
-  }
-
-  void _showSnackBar(BuildContext context, String message) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.black87,
-        ),
-      );
-    }
   }
 
   void _showLoadingDialog(BuildContext context) {

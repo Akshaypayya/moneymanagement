@@ -1,5 +1,6 @@
 import 'package:growk_v2/views.dart';
 import 'package:intl/intl.dart';
+
 final editUserControllerProvider = Provider<EditUserController>((ref) {
   return const EditUserController();
 });
@@ -32,8 +33,6 @@ class EditUserController {
       ref.read(dobErrorProvider.notifier).state = null;
     }
   }
-
-
 
   void showGenderSheet(BuildContext context, WidgetRef ref) {
     FocusScope.of(context).unfocus(); // 👈 Remove keyboard
@@ -91,7 +90,6 @@ class EditUserController {
       }
     }
   }
-
 
   bool validateInputs(BuildContext context, WidgetRef ref) {
     final name = nameController(ref).text.trim();
@@ -170,7 +168,9 @@ class EditUserController {
 
     if (imageFile != null) {
       ref.read(profilePictureUploadStateProvider.notifier).setLoading();
-      await ref.read(profilePictureControllerProvider).uploadProfilePicture(ref, context);
+      await ref
+          .read(profilePictureControllerProvider)
+          .uploadProfilePicture(ref, context);
 
       final uploadState = ref.read(profilePictureUploadStateProvider);
       if (uploadState.status != UploadStatus.success) {
@@ -251,10 +251,9 @@ class EditUserController {
     Navigator.pushNamedAndRemoveUntil(
       context,
       AppRouter.mainScreen,
-          (route) => false,
+      (route) => false,
     );
   }
-
 
   void showImageSourceActionSheet(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
@@ -293,7 +292,8 @@ class EditUserController {
                         await ref
                             .read(profilePictureControllerProvider)
                             .captureProfilePicture(ref, context);
-                        ref.read(imageErrorProvider.notifier).state = null; // ✅ clear on select
+                        ref.read(imageErrorProvider.notifier).state =
+                            null; // ✅ clear on select
                       },
                     ),
                     MinimalOption(
@@ -305,7 +305,8 @@ class EditUserController {
                         await ref
                             .read(profilePictureControllerProvider)
                             .pickProfilePicture(ref, context);
-                        ref.read(imageErrorProvider.notifier).state = null; // ✅ clear on select
+                        ref.read(imageErrorProvider.notifier).state =
+                            null; // ✅ clear on select
                       },
                     ),
                   ],
@@ -318,12 +319,12 @@ class EditUserController {
     );
   }
 
-  void _showError(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+  void _showError(BuildContext context, String message, WidgetRef ref) {
+    showGrowkSnackBar(
+      context: context,
+      ref: ref,
+      message: message,
+      type: SnackType.error,
     );
   }
 }

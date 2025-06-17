@@ -7,7 +7,6 @@ import 'package:growk_v2/features/goals/add_goal_page/view/widget/frequency_sele
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/goal_icon_picker.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/goal_name_input.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/saving_amount_slider.dart';
-import 'package:growk_v2/features/goals/add_goal_page/view/widget/stnding_instrction_botom_sheet.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/target_year_slider.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/auto_deposit_option.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/action_button.dart';
@@ -72,7 +71,7 @@ class _CreateGoalPageState extends ConsumerState<CreateGoalPage> {
                       const AutoDepositOption(),
                       ActionButton(
                         label: 'Let\'s start planning',
-                        onPressed: () => controller.createGoal(context),
+                        onPressed: () => controller.createGoal(context, ref),
                       ),
 
                       const SizedBox(height: 30),

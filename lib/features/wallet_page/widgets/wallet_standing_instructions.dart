@@ -48,7 +48,9 @@ class WalletStandingInstruction extends ConsumerWidget {
               fontFamily: GoogleFonts.poppins().fontFamily,
             ),
             children: const [
-              TextSpan(text: 'Please send the transfer from your online bank to top up your wallet'),
+              TextSpan(
+                  text:
+                      'Please send the transfer from your online bank to top up your wallet'),
               // TextSpan(text: '"x"', style: TextStyle(fontWeight: FontWeight.bold)),
               // TextSpan(text: ' amount in each '),
               // TextSpan(text: '"Monthly"', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -71,17 +73,22 @@ class WalletStandingInstruction extends ConsumerWidget {
             IconButton(
               icon: Icon(Icons.copy, color: textColor),
               onPressed: () {
-                final text = 'Bank ID: $bankId\nIBAN: $ibanAccount\nAccount: $accountName';
+                final text =
+                    'Bank ID: $bankId\nIBAN: $ibanAccount\nAccount: $accountName';
                 Clipboard.setData(ClipboardData(text: text));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Standing instruction copied')),
+                showGrowkSnackBar(
+                  context: context,
+                  ref: ref,
+                  message: 'Standing instruction copied',
+                  type: SnackType.success,
                 );
               },
             ),
             IconButton(
               icon: Icon(Icons.share, color: textColor),
               onPressed: () {
-                final text = 'Bank ID: $bankId\nIBAN: $ibanAccount\nAccount: $accountName';
+                final text =
+                    'Bank ID: $bankId\nIBAN: $ibanAccount\nAccount: $accountName';
                 Share.share(text);
               },
             ),
@@ -96,18 +103,14 @@ class WalletStandingInstruction extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: Text(
-            label,
-            style: AppTextStyle().bodySmall.copyWith(color: isDark ? Colors.grey[400] : Colors.grey[700])
-          ),
+          child: Text(label,
+              style: AppTextStyle().bodySmall.copyWith(
+                  color: isDark ? Colors.grey[400] : Colors.grey[700])),
         ),
         const Text(" : "),
         Expanded(
           flex: 2,
-          child: Text(
-            value,
-            style: AppTextStyle().titleSmall
-          ),
+          child: Text(value, style: AppTextStyle().titleSmall),
         ),
       ],
     );

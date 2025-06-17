@@ -31,7 +31,6 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
   Timer? _timer;
   int _remainingSeconds = 20;
   bool _isTransactionExpired = false;
-
   @override
   void initState() {
     super.initState();
@@ -44,6 +43,7 @@ class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
     _timer?.cancel();
     super.dispose();
   }
+
   void _startTimer() {
     debugPrint('SELL GOLD TIMER: Starting 20-second countdown');
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {

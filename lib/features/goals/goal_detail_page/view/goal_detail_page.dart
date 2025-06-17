@@ -151,11 +151,11 @@ class GoalDetailPage extends ConsumerWidget {
             .refreshTransactions();
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Goal data not available'),
-          backgroundColor: Colors.red,
-        ),
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Goal data not available',
+        type: SnackType.error,
       );
     }
   }

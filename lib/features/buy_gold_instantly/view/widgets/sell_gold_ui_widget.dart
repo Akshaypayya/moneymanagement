@@ -37,7 +37,8 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
   @override
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
-
+    final homeDataAsync = ref.watch(homeDetailsProvider);
+    final wallet = homeDataAsync.valueOrNull?.data?.wallet ?? Wallet();
     final double inputGrams =
         double.tryParse(amountController.text.trim()) ?? 0;
     final String displayValue =
@@ -56,7 +57,9 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
           style: AppTextStyle.current(isDark).labelSmall,
           maxLines: 3,
         ),
+
         const SizedBox(height: 40),
+
         Center(
           child: Text("99.99% pure 24K gold",
               style: AppTextStyle.current(isDark).bodySmall),
@@ -117,7 +120,20 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
             ],
           ),
         ),
-        const SizedBox(height: 35),
+        const SizedBox(height: 20),
+        ReusableRow(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ReusableText(
+                text: "Current Gold Balance: ",
+                style: AppTextStyle.current(isDark).bodySmall),
+            ReusableText(
+                text: "${(wallet.goldBalance ?? 0).toStringAsFixed(3)}g",
+                style: AppTextStyle.current(isDark).titleSmall),
+          ],
+        ),
+        const SizedBox(height: 25),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: gramOptions.map((value) {
@@ -167,7 +183,7 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
           style: AppTextStyle.current(isDark).titleRegular,
         ),
         const SizedBox(height: 20),
-        Text("You Will Receive",
+        Text("Total sell Price",
             style: AppTextStyle.current(isDark).labelSmall),
         const SizedBox(height: 5),
         SarAmountWidget(
@@ -184,7 +200,7 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                "Gold prices are market-driven. Once you proceed, we’ll lock the price for 1 minute to secure your transaction.",
+                "Gold prices are market-driven. Once you proceed, we’ll lock the price for 20 seconds to secure your transaction.",
                 style: AppTextStyle.current(isDark).labelSmall,
               ),
             ),

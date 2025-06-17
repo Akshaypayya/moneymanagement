@@ -44,6 +44,7 @@
 // }
 
 // final providerResetServiceProvider = Provider((ref) => ProviderResetService());
+import 'package:growk_v2/core/biometric/biometeric_setting_provider.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/controller/goal_detail_controller.dart';
 import 'package:growk_v2/features/goals/goal_list_page/provider/goal_list_page_provider.dart';
 import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart';
@@ -120,6 +121,8 @@ class ProviderResetService {
     // Wallet
     ref.invalidate(walletBalanceProvider);
 
+    // Biometric
+    ref.invalidate(biometricEnabledProvider);
     // Notifications
     ref.invalidate(notificationProvider);
     ref.invalidate(notificationStateProvider);

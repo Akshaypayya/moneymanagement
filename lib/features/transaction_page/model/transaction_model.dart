@@ -291,25 +291,25 @@ class TransactionApiModel {
     if (accountSubGroup.isNotEmpty) {
       if (isCredit) {
         if (currencyCode == 'XAU') {
-          return 'Gold credited to your ${accountSubGroup}. Amount auto-debited from your account.';
+          return 'Gold credited to your goal \"$accountSubGroup\". Amount auto-debited from your account.';
         } else {
-          return 'Amount deposited to your ${accountSubGroup} savings.';
+          return 'Amount deposited to your goal \"$accountSubGroup\" savings.';
         }
       } else if (isDebit) {
         int flagToUse = drcrFlag == 0 ? sequence : drcrFlag;
         switch (flagToUse) {
           case 2:
             return currencyCode == 'XAU'
-                ? 'Gold withdrawn from your ${accountSubGroup}.'
-                : 'Amount withdrawn from your ${accountSubGroup}.';
+                ? 'Gold withdrawn from your goal \"$accountSubGroup\".'
+                : 'Amount withdrawn from your goal \"$accountSubGroup\".';
           case 3:
-            return 'Transaction charges applied to your ${accountSubGroup}.';
+            return 'Transaction charges applied to your goal \"$accountSubGroup\".';
           case 4:
-            return 'VAT charges applied to your ${accountSubGroup}.';
+            return 'VAT charges applied to your goal \"$accountSubGroup\".';
           default:
             return currencyCode == 'XAU'
-                ? 'Gold debited from your ${accountSubGroup}.'
-                : 'Amount debited from your ${accountSubGroup}.';
+                ? 'Gold debited from your goal \"$accountSubGroup\".'
+                : 'Amount debited from your goal \"$accountSubGroup\".';
         }
       }
     }

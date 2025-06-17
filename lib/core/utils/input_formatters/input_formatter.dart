@@ -175,13 +175,13 @@ class GramInputFormatter extends TextInputFormatter {
       ) {
     final newText = newValue.text;
 
-    // Allow only digits and one optional decimal point
-    final isValid = RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newText);
+    // Allow only digits and one optional decimal point with up to 3 decimals
+    final isValid = RegExp(r'^\d*\.?\d{0,3}$').hasMatch(newText);
     if (!isValid) return oldValue;
 
-    // If it contains a dot, allow up to 7 characters (e.g., 9999.99)
+    // If it contains a dot, allow up to 8 characters (e.g., 9999.999)
     if (newText.contains('.')) {
-      if (newText.length > 7) return oldValue;
+      if (newText.length > 8) return oldValue;
     } else {
       // If no dot, max length = 4 (e.g., 9999)
       if (newText.length > 4) return oldValue;
@@ -190,6 +190,7 @@ class GramInputFormatter extends TextInputFormatter {
     return newValue;
   }
 }
+
 
 class BuyPriceFormatter extends TextInputFormatter {
   @override
