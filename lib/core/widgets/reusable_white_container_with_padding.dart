@@ -2,25 +2,34 @@ import '../../views.dart';
 
 class ReusableWhiteContainerWithPadding extends ConsumerWidget {
   final Widget widget;
-  const ReusableWhiteContainerWithPadding({super.key, required this.widget});
+  final bool applyBottomPadding;
+
+  const ReusableWhiteContainerWithPadding({
+    super.key,
+    required this.widget,
+    this.applyBottomPadding = true,
+  });
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
 
-    return ScalingFactor(
+    final container = ReusableContainer(
+      width: double.infinity,
+      color: AppColors.current(isDark).background,
       child: ReusablePadding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: ReusableContainer(
-          width: double.infinity,
-          color: AppColors.current(isDark).background,
-          child: ReusablePadding(
-            padding:
-                const EdgeInsets.only(left: 22, right: 22, top: 24, bottom: 24),
-            child: widget,
-          ),
-        ),
+        padding: const EdgeInsets.fromLTRB(22, 24, 22, 24),
+        child: widget,
       ),
+    );
+
+    return ScalingFactor(
+      child: applyBottomPadding
+          ? ReusablePadding(
+        padding: const EdgeInsets.only(bottom: 5),
+        child: container,
+      )
+          : container,
     );
   }
 }

@@ -1,9 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:growk_v2/core/constants/app_space.dart';
-import 'package:growk_v2/core/theme/app_text_styles.dart';
-import 'package:growk_v2/core/theme/app_theme.dart';
-import 'package:growk_v2/core/widgets/reusable_text.dart';
 import 'package:growk_v2/views.dart';
 
 class GoalHeader extends ConsumerWidget {

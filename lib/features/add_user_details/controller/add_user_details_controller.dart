@@ -42,6 +42,7 @@ class EditUserController {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => CommonBottomSheet(
+        showSearch: false,
         title: 'Select Gender',
         options: ['Male', 'Female', 'Other'],
         onSelected: (value) {
@@ -50,6 +51,34 @@ class EditUserController {
         },
       ),
     );
+  }
+  void clearErrorProviders(WidgetRef ref) {
+    ref.read(nameErrorProvider.notifier).state = null;
+    ref.read(emailErrorProvider.notifier).state = null;
+    ref.read(genderErrorProvider.notifier).state = null;
+    ref.read(dobErrorProvider.notifier).state = null;
+    ref.read(imageErrorProvider.notifier).state = null;
+  }
+  void setDefaults(WidgetRef ref) {
+    // Clear controllers
+    ref.read(nameControllerProvider).clear();
+    ref.read(emailControllerProvider).clear();
+
+    // Reset profile values
+    ref.read(genderProvider.notifier).state = '';
+    ref.read(dobProvider.notifier).state = '';
+    ref.read(dobUiProvider.notifier).state = '';
+    ref.read(profilePictureFileProvider.notifier).state = null;
+
+    // Reset error states
+    ref.read(nameErrorProvider.notifier).state = null;
+    ref.read(emailErrorProvider.notifier).state = null;
+    ref.read(genderErrorProvider.notifier).state = null;
+    ref.read(dobErrorProvider.notifier).state = null;
+    ref.read(imageErrorProvider.notifier).state = null;
+
+    // Optionally reset upload state too
+    ref.read(profilePictureUploadStateProvider.notifier).reset();
   }
 
   Future<void> prefillUserData(WidgetRef ref) async {

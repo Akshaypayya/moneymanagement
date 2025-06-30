@@ -48,6 +48,11 @@ class NomineeDetailsController {
       ),
     );
   }
+  void clearErrorProviders() {
+    ref.read(nomineeNameErrorProvider.notifier).state = null;
+    ref.read(nomineeDobErrorProvider.notifier).state = null;
+    ref.read(nomineeRelationErrorProvider.notifier).state = null;
+  }
 
   void clearFields() {
     ref.read(nomineeNameControllerProvider).clear();

@@ -1,6 +1,6 @@
 import '../../../../views.dart';
 
-class AnimatedIconTile extends StatelessWidget {
+class AnimatedIconTile extends ConsumerWidget {
   final IconData icon;
   final String label;
   final String value;
@@ -15,7 +15,8 @@ class AnimatedIconTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    final isDark = ref.watch(isDarkProvider);
     return Row(
       children: [
         Icon(icon, size: 18, color: iconColor),
@@ -25,12 +26,12 @@ class AnimatedIconTile extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(fontSize: 12, color: Colors.black54),
+              style: AppTextStyle.current(isDark).graphLabel,
             ),
             const SizedBox(height: 2),
             Text(
               value,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              style:  AppTextStyle.current(isDark).titleRegular,
             ),
           ],
         ),

@@ -152,30 +152,71 @@ class GoalListItem {
   String get formattedTargetAmount => targetAmount.toStringAsFixed(2);
   String get formattedAvailableBalance => availableBalance.toStringAsFixed(2);
   String get formattedCurrentPrice => currentPrice.toStringAsFixed(2);
-  String get formattedGoldBalance => goldBalance.toStringAsFixed(2);
+  String get formattedGoldBalance => goldBalance.toStringAsFixed(3);
   String get formattedWalletBalance => walletBalance.toStringAsFixed(2);
+  String get formattedInvestedAmount => investedAmount.toStringAsFixed(2);
 
   double get profit => availableBalance - walletBalance;
   String get formattedProfit => profit.toStringAsFixed(2);
 
+  // int get totalExpectedTransactions {
+  //   final totalMonths = (targetYear - 2025) * 12;
+  //   switch (debitDate) {
+  //     case 1:
+  //       return totalMonths * 30;
+  //     case 7:
+  //       return totalMonths * 4;
+  //     case 5:
+  //     default:
+  //       return totalMonths;
+  //   }
+  // }
   int get totalExpectedTransactions {
-    final totalMonths = duration * 12;
+    // final totalMonths = duration * 12;
+
+    DateTime today = DateTime.now();
+    DateTime futureDate = DateTime(targetYear, 12, 31);
+
 
     switch (debitDate) {
       case 1:
-        return totalMonths * 30;
+        return futureDate.difference(today).inDays;
       case 7:
-        return totalMonths * 4;
+        return (futureDate.difference(today).inDays/7).toInt();
       case 5:
       default:
-        return totalMonths;
+        int yearsDiff = futureDate.year - today.year;
+        int monthsDiff = futureDate.month - today.month;
+        return yearsDiff * 12 + monthsDiff;
     }
   }
 
+  // int get currentCompletedTransactions {
+  //   if (transactionAmount <= 0) return 0;
+  //   return (investedAmount / transactionAmount).round();
+  // }
   int get currentCompletedTransactions {
     if (transactionAmount <= 0) return 0;
-    return (investedAmount / transactionAmount).round();
+    // return (investedAmount / transactionAmount).round();
+    switch (debitDate) {
+      case 1: // Daily
+        return (investedAmount / transactionAmount).toInt();
+      case 7: // Weekly
+        return (investedAmount / transactionAmount).toInt();
+      default: // Monthly
+        return (investedAmount / transactionAmount).toInt();
+    }
   }
+
+  // String get progressText {
+  //   return '$currentCompletedTransactions/$totalExpectedTransactions';
+  // }
+
+  // double get progressPercent {
+  //   if (totalExpectedTransactions <= 0) return 0.0;
+  //   return (currentCompletedTransactions / totalExpectedTransactions)
+  //       .clamp(0.0, 1.0);
+  // }
 
   String get progressText {
     return '$currentCompletedTransactions/$totalExpectedTransactions';
@@ -183,8 +224,7 @@ class GoalListItem {
 
   double get progressPercent {
     if (totalExpectedTransactions <= 0) return 0.0;
-    return (currentCompletedTransactions / totalExpectedTransactions)
-        .clamp(0.0, 1.0);
+    return currentCompletedTransactions / totalExpectedTransactions;
   }
 
   String get iconAsset {

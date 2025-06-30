@@ -45,7 +45,7 @@ class MonthHeader extends ConsumerWidget {
           offset: Offset(0, -7),
           child: Container(
             color: AppColors.current(isDark).scaffoldBackground,
-            height: 10,
+            height: 5,
           ),
         ),
       ],

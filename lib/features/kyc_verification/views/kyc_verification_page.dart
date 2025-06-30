@@ -8,21 +8,28 @@ class KycVerificationPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ScalingFactor(
-      child: CustomScaffold(
-        appBar: GrowkAppBar(title: 'KYC verification', isBackBtnNeeded: true),
-        body:SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 22),
-          child: const ReusableColumn(
-            children: [
-              KycVectorImage(),
-              KycDescription(),
-              ReusableSizedBox(height: 50,),
-              KycVerificationForm(),
-            ],
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if(didPop){
+          ref.read(kycControllerProvider.notifier).clearErrorProviders(ref);
+        }
+      },
+      child: ScalingFactor(
+        child: CustomScaffold(
+          appBar: GrowkAppBar(title: 'KYC verification', isBackBtnNeeded: true),
+          body:SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 22),
+            child: const ReusableColumn(
+              children: [
+                KycVectorImage(),
+                KycDescription(),
+                ReusableSizedBox(height: 50,),
+                KycVerificationForm(),
+              ],
+            ),
           ),
+          bottomNavigationBar: const KycVerificationButton(),
         ),
-        bottomNavigationBar: const KycVerificationButton(),
       ),
     );
   }

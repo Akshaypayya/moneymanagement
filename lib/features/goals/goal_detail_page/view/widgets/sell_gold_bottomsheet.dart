@@ -21,12 +21,10 @@ class SellGoldBottomSheet extends ConsumerStatefulWidget {
     required this.goalName,
     this.onConfirm,
   });
-
   @override
   ConsumerState<SellGoldBottomSheet> createState() =>
       _SellGoldBottomSheetState();
 }
-
 class _SellGoldBottomSheetState extends ConsumerState<SellGoldBottomSheet> {
   Timer? _timer;
   int _remainingSeconds = 20;

@@ -50,6 +50,7 @@ class AppUrl {
       "/user-service/user/currentGoldRate";
   static const String goalSellGoldUrl = "/user-service/goals/sellGold";
   static const String sellGoldUrl = "/user-service/user/sellGold";
+  static const String getGoldHistoryUrl = "/user-service/user/goldRateHistory?currencyCode=SAR&duration=";
 
   static const String intitiateGoalSellTransactionUrl =
       "/user-service/user/initiateGoldTransaction";

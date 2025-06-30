@@ -1,13 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:growk_v2/core/widgets/growk_app_bar.dart';
-import 'package:growk_v2/core/widgets/sar_amount_widget.dart';
-import 'package:growk_v2/features/gold_price_trends/view/widgets/animated_icon_tile.dart';
-import 'package:growk_v2/features/gold_price_trends/view/widgets/year_selection_widget.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../../../views.dart';
-import '../../goals/add_goal_page/view/widget/custom_slider.dart';
 
 class GoldPriceTrendsPage extends ConsumerStatefulWidget {
   const GoldPriceTrendsPage({super.key});
@@ -17,186 +8,331 @@ class GoldPriceTrendsPage extends ConsumerStatefulWidget {
 }
 
 class _GoldPriceTrendsPageState extends ConsumerState<GoldPriceTrendsPage> {
-  int selectedPeriod = 10;
-  double investmentAmount = 150000;
-  final double returnMultiplier = 1.616;
-
-  List<int> periods = [10, 5, 3, 1, 0];
-  Map<int, List<FlSpot>> chartDataMap = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _generateChartData();
-  }
-
-  void _generateChartData() {
-    chartDataMap = {
-      10: [FlSpot(0, 110), FlSpot(1, 115), FlSpot(2, 125), FlSpot(3, 135), FlSpot(4, 145), FlSpot(5, 150), FlSpot(6, 160), FlSpot(7, 165), FlSpot(8, 180), FlSpot(9, 200), FlSpot(10, 210), FlSpot(11, 225), FlSpot(12, 250), FlSpot(13, 240), FlSpot(14, 260), FlSpot(15, 275), FlSpot(16, 290), FlSpot(17, 310), FlSpot(18, 330), FlSpot(19, 350)],
-      5: [FlSpot(0, 150), FlSpot(1, 165), FlSpot(2, 180), FlSpot(3, 200), FlSpot(4, 220), FlSpot(5, 240), FlSpot(6, 255), FlSpot(7, 275), FlSpot(8, 300), FlSpot(9, 320)],
-      3: [FlSpot(0, 180), FlSpot(1, 195), FlSpot(2, 215), FlSpot(3, 240), FlSpot(4, 270), FlSpot(5, 290)],
-      1: [FlSpot(0, 250), FlSpot(1, 265), FlSpot(2, 280), FlSpot(3, 310)],
-      0: [FlSpot(0, 280), FlSpot(1, 290), FlSpot(2, 305), FlSpot(3, 325)],
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
+    final selectedPeriod = ref.watch(selectedPeriodProvider);
+    final periods = ['1M', '3M', '6M', '1Y', '3Y', '5Y'];
     final isDark = ref.watch(isDarkProvider);
-    final spots = chartDataMap[selectedPeriod]!;
-    final double totalReturns = investmentAmount * returnMultiplier;
-    final double profit = totalReturns - investmentAmount;
-    final double percent = totalReturns == 0 ? 0 : profit / totalReturns;
+    final investmentAmount = ref.watch(investmentAmountProvider);
+    final historyAsync = ref.watch(goldHistorySpotsProvider);
+    final lastChartSpots = ref.watch(lastChartSpotsProvider);
+    void clearGoldPriceTrendsState(WidgetRef ref) {
+      ref.invalidate(selectedPeriodProvider);
+      ref.invalidate(investmentAmountProvider);
+      ref.invalidate(goldHistorySpotsProvider);
+      ref.invalidate(lastChartSpotsProvider);
+    }
 
-    return Scaffold(
-      backgroundColor: AppColors.current(isDark).scaffoldBackground,
-      appBar: GrowkAppBar(title: 'Gold Price Trends', isBackBtnNeeded: true),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ReusableWhiteContainerWithPadding(
-              widget: ReusableColumn(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Growth Calculator", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Check how much your past gold investment would be worth today. Select the investment amount and time period to calculate your total returns based on historical price trends.",
-                    style: TextStyle(color: Colors.black54, fontSize: 13),
-                  ),
-                  const SizedBox(height: 30),
-                  YearSelectionWidget(
-                    buttonCount: periods.length,
-                    buttonNames: periods,
-                    onYearSelected: (int year) {
-                      setState(() {
-                        selectedPeriod = year;
-                      });
-                    },
-                    selectedYear: selectedPeriod,
-                  ),
-                  const SizedBox(height: 20),
-                  AspectRatio(
-                    aspectRatio: 1.6,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white,
-                       
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if(didPop){
+          clearGoldPriceTrendsState(ref);
+        }
+      },
+      child: ScalingFactor(
+        child: Scaffold(
+          backgroundColor: AppColors.current(isDark).scaffoldBackground,
+          appBar: GrowkAppBar(title: 'Gold Price Trends', isBackBtnNeeded: true),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ReusableWhiteContainerWithPadding(
+                  widget: ReusableColumn(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       Text("Growth Calculator",
+                          style: AppTextStyle.current(isDark).titleRegular),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Check how much your past gold investment would be worth today. Select the investment amount and time period to calculate your total returns based on historical price trends.",
+                        style: AppTextStyle.current(isDark).bodyKycSmall
                       ),
-                      padding: const EdgeInsets.all(10),
-                      child: LineChart(
-                        LineChartData(
-                          minY: 100,
-                          maxY: 350,
-                          gridData: FlGridData(
-                            show: true,
-                            drawVerticalLine: false,
-                            horizontalInterval: 50,
-                            getDrawingHorizontalLine: (value) => FlLine(
-                              color: Colors.grey.withOpacity(0.15),
-                              strokeWidth: 1,
+                      const SizedBox(height: 30),
+                      YearSelectionWidget(
+                        buttonCount: periods.length,
+                        buttonNames: periods,
+                        onYearSelected: (String period) =>
+                        ref.read(selectedPeriodProvider.notifier).state = period,
+                        selectedYear: selectedPeriod,
+                      ),
+                      const SizedBox(height: 20),
+                      AspectRatio(
+                        aspectRatio: 1.6,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.white,
+                          ),
+                          padding: const EdgeInsets.all(10),
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 400),
+                            child: historyAsync.when(
+                              data: (chartSpots) => _buildChart(
+                                  chartSpots, investmentAmount, false,isDark,
+                                  selectedPeriod: selectedPeriod),
+                              loading: () => _buildChart(
+                                  lastChartSpots, investmentAmount, true,isDark,
+                                  selectedPeriod: selectedPeriod),
+                              error: (e, st) => Center(child: Text('Error loading chart',style: AppTextStyle.current(isDark).bodySmall,)),
                             ),
                           ),
-                          titlesData: FlTitlesData(
-                            leftTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                interval: 50,
-                                reservedSize: 36,
-                                getTitlesWidget: (value, meta) => Text(
-                                  "${value.toInt()}",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.6),
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                interval: 2,
-                                reservedSize: 30,
-                                getTitlesWidget: (value, meta) {
-                                  String label = selectedPeriod == 0 ? "${(value * 1.5).toInt()}M" : "${value.toInt()}";
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 6),
-                                    child: Text(
-                                      label,
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.6),
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                          ),
-                          borderData: FlBorderData(show: false),
-                          lineTouchData: LineTouchData(enabled: true),
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: spots,
-                              isCurved: true,
-                              color: Colors.teal,
-                              barWidth: 2,
-                              dotData: FlDotData(show: false),
-                              belowBarData: BarAreaData(
-                                show: true,
-                                color: Colors.teal.withOpacity(0.2),
-                              ),
-                            ),
-                          ],
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                ReusableWhiteContainerWithPadding(
+                  widget: _buildSlider(ref, investmentAmount,isDark),
+                ),
+                ReusableWhiteContainerWithPadding(
+                  widget: historyAsync.when(
+                    data: (chartSpots) {
+                      if (chartSpots.isEmpty) {
+                        return Center(
+                          child: ReusableText(
+                              text: 'Loading',
+                              style: AppTextStyle.current(isDark).titleRegular),
+                        );
+                      }
+                      final start = chartSpots.first.y;
+                      final end = chartSpots.last.y;
+                      final returnMultiplier = start > 0 ? end / start : 1;
+                      final totalReturns = investmentAmount * returnMultiplier;
+                      final profit = totalReturns - investmentAmount;
+                      final percent = totalReturns == 0
+                          ? 0.0
+                          : (profit / totalReturns).clamp(0, 1);
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                           Text("Gold Investment Returns",
+                              style: AppTextStyle.current(isDark).titleSmall),
+                          const SizedBox(height: 25),
+                          _buildSummarySection(investmentAmount, percent.toDouble(),
+                              totalReturns, profit,isDark,false),
+                        ],
+                      );
+                    },
+                    loading: () =>   Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Gold Investment Returns",
+                            style: AppTextStyle.current(isDark).titleSmall),
+                        const SizedBox(height: 25),
+                        _buildSummarySection(investmentAmount,0.00,
+                            1.00, 1.00,isDark,true),
+                      ],
+                    ),
+                    error: (e, st) => const SizedBox(),
+                  ),
+                ),
+              ],
             ),
-            ReusableWhiteContainerWithPadding(widget: _buildSlider()),
-            ReusableWhiteContainerWithPadding(
-              widget: Column(
-                children: [
-                  const Text("Gold Investment Returns", style: TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 12),
-                  _buildSummarySection(percent, totalReturns, profit),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSlider() => Column(
+  Widget _buildChart(
+      List<FlSpot> chartSpots,
+      double investmentAmount,
+      bool isLoading,
+      bool isDark, {
+        required String selectedPeriod,
+      }) {
+    if (chartSpots.isEmpty) {
+      return const Center(child: Text('Loading...'));
+    }
+
+    final start = chartSpots.first.y;
+    final end = chartSpots.last.y;
+    final returnMultiplier = start > 0 ? end / start : 1;
+    final totalReturns = investmentAmount * returnMultiplier;
+    final profit = totalReturns - investmentAmount;
+    final percent = totalReturns == 0 ? 0.0 : (profit / totalReturns).clamp(0, 1);
+
+    final periodInDays = {
+      '1M': 30,
+      '3M': 90,
+      '6M': 180,
+      '1Y': 365,
+      '3Y': 1095,
+      '5Y': 1825,
+    };
+    final days = periodInDays[selectedPeriod] ?? 30;
+    final today = DateTime.now();
+    final startDate = today.subtract(Duration(days: days));
+
+    return LineChart(
+      LineChartData(
+        minY: chartSpots.map((e) => e.y).reduce((a, b) => a < b ? a : b) - 10,
+        maxY: chartSpots.map((e) => e.y).reduce((a, b) => a > b ? a : b) + 10,
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          getDrawingHorizontalLine: (value) => FlLine(
+            color: Colors.grey.withOpacity(0.05),
+            strokeWidth: 1,
+          ),
+        ),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              interval: 50,
+              reservedSize: 36,
+              getTitlesWidget: (value, meta) => Text(
+                "${value.toInt()}",
+                style: _labelStyle(isDark),
+              ),
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 50,
+              getTitlesWidget: (value, meta) {
+                final index = value.toInt();
+                final length = chartSpots.length;
+                if (length == 0 || index >= length) return const SizedBox.shrink();
+
+                final start = 0;
+                final middle = length ~/ 2;
+                final end = length - 1;
+
+                if (index == start || index == middle || index == end) {
+                  final date = startDate.add(Duration(days: index));
+                  final label = '${date.day.toString().padLeft(2, '0')} ${_monthName(date.month)}';
+                  final subLabel = '${date.year}';
+
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: ReusableColumn(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(label, style: _labelStyle(isDark), textAlign: TextAlign.center),
+                        Text(subLabel, style: _labelStyle(isDark), textAlign: TextAlign.center),
+                      ],
+                    ),
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
+              interval: 1,
+            ),
+          ),
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+        borderData: FlBorderData(show: false),
+        lineTouchData: LineTouchData(
+          enabled: !isLoading,
+          touchTooltipData: LineTouchTooltipData(
+            tooltipRoundedRadius: 6,
+            fitInsideHorizontally: true,
+            getTooltipItems: (spots) {
+              return spots.map((spot) {
+                final date = startDate.add(Duration(days: spot.x.toInt()));
+                return LineTooltipItem(
+                  "${date.day}/${date.month}\n${spot.y.toStringAsFixed(2)}",
+                  TextStyle(color: Colors.white),
+                );
+              }).toList();
+            },
+          ),
+          getTouchedSpotIndicator:
+              (LineChartBarData barData, List<int> spotIndexes) {
+            return spotIndexes.map((index) {
+              return TouchedSpotIndicatorData(
+                FlLine(color: Colors.teal, strokeWidth: 1),
+                FlDotData(show: true),
+              );
+            }).toList();
+          },
+        ),
+        lineBarsData: [
+          LineChartBarData(
+            spots: chartSpots,
+            isCurved: true,
+            curveSmoothness: 0.25,
+            color: Colors.teal,
+            barWidth: 2,
+            isStrokeCapRound: true,
+            dotData: FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              color: Colors.teal.withOpacity(0.1),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget buildDateTitle(double value, List<FlSpot> spots, DateTime startDate,bool isDark) {
+    if (spots.isEmpty) return const SizedBox.shrink();
+
+    final index = value.toInt();
+    final isStart = index == 0;
+    final isEnd = index == spots.length - 1;
+
+    if (isStart || isEnd) {
+      final date = startDate.add(Duration(days: index));
+      final label =
+          "${date.day.toString().padLeft(2, '0')} ${_monthName(date.month)} ${date.year}";
+      return _buildDateLabel(label,isDark);
+    }
+
+    return const SizedBox.shrink();
+  }
+
+
+  Widget _buildDateLabel(String text,bool isDark) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+    child: Text(
+      text,
+      style: _labelStyle(isDark),
+      textAlign: TextAlign.center,
+    ),
+  );
+
+  TextStyle _labelStyle(bool isDark) => AppTextStyle.current(isDark).graphLabel;
+
+  String _monthName(int month) {
+    const months = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    return months[month - 1];
+  }
+
+  Widget _buildSlider(WidgetRef ref, double investmentAmount,bool isDark) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Text("Investment Amount (SAR)", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+      Text("Investment Amount (SAR)",
+          style: AppTextStyle.current(isDark).titleSmall),
       const SizedBox(height: 12),
       Row(
         children: [
-          const Text("10K", style: TextStyle(fontSize: 12)),
+          Text("10K", style: AppTextStyle.current(isDark).graphLabel),
           Expanded(
             child: Slider(
               min: 10000,
               max: 1000000,
               value: investmentAmount,
-              onChanged: (value) => setState(() => investmentAmount = value),
+              onChanged: (value) => ref
+                  .read(investmentAmountProvider.notifier)
+                  .state = value,
               activeColor: Colors.teal,
               inactiveColor: Colors.grey.shade300,
             ),
           ),
-          const Text("1M", style: TextStyle(fontSize: 12)),
+           Text("1M", style: AppTextStyle.current(isDark).graphLabel),
         ],
       ),
       const SizedBox(height: 12),
@@ -204,13 +340,14 @@ class _GoldPriceTrendsPageState extends ConsumerState<GoldPriceTrendsPage> {
         alignment: Alignment.centerRight,
         child: Text(
           "SAR ${investmentAmount.toStringAsFixed(2)}",
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.teal),
+          style: AppTextStyle.current(isDark).titleSmall.copyWith(fontSize: 16,color: Colors.teal),
         ),
       ),
     ],
   );
 
-  Widget _buildSummarySection(double percent, double totalReturns, double profit) {
+  Widget _buildSummarySection(double investmentAmount, double percent,
+      double totalReturns, double profit,bool isDark,bool isLoading) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -225,14 +362,13 @@ class _GoldPriceTrendsPageState extends ConsumerState<GoldPriceTrendsPage> {
           center: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Total Return", style: TextStyle(fontSize: 12)),
+              Text("Total Return", style: AppTextStyle.current(isDark).graphLabel),
               const SizedBox(height: 4),
               SarAmountWidget(
                 alignment: Alignment.center,
                 height: 12,
-                text: totalReturns.toStringAsFixed(2),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
+                text:  isLoading==true?'Loading..':totalReturns.toStringAsFixed(2),
+                style: AppTextStyle.current(isDark).titleSmall.copyWith(fontSize: 16),)
             ],
           ),
         ),
@@ -244,14 +380,14 @@ class _GoldPriceTrendsPageState extends ConsumerState<GoldPriceTrendsPage> {
               AnimatedIconTile(
                 icon: Icons.account_balance_wallet,
                 label: "Investment",
-                value: "SAR ${investmentAmount.toStringAsFixed(2)}",
+                value: isLoading==true?'Loading..':"SAR ${investmentAmount.toStringAsFixed(2)}",
                 iconColor: Colors.teal,
               ),
               const SizedBox(height: 14),
               AnimatedIconTile(
                 icon: Icons.trending_up,
                 label: "Profit",
-                value: "SAR ${profit.toStringAsFixed(2)}",
+                value:  isLoading==true?'Loading..':"SAR ${profit.toStringAsFixed(2)}",
                 iconColor: Colors.grey,
               ),
             ],

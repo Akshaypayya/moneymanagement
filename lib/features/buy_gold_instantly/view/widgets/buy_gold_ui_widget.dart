@@ -48,6 +48,8 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
         : widget.goldPricePerGram == 0
             ? "0.000 g"
             : "${(selectedAmount / widget.goldPricePerGram).toStringAsFixed(3)} g";
+    final homeDataAsync = ref.watch(homeDetailsProvider);
+    final wallet = homeDataAsync.valueOrNull?.data?.wallet ?? Wallet();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +169,22 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
             ],
           ),
         ),
-        const SizedBox(height: 35),
+        const SizedBox(height: 20),
+
+        ReusableRow(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ReusableText(
+                text: "Current Wallet Balance: ",
+                style: AppTextStyle.current(isDark).bodySmall),
+            SarAmountWidget(
+              height: 12,
+                text: "${(wallet.walletBalance ?? 0).floor()}",
+                style: AppTextStyle.current(isDark).titleSmall),
+          ],
+        ),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: presetValues.map((value) {
@@ -325,9 +342,26 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
       );
       return;
     }
-
+    if (inputAmount < 10) {
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Minimum transaction amount is 10 SAR',
+        type: SnackType.error,
+      );
+      return;
+    }
     final walletBalance =
         walletAsync.asData?.value.data?.walletBalance?.toDouble() ?? 0.0;
+    if (inputAmount < 10 && walletBalance < inputAmount) {
+      showGrowkSnackBar(
+        context: context,
+        ref: ref,
+        message: 'Minimum transaction amount is 10 SAR',
+        type: SnackType.error,
+      );
+      return;
+    }
 
     if (walletBalance < inputAmount) {
       showGrowkSnackBar(

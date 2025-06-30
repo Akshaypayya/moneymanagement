@@ -21,7 +21,7 @@ String profileFormatGender(String? gender) {
     case 'F':
       return 'Female';
     case 'T':
-      return 'Others';
+      return 'Other';
     default:
       return gender;
   }

@@ -106,6 +106,7 @@ class ProviderResetService {
     ref.invalidate(goalListStateProvider);
     ref.invalidate(goalListPaginatedStateProvider);
 
+
     // Goal Add
     ref.invalidate(goalNameProvider);
     ref.invalidate(selectedGoalIconProvider);
@@ -122,6 +123,7 @@ class ProviderResetService {
     ref.invalidate(walletBalanceProvider);
 
     // Biometric
+
     ref.invalidate(biometricEnabledProvider);
     // Notifications
     ref.invalidate(notificationProvider);

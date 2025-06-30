@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:growk_v2/core/internet_checker/ui/monitor_connection_view.dart';
+import 'package:growk_v2/core/internet_checker/utils/enhanced_internet.dart';
 // import 'package:growk_v2/core/internet_checker/view/internet_checker_ui.dart';
 import 'package:growk_v2/views.dart';
 
@@ -84,6 +85,12 @@ class _MyAppState extends ConsumerState<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors.light.primary),
         ),
         onGenerateRoute: AppRouter.generateRoute,
+        // builder: (context, child) => EnhancedConnectivityOverlay(
+        //   reconnectedDisplayDuration: Duration(milliseconds: 2000),
+        //   showConnectionType: true,
+        //   showPulseAnimation: true,
+        //   child: child ?? const SizedBox(),
+        // ),
         builder: (context, child) =>
             MonitorConnectionView(child: child ?? SizedBox()),
       ),

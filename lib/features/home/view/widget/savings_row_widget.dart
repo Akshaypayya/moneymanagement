@@ -82,7 +82,7 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
   @override
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
-
+    print('Growth value for "${widget.title}": ${widget.growth}');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -163,16 +163,26 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                 const Spacer(),
                 Row(
                   children: [
-                    Image.asset(AppImages.upGreen, height: 10),
+                    Transform.rotate(
+                      angle: widget.growth.trim().startsWith('-') ? 3.14 : 0, // rotate 180 degrees if negative
+                      child: Image.asset(
+                        AppImages.upGreen,
+                        height: 10,
+                        color: widget.growth.trim().startsWith('-') ? Colors.red : Colors.green,
+                      ),
+                    ),
                     const SizedBox(width: 2),
                     Text(
                       widget.growth,
                       style: AppTextStyle(
-                        textColor: AppColors.current(isDark).text,
+                        textColor: widget.growth.trim().startsWith('-')
+                            ? Colors.red
+                            : Colors.green,
                       ).titleSmall,
                     ),
                   ],
                 ),
+
               ],
             ),
           ],

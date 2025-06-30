@@ -21,48 +21,58 @@ class OtpController {
     ref.read(isButtonLoadingProvider.notifier).state = true;
 
     try {
-      final response = await ref.read(otpUseCaseProvider).call(cellNo, enteredOtp);
+      final response =
+          await ref.read(otpUseCaseProvider).call(cellNo, enteredOtp);
 
       if (response.isSuccess) {
-        final data = response.data ?? {};
-        final isNewUser = data['isNewUser'] ?? false;
-        debugPrint('isNewUser: $isNewUser');
-
-        ref.read(userDataProvider.notifier).setUserData(data, phoneNumber: cellNo);
-        ref.read(otpErrorProvider.notifier).state = null;
         ref.read(isButtonLoadingProvider.notifier).state = false;
 
+        final data = response.data ?? {};
+        final isNewUser = data['isNewUser'] ?? false;
 
-        if (isNewUser) {
-          final isSupported = await ref.read(biometricSupportedProvider.future);
-          final isAlreadyEnabled = ref.read(biometricEnabledProvider);
-          debugPrint('Biometric already enabled: $isAlreadyEnabled');
-          if (isSupported && !isAlreadyEnabled) {
-            final biometricService = ref.read(biometricServiceProvider);
-            final result = await biometricService.authenticate(
-              'Authenticate to enable biometric login',
+        debugPrint('isNewUser: $isNewUser');
+
+        ref
+            .read(userDataProvider.notifier)
+            .setUserData(data, phoneNumber: cellNo);
+        ref.read(otpErrorProvider.notifier).state = null;
+
+        // ✅ Enable Biometrics if supported and not yet enabled
+        final isSupported = await ref.read(biometricSupportedProvider.future);
+        final isAlreadyEnabled = ref.read(biometricEnabledProvider);
+
+        if (isSupported) {
+          final biometricService = ref.read(biometricServiceProvider);
+          final result = await biometricService.authenticate(
+            'Authenticate to enable biometric login',
+          );
+
+          if (result.success) {
+            ref.read(biometricEnabledProvider.notifier).toggleBiometric(true);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Biometric authentication enabled')),
             );
-            if (result.success) {
-              ref.read(biometricEnabledProvider.notifier).toggleBiometric(true);
-              debugPrint('Biometric already enabled: $isAlreadyEnabled');
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Biometric authentication enabled')),
-              );
-              ref.read(isButtonLoadingProvider.notifier).state = false;
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to enable biometrics: ${result.message}')),
-              );
-            }
+          } else {
+            ref.read(biometricEnabledProvider.notifier).toggleBiometric(false);
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content:
+                      Text('Failed to enable biometrics: ${result.message}')),
+            );
           }
         }
+        ref.read(isButtonLoadingProvider.notifier).state = false;
+        // ✅ Navigate after biometrics
         await Navigator.pushNamedAndRemoveUntil(
           context,
           isNewUser ? AppRouter.applyReferralCode : AppRouter.mainScreen,
-              (route) => false,
+          (route) => false,
+
         );
-        ref.read(isButtonLoadingProvider.notifier).state = true;
       } else {
+        ref.read(isButtonLoadingProvider.notifier).state = false;
+
         ref.read(otpErrorProvider.notifier).state =
             response.message ?? 'OTP verification failed';
         ref.read(otpInputProvider.notifier).state = '';
@@ -71,6 +81,7 @@ class OtpController {
       debugPrint('OTP Error: $e');
       debugPrint('Stack Trace:\n$stackTrace');
       ref.read(otpErrorProvider.notifier).state = 'Something went wrong';
+      ref.read(isButtonLoadingProvider.notifier).state = false;
     } finally {
       ref.read(isButtonLoadingProvider.notifier).state = false;
     }
@@ -80,9 +91,11 @@ class OtpController {
     final cellNo = ref.read(phoneInputProvider);
     final remainingTime = ref.read(otpTimerProvider);
 
+
     if (remainingTime > 0) return;
 
     ref.read(otpErrorProvider.notifier).state = null;
+
 
     try {
       final response = await ref.read(loginUseCaseProvider).call(cellNo);
@@ -99,8 +112,7 @@ class OtpController {
     } catch (e) {
       debugPrint("Resend OTP Error: $e");
       ref.read(otpErrorProvider.notifier).state =
-      "Something went wrong while resending OTP";
-    } finally {
-    }
+          "Something went wrong while resending OTP";
+    } finally {}
   }
 }

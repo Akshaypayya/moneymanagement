@@ -234,7 +234,7 @@ class TransactionItem {
         if (currencyCode == 'XAU') {
           return 'assets/goldbsct.png';
         }
-        return 'assets/bhim.png';
+        return 'assets/bank.jpg';
     }
   }
 

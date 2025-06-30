@@ -29,7 +29,7 @@ class _TermsWebViewState extends State<TermsWebView> {
           },
           onPageFinished: (String url) {
             setState(() {
-              _progress = 100; // Ensure progress is 100 when done
+              _progress = 100;
             });
           },
           onWebResourceError: (WebResourceError error) {
@@ -46,8 +46,7 @@ class _TermsWebViewState extends State<TermsWebView> {
       appBar: GrowkAppBar(title: 'Terms and Conditions', isBackBtnNeeded: true),
       body: Column(
         children: [
-          if (_progress < 100)
-            LinearProgressIndicator(value: _progress / 100),
+          if (_progress < 100) LinearProgressIndicator(value: _progress / 100),
           Expanded(
             child: WebViewWidget(controller: _controller),
           ),

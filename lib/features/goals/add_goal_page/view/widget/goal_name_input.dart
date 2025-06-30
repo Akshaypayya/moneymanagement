@@ -42,8 +42,13 @@ class GoalNameInput extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             TextField(
+              maxLength: 50,
               onChanged: (value) {
                 ref.read(goalNameProvider.notifier).state = value;
+                final error = ref
+                    .read(createGoalControllerProvider)
+                    .validateGoalName(value);
+                ref.read(goalNameErrorProvider.notifier).state = error;
               },
               style: TextStyle(
                 color: isDark ? Colors.white : Colors.black,
@@ -54,6 +59,11 @@ class GoalNameInput extends ConsumerWidget {
               cursorColor: isDark ? Colors.white : Colors.black,
               decoration: InputDecoration(
                 hintText: 'Eg: Education, Home, Wedding',
+                errorText: ref.watch(goalNameErrorProvider),
+                errorStyle: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.red,
+                ),
                 hintStyle: TextStyle(
                   color: isDark ? Colors.grey[400] : Colors.grey[500],
                   fontFamily: GoogleFonts.poppins().fontFamily,

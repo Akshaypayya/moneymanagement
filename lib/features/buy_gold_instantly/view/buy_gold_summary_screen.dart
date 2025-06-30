@@ -1,3 +1,4 @@
+import 'package:growk_v2/core/utils/currency_formatter_utils.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/controller/buy_gold_instantly_screen_controller.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/providers/buy_gold_instantly_screen_providers.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/widgets/success_bottomsheet.dart';
@@ -40,7 +41,6 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
     });
   }
 
-
   void tick() {
     if (countdown > 0 && _isTimerRunning) {
       setState(() {
@@ -58,7 +58,6 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
     final liveGoldPriceAsync = ref.watch(liveGoldPriceProvider);
     final double goldPrice = liveGoldPriceAsync.asData?.value.data?.buyRate?.toDouble() ?? 0.0;
 
-    const double goldQuantity = 3.547;
     const double goldPurity = 999.9;
 
     final double investmentAmount = transaction?.data?.transactionAmount?.toDouble() ?? 0.0;
@@ -66,10 +65,11 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
     final double taxes = transaction?.data?.chargeAmount?.toDouble() ?? 0.0;
 
     final double totalPayable = investmentAmount + convenienceFee + taxes;
+
     String _calculateGoldQuantity(double amount, double goldRate) {
-      if (goldRate <= 0) return '0.000 g';
+      if (goldRate <= 0) return formatGoldQuantity(0);
       final quantity = amount / goldRate;
-      return '${quantity.toStringAsFixed(3)} g';
+      return formatGoldQuantity(quantity);
     }
 
 
@@ -133,7 +133,7 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
                     children: [
                       SarAmountWidget(
                         height: 16,
-                        text: walletBalance.toStringAsFixed(2),
+                        text: formatCurrency(walletBalance),
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                       ),
                       if (!hasSufficientBalance) ...[
@@ -164,123 +164,100 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
                 },
                 loading: () => const SarAmountWidget(
                   height: 16,
-                  text: "0.0",
+                  text: "0.00",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 error: (err, stack) => Text('Error: $err'),
               ),
-
-              // if (!hasSufficientBalance)
-              //   const Text(
-              //     textAlign: TextAlign.justify,
-              //     "Insufficient balance! Your GrowK Wallet does not have enough funds to complete this purchase. Please add money to your wallet and try again.",
-              //     style: TextStyle(color: Colors.red, fontSize: 11.5),
-              //   ),
-              // if (!hasSufficientBalance)
-              //   GestureDetector(
-              //     onTap: () {
-              //       Navigator.pushNamed(context, AppRouter.walletPage);
-              //     },
-              //     child: const Padding(
-              //       padding: EdgeInsets.only(top: 4.0),
-              //       child: Text(
-              //         "Add funds to your wallet",
-              //         style: TextStyle(
-              //           color: Color.fromRGBO(93, 92, 149, 1),
-              //           fontWeight: FontWeight.w900,
-              //         ),
-              //       ),
-              //     ),
-              //   ),
               const SizedBox(height: 35),
               const Text("Review Your Purchase", style: TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              _buildRow("Gold Price", "${goldPrice.toStringAsFixed(2)}/g"),
+              _buildRow("Gold Price", "${formatCurrency(goldPrice)}/g"),
               const SizedBox(height: 8),
               _buildRow("Gold Quantity", _calculateGoldQuantity(investmentAmount, goldPrice)),
               const SizedBox(height: 8),
               _buildRow("Gold Purity", "$goldPurity"),
               const SizedBox(height: 8),
-              _buildRow("Investment Amount", "$investmentAmount"),
+              _buildRow("Investment Amount", formatCurrency(investmentAmount)),
               const SizedBox(height: 8),
-              _buildRow("Convenience Fee", "$convenienceFee"),
+              _buildRow("Convenience Fee", formatCurrency(convenienceFee)),
               const SizedBox(height: 8),
-              _buildRow("Taxes", "$taxes"),
+              _buildRow("Taxes", formatCurrency(taxes)),
               const SizedBox(height: 8),
-              _buildRow("Total Payable Amount", "$totalPayable", isBold: true),
+              _buildRow("Total Payable Amount", formatCurrency(totalPayable), isBold: true),
               const SizedBox(height: 30),
               GrowkButton(
                 title: 'Confirm & Buy',
-                  onTap: () async {
-                    final loadingNotifier = ref.read(isButtonLoadingProvider.notifier);
-                    loadingNotifier.state = true;
-                    _isTimerRunning = false;
-                    _isButtonTapped = true;
+                onTap: () async {
+                  final loadingNotifier = ref.read(isButtonLoadingProvider.notifier);
+                  loadingNotifier.state = true;
+                  _isTimerRunning = false;
+                  _isButtonTapped = true;
 
-                    final useCase = ref.read(goldBuyUseCaseProvider);
-                    final transaction = ref.read(initiateBuyGoldProvider);
-                    final debitAmount = (transaction?.data?.transactionAmount ?? 0.0).toDouble();
-                    final transactionId = transaction?.data?.transactionId ?? '';
+                  final useCase = ref.read(goldBuyUseCaseProvider);
+                  final transaction = ref.read(initiateBuyGoldProvider);
+                  final debitAmount = (transaction?.data?.transactionAmount ?? 0.0).toDouble();
+                  final transactionId = transaction?.data?.transactionId ?? '';
 
-                    if (debitAmount <= 0 || transactionId.isEmpty) {
-                      showGrowkSnackBar(
+                  if (debitAmount <= 0 || transactionId.isEmpty) {
+                    showGrowkSnackBar(
+                      context: context,
+                      ref: ref,
+                      message: 'Invalid transaction details. Please try again.',
+                      type: SnackType.error,
+                    );
+                    loadingNotifier.state = false;
+                    return;
+                  }
+
+                  final String goldQuantityText = _calculateGoldQuantity(investmentAmount, goldPrice);
+
+                  try {
+                    final result = await useCase(debitAmount, transactionId);
+
+                    if (result.status == 'Success') {
+                      showModalBottomSheet(
                         context: context,
-                        ref: ref,
-                        message: 'Invalid transaction details. Please try again.',
-                        type: SnackType.error,
-                      );
-                      loadingNotifier.state = false;
-                      return;
-                    }
-
-                    final String goldQuantityText = _calculateGoldQuantity(investmentAmount, goldPrice);
-
-                    try {
-                      final result = await useCase(debitAmount, transactionId);
-
-                      if (result.status == 'Success') {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          isDismissible: false,
-                          enableDrag: false,
-                          builder: (_) => WillPopScope(
-                            onWillPop: () async => false,
-                            child: SuccessBottomSheet(
-                              title: 'Purchase Successful',
-                              description: 'Your gold purchase has been completed successfully! The amount has been deducted from your GrowK Wallet, and your gold balance has been updated.',
-                              details: {
-                                'Gold Quantity': goldQuantityText,
-                                'Investment Amount': 'SAR ${debitAmount.toStringAsFixed(2)}',
-                                'Other Charges': 'SAR ${(taxes + convenienceFee).toStringAsFixed(2)}',
-                                'Total Debited Amount': 'SAR ${(debitAmount + taxes + convenienceFee).toStringAsFixed(2)}',
-                              },
-                              onClose: () => Navigator.pop(context),
-                            ),
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        isDismissible: false,
+                        enableDrag: false,
+                        builder: (_) => WillPopScope(
+                          onWillPop: () async => false,
+                          child: SuccessBottomSheet(
+                            title: 'Purchase Successful',
+                            description: 'Your gold purchase has been completed successfully! The amount has been deducted from your GrowK Wallet, and your gold balance has been updated.',
+                            details: {
+                              'Gold Quantity': goldQuantityText,
+                              'Investment Amount': 'SAR ${formatCurrency(debitAmount)}',
+                              'Other Charges': 'SAR ${formatCurrency(taxes + convenienceFee)}',
+                              'Total Debited Amount': 'SAR ${formatCurrency(debitAmount + taxes + convenienceFee)}',
+                            },
+                            onClose: () => Navigator.pop(context),
                           ),
-                        );
-                      } else {
-                        showGrowkSnackBar(
-                          context: context,
-                          ref: ref,
-                          message: result.message ?? 'Purchase failed',
-                          type: SnackType.error,
-                        );
-                        Navigator.pop(context);
-                      }
-                    } catch (e) {
+                        ),
+                      );
+                    } else {
                       showGrowkSnackBar(
                         context: context,
                         ref: ref,
-                        message: 'An error occurred: $e',
+                        message: result.message ?? 'Purchase failed',
                         type: SnackType.error,
                       );
                       Navigator.pop(context);
-                    } finally {
-                      loadingNotifier.state = false;
                     }
+                  } catch (e) {
+                    showGrowkSnackBar(
+                      context: context,
+                      ref: ref,
+                      message: 'An error occurred: $e',
+                      type: SnackType.error,
+                    );
+                    Navigator.pop(context);
+                  } finally {
+                    loadingNotifier.state = false;
                   }
+                },
               )
             ],
           ),

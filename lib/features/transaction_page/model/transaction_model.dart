@@ -275,8 +275,8 @@ class TransactionApiModel {
     }
 
     switch (paymentMode.toLowerCase()) {
-      case 'upi':
-        return 'assets/bhim.png';
+      case 'bank transfer':
+        return 'assets/bank.jpg';
       case 'bank':
       case 'netbanking':
         return 'assets/bank.jpg';

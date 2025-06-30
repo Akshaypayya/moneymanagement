@@ -1,3 +1,4 @@
+import 'package:growk_v2/core/utils/currency_formatter_utils.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/controller/buy_gold_instantly_screen_controller.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/providers/buy_gold_instantly_screen_providers.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/providers/sell_gold_providers.dart';
@@ -106,7 +107,7 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
                       Text(
                         "$countdown",
                         style: AppTextStyle(
-                                textColor: AppColors.current(isDark).text)
+                            textColor: AppColors.current(isDark).text)
                             .headlineLarge,
                       ),
                       const Text(
@@ -125,17 +126,18 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
               const Text("Review Your Sale",
                   style: TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              _buildRow("Gold Price", "$goldPrice/g"),
-              _buildRow("Gold Quantity", "$goldQuantity g"),
-              _buildRow("Convenience Fee", "$convenienceFee"),
-              _buildRow("Taxes", "$taxes"),
-              _buildRow("Total Credited", "$totalReceived", isBold: true),
+              _buildRow("Gold Price", "${formatCurrency(goldPrice)}/g"),
+              _buildRow("Gold Quantity", formatGoldQuantity(goldQuantity)),
+              _buildRow("Convenience Fee", formatCurrency(convenienceFee)),
+              _buildRow("Taxes", formatCurrency(taxes)),
+              _buildRow("Total Credited", formatCurrency(totalReceived),
+                  isBold: true),
               const SizedBox(height: 30),
               GrowkButton(
                 title: 'Confirm & Sell',
                 onTap: () async {
                   final loadingNotifier =
-                      ref.read(isButtonLoadingProvider.notifier);
+                  ref.read(isButtonLoadingProvider.notifier);
                   loadingNotifier.state = true;
                   _isTimerRunning = false;
                   _isButtonTapped = true;
@@ -158,11 +160,11 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
                           child: SuccessBottomSheet(
                             title: 'Sale Successful',
                             description:
-                                'Your gold sale has been completed successfully! The amount will be credited to your GrowK Wallet.',
+                            'Your gold sale has been completed successfully! The amount will be credited to your GrowK Wallet.',
                             details: {
                               'Gold Quantity': '$goldQuantity g',
                               'Total Credited':
-                                  '₱${totalReceived.toStringAsFixed(2)}',
+                              'SAR ${formatCurrency(totalReceived)}',
                             },
                             onClose: () => Navigator.pop(context),
                           ),

@@ -44,6 +44,11 @@ class BankDetailsController extends StateNotifier<bool> {
     return !hasError;
   }
 
+  void clearErrorProviders() {
+    ref.read(bankNameErrorProvider.notifier).state = null;
+    ref.read(bankIbanErrorProvider.notifier).state = null;
+    ref.read(bankReIbanErrorProvider.notifier).state = null;
+  }
 
   bool isValidIBAN(String iban) {
     if (iban.isEmpty || iban.length < 15 || iban.length > 24) return false;

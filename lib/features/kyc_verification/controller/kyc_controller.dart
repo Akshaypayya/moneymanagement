@@ -7,6 +7,11 @@ class KYCController extends AsyncNotifier<void> {
   Future<void> build() async {
     // No initial logic needed here for now
   }
+  void clearErrorProviders(WidgetRef ref) {
+    ref.read(kycIdErrorProvider.notifier).state = null;
+    state = const AsyncData(null); // clear any AsyncError state
+  }
+
 
   Future<void> submitForm(BuildContext context, WidgetRef ref) async {
     final loadingNotifier = ref.read(isButtonLoadingProvider.notifier);

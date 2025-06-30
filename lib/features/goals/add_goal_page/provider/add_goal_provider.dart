@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:growk_v2/core/network/network_service.dart';
 import 'package:growk_v2/core/constants/app_url.dart';
 import 'package:growk_v2/features/goals/add_goal_page/controller/create_goal_controller.dart';
+import 'package:growk_v2/features/goals/add_goal_page/controller/saving_slider_controller.dart';
 import 'package:growk_v2/features/goals/add_goal_page/repo/create_goal_repo.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -45,3 +46,5 @@ final createGoalRepositoryProvider = Provider<CreateGoalRepository>((ref) {
 final createGoalControllerProvider = Provider<CreateGoalController>((ref) {
   return CreateGoalController(ref);
 });
+
+final goalNameErrorProvider = StateProvider<String?>((ref) => null);

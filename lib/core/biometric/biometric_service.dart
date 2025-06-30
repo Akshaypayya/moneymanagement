@@ -119,4 +119,5 @@ enum BiometricErrorCode {
   lockedOut,
   failed,
   unknown,
+  userCancel,
 }

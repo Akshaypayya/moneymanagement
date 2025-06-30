@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/edit_auto_deposit.dart';
 import 'package:growk_v2/features/goals/edit_goal_page/controller/edit_goal_controller.dart';
 import 'package:growk_v2/features/goals/edit_goal_page/view/widgets/edit_frequency_selector.dart';
@@ -9,9 +6,7 @@ import 'package:growk_v2/features/goals/edit_goal_page/view/widgets/edit_saving_
 import 'package:growk_v2/features/goals/edit_goal_page/view/widgets/edit_target_slider.dart';
 import 'package:growk_v2/features/goals/edit_goal_page/view/widgets/goal_name_widget.dart';
 import 'package:growk_v2/features/goals/edit_goal_page/view/widgets/update_goal_btn.dart';
-import 'package:growk_v2/features/goals/goal_detail_page/controller/goal_detail_controller.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
-import 'package:growk_v2/features/goals/goal_detail_page/provider/goal_transaction_provider.dart';
 import 'package:growk_v2/views.dart';
 
 class EditGoalPage extends ConsumerStatefulWidget {
@@ -70,17 +65,6 @@ class _EditGoalPageState extends ConsumerState<EditGoalPage> {
         appBar: GrowkAppBar(
           title: 'Edit Goal',
           isBackBtnNeeded: true,
-
-          // onBack: () {
-          //   ref
-          //       .read(goalDetailStateProvider(widget.goalData!.goalName)
-          //           .notifier)
-          //       .refreshGoalDetail();
-          //   ref
-          //       .read(goalTransactionStateProvider(widget.goalData!.goalName)
-          //           .notifier)
-          //       .refreshTransactions();
-          // }
         ),
         body: SafeArea(
           child: SingleChildScrollView(

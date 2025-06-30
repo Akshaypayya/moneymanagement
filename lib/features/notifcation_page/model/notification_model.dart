@@ -162,7 +162,7 @@ class NotificationItem {
         return 'assets/goldbsct.png';
       case 'deposit':
       case 'wallet_deposit':
-        return 'assets/bhim.png';
+        return 'assets/bank.jpg';
       case 'withdrawal':
       case 'transfer':
         return 'assets/bank.jpg';
@@ -171,7 +171,7 @@ class NotificationItem {
         return 'assets/customgoals.jpg';
       default:
         if (wallet) {
-          return 'assets/bhim.png';
+          return 'assets/bank.jpg';
         }
         return 'assets/bank.jpg';
     }

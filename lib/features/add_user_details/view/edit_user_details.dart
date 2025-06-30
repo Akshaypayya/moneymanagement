@@ -42,6 +42,7 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
         if (didPop) {
           ref.invalidate(profilePictureFileProvider);
           ref.read(userProfileControllerProvider).refreshUserProfile(ref);
+          ref.read(editUserControllerProvider).clearErrorProviders(ref);
         }
       },
       child: ScalingFactor(
@@ -187,10 +188,15 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                           ? 'Select gender'
                           : ref.watch(genderProvider),
                       onTap: () {
+                        FocusScope.of(context).unfocus(); // 1. Unfocus all text fields
+                        Future.delayed(Duration(milliseconds: 100), () {
+                          // 2. Open the bottom sheet *after* keyboard is fully dismissed
+                          controller.showGenderSheet(context, ref);
+                        });
+
                         if (ref.read(genderErrorProvider) != null) {
                           ref.read(genderErrorProvider.notifier).state = null;
                         }
-                        controller.showGenderSheet(context, ref);
                       },
                       errorText: genderError,
                     ),

@@ -1,12 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:growk_v2/core/constants/app_images.dart';
-import 'package:growk_v2/core/constants/app_space.dart';
-import 'package:growk_v2/core/theme/app_text_styles.dart';
-import 'package:growk_v2/core/theme/app_theme.dart';
-import 'package:growk_v2/core/widgets/reusable_text.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/controller/goal_summary_controller.dart';
+
+import 'package:growk_v2/views.dart';
 
 class GoalSummary extends ConsumerWidget {
   final String amount;
@@ -63,138 +57,15 @@ class GoalSummary extends ConsumerWidget {
               const SizedBox(width: 8),
               goalStatus == "COMPLETED"
                   ? const SizedBox()
-                  : _buildProfitSection(
+                  : buildProfitSection(
                       isDark, formattedProfit, isProfitNegative),
             ],
           ),
           const SizedBox(height: 8),
-          _buildGoldHoldingsSection(isDark),
+          buildGoldHoldingsSection(isDark, currentGold, currentGoldPrice),
           const SizedBox(height: 8),
-          _buildGoalInvestmentSection(isDark)
+          buildGoalInvestmentSection(isDark, goldInvestmentStatus),
           // _buildVirtualAccountSection(context, ref, isDark, controller),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProfitSection(
-      bool isDark, String formattedProfit, bool isProfitNegative) {
-    final profitColor = isProfitNegative ? Colors.red : Colors.green;
-
-    return Row(
-      children: [
-        Text(
-          '(Profit: ',
-          style: TextStyle(
-            fontSize: 12,
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            color: isDark ? Colors.white : Colors.black,
-          ),
-        ),
-        Image.asset(
-          AppImages.sarSymbol,
-          height: 13,
-          color: profitColor,
-        ),
-        if (isProfitNegative) GapSpace.width5,
-        Text(
-          ' $formattedProfit',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            color: profitColor,
-          ),
-        ),
-        Text(
-          ')',
-          style: TextStyle(
-            fontSize: 12,
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            color: isDark ? Colors.white : Colors.black,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGoldHoldingsSection(bool isDark) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Current Gold Holdings: ',
-          style: TextStyle(
-            fontSize: 14,
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            color: isDark ? Colors.grey[300] : Colors.grey[800],
-          ),
-        ),
-        Text(
-          currentGold,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            color: isDark ? Colors.white : Colors.black,
-          ),
-        ),
-        GapSpace.width5,
-        Row(
-          children: [
-            Text(
-              '(',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                color: isDark ? Colors.white : Colors.black,
-              ),
-            ),
-            Image.asset(
-              AppImages.sarSymbol,
-              height: 13,
-            ),
-            GapSpace.width5,
-            Text(
-              '${double.tryParse(currentGoldPrice)?.toStringAsFixed(2) ?? currentGoldPrice})',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                color: isDark ? Colors.white : Colors.black,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGoalInvestmentSection(bool isDark) {
-    return Center(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Gold Investment Status: ',
-            style: TextStyle(
-              fontSize: 14,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              color: isDark ? Colors.grey[300] : Colors.grey[800],
-            ),
-          ),
-          Text(
-            goldInvestmentStatus == "Y" ? "Yes" : "No",
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              color: isDark ? Colors.white : Colors.black,
-            ),
-          ),
         ],
       ),
     );

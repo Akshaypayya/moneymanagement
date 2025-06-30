@@ -27,6 +27,7 @@ class GrowkBottomNavBar extends ConsumerWidget {
             color: AppColors.current(isDark).scaffoldBackground,
             width: 5,
           ),
+
         ),
       ),
       child: Row(

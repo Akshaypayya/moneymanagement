@@ -75,6 +75,7 @@ class TrackYourSavingsWidget extends ConsumerWidget {
 
     return ScalingFactor(
       child: ReusableWhiteContainerWithPadding(
+        applyBottomPadding: false,
         widget: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

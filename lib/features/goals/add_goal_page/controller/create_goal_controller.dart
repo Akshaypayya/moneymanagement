@@ -2,8 +2,10 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:growk_v2/features/goals/add_goal_page/view/widget/btm_shet_stndng_instrctn.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/stnding_instrction_botom_sheet.dart';
 import 'package:growk_v2/features/goals/goal_page_checker/view/goal_page_checker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart';
 import 'package:path_provider/path_provider.dart';
@@ -141,6 +143,26 @@ class CreateGoalController {
     );
   }
 
+  // String? validateGoalName(String? value) {
+  //   if (value == null || value.isEmpty) {
+  //     return 'Please enter a goal name';
+  //   }
+  //   if (value.length > 50) {
+  //     return 'Goal name cannot exceed 50 characters';
+  //   }
+  //   return null;
+  // }
+  String? validateGoalName(String? value) {
+    final trimmedValue = value?.trim();
+    if (trimmedValue == null || trimmedValue.isEmpty) {
+      return 'Please enter a goal name';
+    }
+    if (trimmedValue.length > 50) {
+      return 'Goal name cannot exceed 50 characters';
+    }
+    return null;
+  }
+
   void _selectPresetIcon(String iconName) {
     print('CREATE CONTROLLER: Selecting preset icon: $iconName');
     ref.read(selectedGoalIconProvider.notifier).state = iconName;
@@ -156,14 +178,29 @@ class CreateGoalController {
       if (!hasPermission) return;
 
       final picker = ImagePicker();
-      final image = await picker.pickImage(source: ImageSource.camera);
+      final image = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+        maxWidth: 1200,
+        maxHeight: 1200,
+      );
+
       if (image != null) {
-        final compressedImage = await resizeImage(image);
-        ref.read(selectedImageFileProvider.notifier).state = compressedImage;
-        ref.read(selectedGoalIconProvider.notifier).state = '';
+        final imageFile = File(image.path);
+        final croppedImage = await _cropGoalImage(imageFile, ref);
+
+        if (croppedImage != null) {
+          final croppedXFile = XFile(croppedImage.path);
+          ref.read(selectedImageFileProvider.notifier).state = croppedXFile;
+          ref.read(selectedGoalIconProvider.notifier).state = '';
+
+          debugPrint(
+              'CREATE CONTROLLER: Image captured and cropped successfully');
+        }
       }
     } catch (e) {
-      print('Error picking image from camera: $e');
+      debugPrint(
+          'CREATE CONTROLLER ERROR: Failed to capture and crop image: $e');
       if (context.mounted) {
         showGrowkSnackBar(
           context: context,
@@ -180,24 +217,114 @@ class CreateGoalController {
     try {
       if (!context.mounted) return;
 
-      final hasPermission =
-          await PermissionService.requestGalleryPermission(context);
-      if (!hasPermission) return;
-
       final picker = ImagePicker();
-      final image = await picker.pickImage(source: ImageSource.gallery);
+      final image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+        maxWidth: 1200,
+        maxHeight: 1200,
+      );
+
       if (image != null) {
-        final compressedImage = await resizeImage(image);
-        ref.read(selectedImageFileProvider.notifier).state = compressedImage;
-        ref.read(selectedGoalIconProvider.notifier).state = '';
+        final imageFile = File(image.path);
+        final croppedImage = await _cropGoalImage(imageFile, ref);
+
+        if (croppedImage != null) {
+          final croppedXFile = XFile(croppedImage.path);
+          ref.read(selectedImageFileProvider.notifier).state = croppedXFile;
+          ref.read(selectedGoalIconProvider.notifier).state = '';
+
+          debugPrint(
+              'CREATE CONTROLLER: Image selected and cropped successfully');
+        }
       }
     } catch (e) {
-      print('Error picking image from gallery: $e');
+      debugPrint('CREATE CONTROLLER ERROR: Failed to pick and crop image: $e');
       if (context.mounted) {
         showGrowkSnackBar(
           context: context,
           ref: ref,
           message: 'Failed to select image',
+          type: SnackType.error,
+        );
+      }
+    }
+  }
+
+  Future<File?> _cropGoalImage(File imageFile, WidgetRef ref) async {
+    final isDark = ref.watch(isDarkProvider);
+
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatio: const CropAspectRatio(ratioX: 4, ratioY: 4),
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 90,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: AppColors.current(isDark).background,
+          backgroundColor: AppColors.current(isDark).background,
+          cropStyle: CropStyle.circle,
+          toolbarWidgetColor: AppColors.current(isDark).text,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: true,
+          cropFrameColor: Colors.transparent,
+          cropGridColor: Colors.transparent,
+          hideBottomControls: true,
+          statusBarColor: AppColors.current(isDark).text,
+          activeControlsWidgetColor: Colors.black,
+        ),
+        IOSUiSettings(
+          title: 'Crop Image',
+          aspectRatioLockEnabled: true,
+          cropStyle: CropStyle.circle,
+        ),
+      ],
+    );
+
+    if (croppedFile == null) return null;
+    return File(croppedFile.path);
+  }
+
+  Future<void> recropSelectedImage(BuildContext context, WidgetRef ref) async {
+    final currentImage = ref.read(selectedImageFileProvider);
+
+    if (currentImage == null) {
+      if (context.mounted) {
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'No image selected to crop',
+          type: SnackType.error,
+        );
+      }
+      return;
+    }
+
+    try {
+      final imageFile = File(currentImage.path);
+      final croppedImage = await _cropGoalImage(imageFile, ref);
+
+      if (croppedImage != null) {
+        final croppedXFile = XFile(croppedImage.path);
+        ref.read(selectedImageFileProvider.notifier).state = croppedXFile;
+
+        if (context.mounted) {
+          showGrowkSnackBar(
+            context: context,
+            ref: ref,
+            message: 'Image cropped successfully',
+            type: SnackType.success,
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('CREATE CONTROLLER ERROR: Failed to re-crop image: $e');
+      if (context.mounted) {
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'Failed to crop image',
           type: SnackType.error,
         );
       }
@@ -235,6 +362,17 @@ class CreateGoalController {
     try {
       final goalName = ref.read(goalNameProvider);
       final selectedFrequency = ref.read(frequencyProvider);
+
+      final validationError = validateGoalName(goalName);
+      if (validationError != null) {
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: validationError,
+          type: SnackType.error,
+        );
+        return;
+      }
 
       print('CONTROLLER: Reading autoDepositProvider...');
       final autoDeposit = ref.read(autoDepositProvider);
@@ -282,7 +420,9 @@ class CreateGoalController {
       print('CONTROLLER: Calculated values');
       print(
           'CONTROLLER: Duration: $duration years ($actualDurationInMonths months)');
-      print('CONTROLLER: Transaction amount: ${transactionAmount.round()}');
+      print('CONTROLLER: Transaction amount: ${transactionAmount}');
+      print(
+          'CONTROLLER: Transaction amount rounded: ${transactionAmount.round()}');
       print('CONTROLLER: Debit date: $debitDate');
 
       if (goalName.isEmpty) {
@@ -304,6 +444,7 @@ class CreateGoalController {
         "duration": duration,
         "debitDate": debitDate,
         "transactionAmount": transactionAmount.round(),
+        // "transactionAmount": transactionAmount,
         "goldInvestment": autoDeposit ? "Y" : "N",
         "frequency": selectedFrequency,
         if (selectedIcon.isNotEmpty && selectedImage == null)

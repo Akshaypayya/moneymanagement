@@ -15,6 +15,7 @@ class SavedAddressController {
     final city = ref.read(cityControllerProvider).text.trim();
     final state = ref.read(stateControllerProvider).text.trim();
 
+    // Pin code validation
     if (pin.isEmpty) {
       ref.read(pinCodeErrorProvider.notifier).state = 'Pin code is required';
       isValid = false;
@@ -25,29 +26,45 @@ class SavedAddressController {
       ref.read(pinCodeErrorProvider.notifier).state = null;
     }
 
+    // Address Line 1 validation
     if (line1.isEmpty) {
       ref.read(addressLine1ErrorProvider.notifier).state = 'Address Line 1 is required';
+      isValid = false;
+    } else if (line1.length < 3 || line1.length > 70) {
+      ref.read(addressLine1ErrorProvider.notifier).state = 'Address length must be between 3 and 70';
       isValid = false;
     } else {
       ref.read(addressLine1ErrorProvider.notifier).state = null;
     }
 
+    // Address Line 2 validation
     if (line2.isEmpty) {
       ref.read(addressLine2ErrorProvider.notifier).state = 'Address Line 2 is required';
+      isValid = false;
+    } else if (line2.length < 3 || line2.length > 70) {
+      ref.read(addressLine2ErrorProvider.notifier).state = 'Address length must be between 3 and 70';
       isValid = false;
     } else {
       ref.read(addressLine2ErrorProvider.notifier).state = null;
     }
 
+    // City validation
     if (city.isEmpty) {
       ref.read(cityErrorProvider.notifier).state = 'City is required';
+      isValid = false;
+    } else if (city.length < 3 || city.length > 50) {
+      ref.read(cityErrorProvider.notifier).state = 'City length must be between 3 and 50';
       isValid = false;
     } else {
       ref.read(cityErrorProvider.notifier).state = null;
     }
 
+    // State validation
     if (state.isEmpty) {
       ref.read(stateErrorProvider.notifier).state = 'State is required';
+      isValid = false;
+    } else if (state.length < 3 || state.length > 50) {
+      ref.read(stateErrorProvider.notifier).state = 'State length must be between 3 and 50';
       isValid = false;
     } else {
       ref.read(stateErrorProvider.notifier).state = null;
@@ -55,8 +72,13 @@ class SavedAddressController {
 
     return isValid;
   }
-
-
+  void clearErrorProviders() {
+    ref.read(pinCodeErrorProvider.notifier).state = null;
+    ref.read(addressLine1ErrorProvider.notifier).state = null;
+    ref.read(addressLine2ErrorProvider.notifier).state = null;
+    ref.read(cityErrorProvider.notifier).state = null;
+    ref.read(stateErrorProvider.notifier).state = null;
+  }
 
   void clearFields() {
     ref.read(pinCodeControllerProvider).clear();

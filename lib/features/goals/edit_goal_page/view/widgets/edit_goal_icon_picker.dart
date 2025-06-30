@@ -27,24 +27,6 @@ class _EditGoalIconPickerState extends ConsumerState<EditGoalIconPicker> {
     return Center(
       child: Stack(
         children: [
-          // Container(
-          //   width: 100,
-          //   height: 100,
-          //   decoration: BoxDecoration(
-          //     shape: BoxShape.circle,
-          //     border: Border.all(
-          //       color: isDark ? Colors.white : Colors.black,
-          //       width: 1,
-          //     ),
-          //   ),
-          //   child: GestureDetector(
-          //     onTap: () => controller.pickGoalImageActionSheet(context, ref),
-          //     child: Center(
-          //       child: _buildIconOrImage(
-          //           selectedIcon, selectedImage, widget.goalData!),
-          //     ),
-          //   ),
-          // ),
           GestureDetector(
             onTap: () => controller.pickGoalImageActionSheet(context, ref),
             child: Container(

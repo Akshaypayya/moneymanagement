@@ -4,12 +4,14 @@ class CommonBottomSheet extends ConsumerStatefulWidget {
   final String title;
   final List<String> options;
   final void Function(String) onSelected;
+  final bool showSearch;
 
   const CommonBottomSheet({
     super.key,
     required this.title,
     required this.options,
     required this.onSelected,
+    this.showSearch=true,
   });
 
   @override
@@ -71,7 +73,7 @@ class _CommonBottomSheetState extends ConsumerState<CommonBottomSheet> {
               ),
             ),
             const SizedBox(height: 12),
-            Container(
+            showSearch == true ?Container(
               decoration: BoxDecoration(
                 color: isDark ? Colors.grey[800] : Colors.grey[100],
                 borderRadius: BorderRadius.circular(10),
@@ -87,7 +89,7 @@ class _CommonBottomSheetState extends ConsumerState<CommonBottomSheet> {
                   border: InputBorder.none,
                 ),
               ),
-            ),
+            ):ReusableSizedBox(),
             const SizedBox(height: 12),
             Expanded(
               child: ListView.builder(

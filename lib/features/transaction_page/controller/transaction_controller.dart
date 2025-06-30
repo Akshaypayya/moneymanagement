@@ -1,7 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/foundation.dart';
-import 'package:growk_v2/features/transaction_page/model/transaction_model.dart';
-import 'package:growk_v2/features/transaction_page/provider/transaction_provider.dart';
+import 'package:growk_v2/views.dart';
 
 class PaginatedTransactionNotifier
     extends StateNotifier<TransactionPaginationState> {
@@ -118,6 +115,32 @@ class PaginatedTransactionNotifier
         errorMessage: 'Error loading transactions: $e',
         hasMore: false,
       );
+    }
+  }
+
+  void onTransactionScroll(ScrollController scrollController) {
+    final state = ref.read(paginatedTransactionProvider);
+
+    if (scrollController.position.pixels >=
+        scrollController.position.maxScrollExtent - 200) {
+      if (state.hasMore && !state.isAnyLoading) {
+        debugPrint(
+            "TRANSACTIONS PAGE: Scroll triggered - loading next ${state.itemsPerPage} items");
+        debugPrint(
+            "TRANSACTIONS PAGE: Current items: ${state.transactions.length}/${state.totalRecords}");
+        debugPrint(
+            "TRANSACTIONS PAGE: Next request will be: iDisplayStart=${state.transactions.length}, iDisplayLength=${state.itemsPerPage}");
+
+        ref.read(paginatedTransactionProvider.notifier).loadMoreTransactions();
+      } else {
+        if (!state.hasMore) {
+          debugPrint(
+              "TRANSACTIONS PAGE: All transactions loaded (${state.transactions.length}/${state.totalRecords})");
+        } else if (state.isAnyLoading) {
+          debugPrint(
+              "TRANSACTIONS PAGE: Already loading, skipping scroll trigger");
+        }
+      }
     }
   }
 

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -245,15 +246,29 @@ class EditGoalController {
       if (!hasPermission) return;
 
       final picker = ImagePicker();
-      final image = await picker.pickImage(source: ImageSource.camera);
+      final image = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+        maxWidth: 1200,
+        maxHeight: 1200,
+      );
+
       if (image != null) {
-        final compressedImage = await resizeImage(image);
-        ref.read(editSelectedImageFileProvider.notifier).state =
-            compressedImage;
-        ref.read(editSelectedGoalIconProvider.notifier).state = '';
+        final imageFile = File(image.path);
+        final croppedImage = await _cropGoalImage(imageFile, ref);
+
+        if (croppedImage != null) {
+          final croppedXFile = XFile(croppedImage.path);
+          ref.read(editSelectedImageFileProvider.notifier).state = croppedXFile;
+          ref.read(editSelectedGoalIconProvider.notifier).state = '';
+
+          debugPrint(
+              'CREATE CONTROLLER: Image captured and cropped successfully');
+        }
       }
     } catch (e) {
-      print('Error picking image from camera: $e');
+      debugPrint(
+          'CREATE CONTROLLER ERROR: Failed to capture and crop image: $e');
       if (context.mounted) {
         showGrowkSnackBar(
           context: context,
@@ -264,31 +279,177 @@ class EditGoalController {
       }
     }
   }
+  // Future<void> _pickImageFromCamera(BuildContext context, WidgetRef ref) async {
+  //   try {
+  //     if (!context.mounted) return;
 
+  //     final hasPermission =
+  //         await PermissionService.requestCameraPermission(context);
+  //     if (!hasPermission) return;
+
+  //     final picker = ImagePicker();
+  //     final image = await picker.pickImage(source: ImageSource.camera);
+  //     if (image != null) {
+  //       final compressedImage = await resizeImage(image);
+  // ref.read(editSelectedImageFileProvider.notifier).state =
+  //     compressedImage;
+  // ref.read(editSelectedGoalIconProvider.notifier).state = '';
+  //     }
+  //   } catch (e) {
+  //     print('Error picking image from camera: $e');
+  //     if (context.mounted) {
+  //       showGrowkSnackBar(
+  //         context: context,
+  //         ref: ref,
+  //         message: 'Failed to capture image',
+  //         type: SnackType.error,
+  //       );
+  //     }
+  //   }
+  // }
   Future<void> _pickImageFromGallery(
       BuildContext context, WidgetRef ref) async {
     try {
       if (!context.mounted) return;
 
-      final hasPermission =
-          await PermissionService.requestGalleryPermission(context);
-      if (!hasPermission) return;
-
       final picker = ImagePicker();
-      final image = await picker.pickImage(source: ImageSource.gallery);
+      final image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+        maxWidth: 1200,
+        maxHeight: 1200,
+      );
+
       if (image != null) {
-        final compressedImage = await resizeImage(image);
-        ref.read(editSelectedImageFileProvider.notifier).state =
-            compressedImage;
-        ref.read(editSelectedGoalIconProvider.notifier).state = '';
+        final imageFile = File(image.path);
+        final croppedImage = await _cropGoalImage(imageFile, ref);
+
+        if (croppedImage != null) {
+          final croppedXFile = XFile(croppedImage.path);
+          ref.read(editSelectedImageFileProvider.notifier).state = croppedXFile;
+          ref.read(editSelectedGoalIconProvider.notifier).state = '';
+
+          debugPrint(
+              'CREATE CONTROLLER: Image selected and cropped successfully');
+        }
       }
     } catch (e) {
-      print('Error picking image from gallery: $e');
+      debugPrint('CREATE CONTROLLER ERROR: Failed to pick and crop image: $e');
       if (context.mounted) {
         showGrowkSnackBar(
           context: context,
           ref: ref,
           message: 'Failed to select image',
+          type: SnackType.error,
+        );
+      }
+    }
+  }
+
+  // Future<void> _pickImageFromGallery(
+  //     BuildContext context, WidgetRef ref) async {
+  //   try {
+  //     if (!context.mounted) return;
+
+  //     final hasPermission =
+  //         await PermissionService.requestGalleryPermission(context);
+  //     if (!hasPermission) return;
+
+  //     final picker = ImagePicker();
+  //     final image = await picker.pickImage(source: ImageSource.gallery);
+  //     if (image != null) {
+  //       final compressedImage = await resizeImage(image);
+  //       ref.read(editSelectedImageFileProvider.notifier).state =
+  //           compressedImage;
+  //       ref.read(editSelectedGoalIconProvider.notifier).state = '';
+  //     }
+  //   } catch (e) {
+  //     print('Error picking image from gallery: $e');
+  //     if (context.mounted) {
+  //       showGrowkSnackBar(
+  //         context: context,
+  //         ref: ref,
+  //         message: 'Failed to select image',
+  //         type: SnackType.error,
+  //       );
+  //     }
+  //   }
+  // }
+
+  Future<File?> _cropGoalImage(File imageFile, WidgetRef ref) async {
+    final isDark = ref.watch(isDarkProvider);
+
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatio: const CropAspectRatio(ratioX: 4, ratioY: 4),
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 90,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: AppColors.current(isDark).background,
+          backgroundColor: AppColors.current(isDark).background,
+          cropStyle: CropStyle.circle,
+          toolbarWidgetColor: AppColors.current(isDark).text,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: true,
+          cropFrameColor: Colors.transparent,
+          cropGridColor: Colors.transparent,
+          hideBottomControls: true,
+          statusBarColor: AppColors.current(isDark).text,
+          activeControlsWidgetColor: Colors.black,
+        ),
+        IOSUiSettings(
+          title: 'Crop Image',
+          aspectRatioLockEnabled: true,
+          cropStyle: CropStyle.circle,
+        ),
+      ],
+    );
+
+    if (croppedFile == null) return null;
+    return File(croppedFile.path);
+  }
+
+  Future<void> recropSelectedImage(BuildContext context, WidgetRef ref) async {
+    final currentImage = ref.read(editSelectedImageFileProvider);
+
+    if (currentImage == null) {
+      if (context.mounted) {
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'No image selected to crop',
+          type: SnackType.error,
+        );
+      }
+      return;
+    }
+
+    try {
+      final imageFile = File(currentImage.path);
+      final croppedImage = await _cropGoalImage(imageFile, ref);
+
+      if (croppedImage != null) {
+        final croppedXFile = XFile(croppedImage.path);
+        ref.read(editSelectedImageFileProvider.notifier).state = croppedXFile;
+
+        if (context.mounted) {
+          showGrowkSnackBar(
+            context: context,
+            ref: ref,
+            message: 'Image cropped successfully',
+            type: SnackType.success,
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('CREATE CONTROLLER ERROR: Failed to re-crop image: $e');
+      if (context.mounted) {
+        showGrowkSnackBar(
+          context: context,
+          ref: ref,
+          message: 'Failed to crop image',
           type: SnackType.error,
         );
       }

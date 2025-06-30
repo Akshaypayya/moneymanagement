@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/core/constants/app_space.dart';
 import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_app_bar.dart';
 import 'package:growk_v2/core/widgets/reusable_snackbar.dart';
-import 'package:growk_v2/core/widgets/sar_amount_widget.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/controller/goal_detail_controller.dart';
-import 'package:growk_v2/features/goals/goal_detail_page/controller/goals_funds_controller.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/model/goal_view_model.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/provider/goal_transaction_provider.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_deail_progress.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_grid.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_header.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_summary.dart';
-import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_detail_transaction_list.dart';
 import 'package:growk_v2/features/goals/edit_goal_page/view/edit_goal_page.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_load_amnt_botm_sheet.dart';
 import 'package:growk_v2/features/goals/goal_detail_page/view/widgets/goal_transaction.dart';
@@ -314,7 +310,7 @@ class GoalDetailPage extends ConsumerWidget {
         ),
         Container(
           color: AppColors.current(isDark).scaffoldBackground,
-          height: 10,
+          height: 5,
         ),
         GoalSummary(
           amount: goalData.formattedAvailableBalance,
@@ -328,33 +324,35 @@ class GoalDetailPage extends ConsumerWidget {
         ),
         GoalProgress(
           progress: goalData.progressText,
-          invested: goalData.investedAmount.toString(),
           target: goalData.formattedTargetAmount,
+          // invested: goalData.investedAmount.toString(),
+          invested: goalData.formattedInvestedAmount,
           progressPercent: goalData.progressPercent,
         ),
         const SizedBox(height: 20),
         GoalDetailsGrid(
           targetYear: goalData.targetYear.toString(),
           targetAmount: goalData.formattedTargetAmount,
-          investmentAmount: goalData.transactionAmount.toString(),
+          investmentAmount: goalData.formattedTransactionAmount,
           investmentFrequency: _getFrequencyText(goalData.debitDate),
         ),
         const SizedBox(height: 20),
         Container(
           color: AppColors.current(isDark).scaffoldBackground,
-          height: 10,
+          height: 5,
         ),
         StandingInstructions(
           bankId: 'Arab National Bank',
           iBanAcntNbr: goalData.linkedVA,
           acntName: 'Nexus Global Limited',
-          emiAmnt: goalData.transactionAmount.toString(),
+          // emiAmnt: goalData.transactionAmount.toString(),
+          emiAmnt: goalData.formattedTransactionAmount,
           duration: _getFrequencyText(goalData.debitDate),
           goalName: goalData.goalName,
         ),
         Container(
           color: AppColors.current(isDark).scaffoldBackground,
-          height: 10,
+          height: 5,
         ),
         GoalTransactionListWidget(goalName: goalName),
         GapSpace.height20

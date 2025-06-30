@@ -9,12 +9,14 @@ class ApplyRefCodeSubmit extends ConsumerWidget {
     final controller = ref.read(applyRefCodeControllerProvider);
 
     void navigateToHome() {
+      ref.read(editUserControllerProvider).setDefaults(ref);
       Navigator.pushNamedAndRemoveUntil(
         context,
         AppRouter.editUserDetailsScreen,
             (route) => false,
       );
     }
+
 
     return ScalingFactor(
       child: ReusableColumn(

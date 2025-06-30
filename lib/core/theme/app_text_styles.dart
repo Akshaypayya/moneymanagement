@@ -83,6 +83,14 @@ TextStyle get headlineVeryLarge => GoogleFonts.poppins(
         fontWeight: FontWeight.w600,
         color: textColor,
       );
+  TextStyle get graphLabel => GoogleFonts.poppins(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+    height: 1.4, // improves line height for clarity
+    letterSpacing: 0.2, // slightly improves readability
+    color: textColor!.withOpacity(0.65), // slightly more visible
+  );
+
 
   /// Accessor: AppTextStyle.current(isDark).bodyRegular
   static AppTextStyle current(bool isDark) =>
