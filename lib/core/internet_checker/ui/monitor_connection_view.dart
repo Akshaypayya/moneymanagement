@@ -23,9 +23,9 @@ class _MonitorConnectionViewState extends ConsumerState<MonitorConnectionView> {
   void initState() {
     super.initState();
 
-    Future.microtask(() {
-      ref.read(connectivityKeeperProvider);
-    });
+    // Future.microtask(() {
+    //   ref.read(connectivityKeeperProvider);
+    // });
   }
 
   void _handleConnectivityChange(bool isConnected) {

@@ -21,18 +21,18 @@ final connectivityCheckProvider = FutureProvider<bool>((ref) async {
   return await connectivityService.checkConnectivity();
 });
 
-final currentConnectivityProvider = StateProvider<bool>((ref) {
-  return true;
-});
+// final currentConnectivityProvider = StateProvider<bool>((ref) {
+//   return true;
+// });
 
-final connectivityKeeperProvider = Provider<void>((ref) {
-  final connectivityStream = ref.watch(connectivityStatusProvider);
+// final connectivityKeeperProvider = Provider<void>((ref) {
+//   final connectivityStream = ref.watch(connectivityStatusProvider);
 
-  connectivityStream.whenData((isConnected) {
-    Future.microtask(() {
-      ref.read(currentConnectivityProvider.notifier).state = isConnected;
-    });
-  });
+//   connectivityStream.whenData((isConnected) {
+//     Future.microtask(() {
+//       ref.read(currentConnectivityProvider.notifier).state = isConnected;
+//     });
+//   });
 
-  return;
-});
+//   return;
+// });
