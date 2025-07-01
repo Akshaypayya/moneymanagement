@@ -90,8 +90,10 @@ class SettingsItem extends ConsumerWidget {
                 onChanged: (value) {
                   ref.read(notificationEnabledProvider.notifier).state = value;
                 },
-                activeColor: Colors.teal,
-                activeTrackColor: Colors.teal.withOpacity(0.5),
+                activeColor: isDark ? Colors.black : Colors.white,
+                activeTrackColor: isDark ? Colors.white : Colors.black,
+                inactiveThumbColor: isDark ? Colors.black : Colors.white,
+                inactiveTrackColor: isDark ? Colors.grey : Colors.black,
               )
             else if (trailing != null)
               trailing!,

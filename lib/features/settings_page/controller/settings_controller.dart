@@ -88,7 +88,7 @@ class SettingsController {
             child: Text(
               'Cancel',
               style: TextStyle(
-                color: isDark ? Colors.black : Colors.white,
+                color: isDark ? Colors.white : Colors.black,
                 fontSize: 14,
                 fontFamily: GoogleFonts.poppins().fontFamily,
               ),

@@ -6,7 +6,7 @@ class NomineeDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(nomineeDetailsControllerProvider);
-
+    final isDark = ref.watch(isDarkProvider);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if(didPop){
@@ -15,6 +15,7 @@ class NomineeDetailsScreen extends ConsumerWidget {
       },
       child: ScalingFactor(
         child: CustomScaffold(
+          backgroundColor: AppColors.current(isDark).background,
           appBar: GrowkAppBar(
             title: 'Nominee Details',
             isBackBtnNeeded: true,

@@ -208,7 +208,7 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
                   },
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
-                    backgroundColor: isSelected ? Colors.teal : Colors.white,
+                    backgroundColor: isSelected ? Colors.teal : Colors.transparent,
                     foregroundColor: isSelected ? Colors.white : Colors.black,
                     side: BorderSide(color: Colors.grey.shade400),
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -219,7 +219,7 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
                   child: Text(
                     isBuyByWeight ? "$value gram" : "SAR $value",
                     style: AppTextStyle.current(isDark).bodySmall.copyWith(
-                        color: isSelected ? Colors.white : Colors.black),
+                        color: isSelected ? Colors.white : isDark?Colors.white:Colors.black),
                   ),
                 ),
               ),
@@ -290,7 +290,7 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
           padding: const EdgeInsets.symmetric(vertical: 9),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: isSelected ? Colors.black : Colors.white,
+            color: isSelected ? isDark?Colors.white:Colors.black : isDark?Colors.black:Colors.white,
           ),
           alignment: Alignment.center,
           child: ReusableRow(
@@ -302,7 +302,7 @@ class _BuyGoldUIWidgetState extends ConsumerState<BuyGoldUIWidget> {
               Text(
                 label,
                 style: AppTextStyle.current(isDark).titleBottomNav.copyWith(
-                      color: isSelected ? Colors.white : Colors.black,
+                      color: isSelected ?  isDark?Colors.black:Colors.white : isDark?Colors.white:Colors.black,
                     ),
               ),
             ],

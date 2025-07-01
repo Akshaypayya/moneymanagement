@@ -22,6 +22,7 @@ class _CommonBottomSheetState extends ConsumerState<CommonBottomSheet> {
   late List<String> filteredOptions;
   final TextEditingController _searchController = TextEditingController();
 
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +39,7 @@ class _CommonBottomSheetState extends ConsumerState<CommonBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = ref.watch(isDarkProvider);
     final textStyles = AppTextStyle.current(isDark);
 
     return DraggableScrollableSheet(
@@ -48,7 +49,7 @@ class _CommonBottomSheetState extends ConsumerState<CommonBottomSheet> {
       maxChildSize: 0.9,
       builder: (context, scrollController) => Container(
         decoration: BoxDecoration(
-          color: AppColors.current(isDark).background,
+          color: isDark?Colors.grey[900]:AppColors.current(isDark).background,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         ),
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),

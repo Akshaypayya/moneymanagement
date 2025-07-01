@@ -1,13 +1,14 @@
 import 'package:growk_v2/views.dart';
 
-class CommonTitleAndDescription extends StatelessWidget {
+class CommonTitleAndDescription extends ConsumerWidget {
   final String title;
   final String description;
 
   const CommonTitleAndDescription({super.key, required this.title, required this.description});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    final isDark = ref.watch(isDarkProvider);
     return ScalingFactor(
         child: Align(
       alignment: Alignment.centerLeft,
@@ -20,7 +21,7 @@ class CommonTitleAndDescription extends StatelessWidget {
             ),
         ReusableText(
             text: title,
-            style: AppTextStyle.current(false).titleRegularMedium),
+            style: AppTextStyle.current(isDark).titleRegularMedium),
         ReusableSizedBox(
           height: 5,
         ),
@@ -28,7 +29,7 @@ class CommonTitleAndDescription extends StatelessWidget {
           textAlign: TextAlign.justify,
           maxLines: 3,
             text: description,
-            style: AppTextStyle.current(false).bodySmall),
+            style: AppTextStyle.current(isDark).bodySmall),
       ]),
     ));
   }

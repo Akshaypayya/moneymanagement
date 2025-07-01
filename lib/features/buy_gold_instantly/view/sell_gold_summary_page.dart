@@ -5,7 +5,6 @@ import 'package:growk_v2/features/buy_gold_instantly/view/providers/sell_gold_pr
 import 'package:growk_v2/features/buy_gold_instantly/view/widgets/success_bottomsheet.dart';
 import 'package:growk_v2/features/wallet_page/provider/wallet_screen_providers.dart';
 import 'package:growk_v2/views.dart';
-import 'package:growk_v2/core/widgets/sar_amount_widget.dart';
 
 class SellGoldSummaryPage extends ConsumerStatefulWidget {
   const SellGoldSummaryPage({super.key});
@@ -71,6 +70,7 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
     final double totalReceived = creditedAmount - (convenienceFee + taxes);
 
     return Scaffold(
+      backgroundColor: AppColors.current(isDark).background,
       appBar: const GrowkAppBar(
         title: 'Sell Gold Instantly',
         isBackBtnNeeded: true,
@@ -81,12 +81,14 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
                   Icon(Icons.info_outline, color: Colors.orange),
                   SizedBox(width: 8),
-                  Text("Price Lock Countdown",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    "Price Lock Countdown",
+                    style: AppTextStyle.current(isDark).titleSmall,
+                  )
                 ],
               ),
               const SizedBox(height: 8),
@@ -107,13 +109,13 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
                       Text(
                         "$countdown",
                         style: AppTextStyle(
-                            textColor: AppColors.current(isDark).text)
+                                textColor: AppColors.current(isDark).text)
                             .headlineLarge,
                       ),
-                      const Text(
+                      Text(
                         "Seconds\nRemaining",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12),
+                        style: AppTextStyle.current(isDark).bodyKycSmall,
                       ),
                     ],
                   ),
@@ -123,8 +125,10 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
                 ),
               ),
               const SizedBox(height: 30),
-              const Text("Review Your Sale",
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+              Text(
+                "Review Your Sale",
+                style: AppTextStyle.current(isDark).titleSmall,
+              ),
               const SizedBox(height: 8),
               _buildRow("Gold Price", "${formatCurrency(goldPrice)}/g"),
               _buildRow("Gold Quantity", formatGoldQuantity(goldQuantity)),
@@ -137,7 +141,7 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
                 title: 'Confirm & Sell',
                 onTap: () async {
                   final loadingNotifier =
-                  ref.read(isButtonLoadingProvider.notifier);
+                      ref.read(isButtonLoadingProvider.notifier);
                   loadingNotifier.state = true;
                   _isTimerRunning = false;
                   _isButtonTapped = true;
@@ -160,11 +164,11 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
                           child: SuccessBottomSheet(
                             title: 'Sale Successful',
                             description:
-                            'Your gold sale has been completed successfully! The amount will be credited to your GrowK Wallet.',
+                                'Your gold sale has been completed successfully! The amount will be credited to your GrowK Wallet.',
                             details: {
                               'Gold Quantity': '$goldQuantity g',
                               'Total Credited':
-                              'SAR ${formatCurrency(totalReceived)}',
+                                  'SAR ${formatCurrency(totalReceived)}',
                             },
                             onClose: () => Navigator.pop(context),
                           ),
@@ -201,6 +205,7 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
 
   Widget _buildRow(String label, String value, {bool isBold = false}) {
     final bool isGramValue = value.trim().toLowerCase().contains('g');
+    final isDark = ref.watch(isDarkProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -209,27 +214,24 @@ class _SellGoldSummaryPageState extends ConsumerState<SellGoldSummaryPage> {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.w900 : FontWeight.normal,
-              fontSize: 12,
-            ),
+            style: AppTextStyle.current(isDark).bodyKycSmall.copyWith(
+                  fontSize: 12,
+                  fontWeight: isBold ? FontWeight.w900 : FontWeight.normal,
+                ),
           ),
           isGramValue
-              ? Text(
-            value,
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: isBold ? 16 : 12,
-            ),
-          )
+              ? Text(value,
+                  style: AppTextStyle.current(isDark).bodyKycSmall.copyWith(
+                        fontWeight: FontWeight.w900,
+                        fontSize: isBold ? 16 : 12,
+                      ))
               : SarAmountWidget(
-            text: value,
-            height: 12,
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: isBold ? 16 : 12,
-            ),
-          ),
+                  text: value,
+                  height: 12,
+                  style:  AppTextStyle.current(isDark).bodyKycSmall.copyWith(
+                    fontWeight: FontWeight.w900,
+                    fontSize: isBold ? 16 : 12,)
+                ),
         ],
       ),
     );

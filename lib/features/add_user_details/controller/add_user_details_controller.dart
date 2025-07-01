@@ -22,6 +22,7 @@ class EditUserController {
       initialDate: DateTime(2000),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
+      ref: ref
     );
 
     if (pickedDate != null) {

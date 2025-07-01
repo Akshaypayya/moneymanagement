@@ -107,18 +107,18 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: AppColors.current(isDark).primary,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: ReusableRow(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(widget.actionIcon,
-                        height: 15, color: Colors.white),
+                        height: 15, color: isDark?Colors.black:Colors.white),
                     const SizedBox(width: 5),
                     ReusableText(
                       text: widget.action,
-                      style: AppTextStyle(textColor: Colors.white).labelSmall,
+                      style: AppTextStyle(textColor:isDark?Colors.black:Colors.white).labelSmall,
                     ),
                   ],
                 ),
@@ -197,7 +197,7 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                   widget.received == true
                       ? 'Received: '
                       : widget.goldSavings == true
-                          ? 'Gold Savings: '
+                          ? 'Gold:'
                           : 'Invested: ',
                   style: TextStyle(
                     fontSize: 13,

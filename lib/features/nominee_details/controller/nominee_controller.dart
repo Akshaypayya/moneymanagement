@@ -8,16 +8,16 @@ class NomineeDetailsController {
 
   NomineeDetailsController(this.ref);
 
-  void showDateOfBirthPicker(BuildContext context) async {
+  void showDateOfBirthPicker(BuildContext context,WidgetRef ref) async {
     FocusScope.of(context).unfocus();
 
     final pickedDate = await DatePickerUtils.showThemedDatePicker(
+      ref: ref,
       context: context,
       initialDate: DateTime(2000),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-
     if (pickedDate != null) {
       final formatted = DatePickerUtils.formatDate(pickedDate); // e.g., 'yyyy-MM-dd'
       final uiFormatted = DateFormat('dd/MM/yyyy').format(pickedDate);

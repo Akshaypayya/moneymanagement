@@ -8,6 +8,7 @@ class KycVerificationPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(isDarkProvider);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if(didPop){
@@ -16,19 +17,22 @@ class KycVerificationPage extends ConsumerWidget {
       },
       child: ScalingFactor(
         child: CustomScaffold(
+          backgroundColor: AppColors.current(isDark).background,
           appBar: GrowkAppBar(title: 'KYC verification', isBackBtnNeeded: true),
           body:SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 22),
-            child: const ReusableColumn(
+            padding: EdgeInsets.symmetric(horizontal: 22),
+            child:  ReusableColumn(
               children: [
                 KycVectorImage(),
-                KycDescription(),
+                KycDescription(isDark: isDark,),
                 ReusableSizedBox(height: 50,),
                 KycVerificationForm(),
+                ReusableSizedBox(height: 150,),
+                KycVerificationButton()
               ],
             ),
           ),
-          bottomNavigationBar: const KycVerificationButton(),
+          // bottomNavigationBar: const ,
         ),
       ),
     );

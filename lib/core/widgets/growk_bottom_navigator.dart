@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:growk_v2/core/theme/app_text_styles.dart';
 import 'package:growk_v2/core/widgets/reusable_text.dart';
 
+import '../../views.dart';
+
 class GrowkBottomSheetNavigator extends ConsumerWidget {
   final String label;
   final IconData? icon;
@@ -29,8 +31,9 @@ class GrowkBottomSheetNavigator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final labelColor = disabled ? Colors.grey : Colors.black54;
-    final valueColor = disabled ? Colors.grey[600]! : Colors.black;
+    final isDark = ref.watch(isDarkProvider);
+    final labelColor = disabled ? Colors.grey : isDark?Colors.white:Colors.black54;
+    final valueColor = disabled ? Colors.grey[600]! : isDark?Colors.white:Colors.black;
     final hasError = errorText != null && errorText!.isNotEmpty;
     final hasValue = valueText.trim().isNotEmpty;
 
@@ -89,7 +92,7 @@ class GrowkBottomSheetNavigator extends ConsumerWidget {
             ),
             const SizedBox(height: 6),
             Divider(
-              color: hasError ? Colors.red : Colors.grey.shade300,
+              color: hasError ? Colors.red : isDark?Colors.grey.shade800:Colors.grey.shade300,
               thickness: 1,
               height: 1,
             ),

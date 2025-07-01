@@ -84,8 +84,8 @@ class NotificationStateNotifier
         if (!loadMore) {
           state = AsyncValue.error(
             notificationModel.status == 'failed'
-                ? 'Failed to load notifications'
-                : notificationModel.status,
+                ? notificationModel.status
+                : 'Failed to load notifications',
             StackTrace.current,
           );
         }

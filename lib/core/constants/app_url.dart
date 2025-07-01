@@ -46,6 +46,8 @@ class AppUrl {
   static const String initiateGoldBuyUrl =
       "/user-service/user/initiateGoldTransaction";
   static const String buyGoldUrl = "/user-service/user/buyGold";
+  static const String addFcmTokenUrl = "/user-service/user/updateFcmToken";
+  static const String deleteFcmTokenUrl = "/user-service/user/deleteFcmToken";
   static const String getLiveGoldPriceUrl =
       "/user-service/user/currentGoldRate";
   static const String goalSellGoldUrl = "/user-service/goals/sellGold";

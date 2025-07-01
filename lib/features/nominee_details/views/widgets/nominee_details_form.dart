@@ -30,7 +30,7 @@ class NomineeDetailsForm extends ConsumerWidget {
           label: 'Date of Birth',
           valueText: dobUI.isEmpty ? 'Select date of birth' : dobUI,
           errorText: dobError.isEmpty ? null : dobError,
-          onTap: () => controller.showDateOfBirthPicker(context),
+          onTap: () => controller.showDateOfBirthPicker(context,ref),
           // onClear: () {
           //   ref.read(nomineeDobProvider.notifier).state = '';
           // },

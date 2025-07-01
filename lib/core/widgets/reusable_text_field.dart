@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:growk_v2/core/theme/app_text_styles.dart';
 import 'package:growk_v2/core/widgets/reusable_text.dart';
+
+import '../../views.dart';
 class ReusableTextField extends ConsumerWidget {
   final String label;
   final String? hintText;
@@ -39,6 +41,7 @@ class ReusableTextField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(isDarkProvider);
     final labelColor = disabled ? Colors.grey : Colors.black54;
     final inputTextColor = disabled ? Colors.grey[600]! : Colors.black;
 
@@ -50,11 +53,11 @@ class ReusableTextField extends ConsumerWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (icon != null) Icon(icon, size: 14, color: labelColor),
+              if (icon != null) Icon(icon, size: 14, color:  isDark?Colors.white:labelColor),
               if (icon != null) const SizedBox(width: 6),
               ReusableText(
                 text: label,
-                style: AppTextStyle(textColor: labelColor).labelSmall,
+                style: AppTextStyle(textColor: isDark?Colors.white:labelColor).labelSmall,
               ),
               if (isMandatory)
                 const Text(
@@ -71,7 +74,7 @@ class ReusableTextField extends ConsumerWidget {
             onTap: disabled ? null : onTap,
             inputFormatters: inputFormatters,
             onChanged: onChanged,
-            style: AppTextStyle(textColor: inputTextColor).titleSmall,
+            style: AppTextStyle(textColor: isDark?Colors.white:inputTextColor).titleSmall,
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               errorStyle: AppTextStyle(textColor: Colors.red).labelSmall,
@@ -88,13 +91,13 @@ class ReusableTextField extends ConsumerWidget {
               contentPadding: const EdgeInsets.only(top: 8, bottom: 6),
               suffixIcon: suffixIcon,
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.shade300),
+                borderSide: BorderSide(color: isDark?Colors.grey.shade800:Colors.grey.shade300),
               ),
-              focusedBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: isDark?Colors.white:Colors.black),
               ),
               disabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.shade200),
+                borderSide: BorderSide(color: isDark?Colors.grey.shade700:Colors.grey.shade200),
               ),
             ),
           ),

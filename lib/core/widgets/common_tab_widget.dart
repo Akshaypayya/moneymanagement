@@ -25,7 +25,7 @@ class CommonTabWidget extends ConsumerWidget {
       child: ReusableContainer(
         height: 50,
         width: double.infinity,
-        color: Colors.grey.shade100,
+        color: isDark?Colors.grey.shade900:Colors.grey.shade100,
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -75,7 +75,7 @@ class CommonTabWidget extends ConsumerWidget {
                           child: AnimatedDefaultTextStyle(
                             duration: const Duration(milliseconds: 120), // 🔥 faster
                             curve: Curves.easeInOut,
-                            style:isSelected?AppTextStyle.current(isDark).titleSmall:AppTextStyle.current(isDark).labelSmall,
+                            style:isSelected?AppTextStyle.current(isDark).titleSmall.copyWith(color:Colors.black):AppTextStyle.current(isDark).labelSmall,
                             // TextStyle(
                             //   color: isSelected ? Colors.black : Colors.black45,
                             //   fontWeight:

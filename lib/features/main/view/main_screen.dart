@@ -18,11 +18,22 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
-    final index = ref.read(bottomNavBarProvider);
-    _pageController = PageController();
+    final notificationIndex = ref.read(notificationNavigationIndexProvider);
+    final fallbackIndex = ref.read(bottomNavBarProvider);
+    final targetIndex = notificationIndex ?? fallbackIndex;
+
+    // ✅ Safely update after frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _pageController.jumpToPage(index);
+      ref.read(bottomNavBarProvider.notifier).state = targetIndex;
     });
+
+    _pageController = PageController(initialPage: targetIndex);
+
+    if (notificationIndex != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(notificationNavigationIndexProvider.notifier).state = null;
+      });
+    }
   }
 
   @override

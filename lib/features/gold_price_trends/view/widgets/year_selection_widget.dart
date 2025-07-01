@@ -36,7 +36,13 @@ class YearSelectionWidget extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   margin: const EdgeInsets.symmetric(horizontal: 6),
                   decoration: BoxDecoration(
-                    color: isSelected ? Colors.black : Colors.grey.shade200,
+                    color: isSelected
+                        ? isDark
+                            ? Colors.white
+                            : Colors.black
+                        : isDark
+                            ? Colors.grey.shade800
+                            : Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(5),
                     // boxShadow: isSelected
                     //     ? [
@@ -55,7 +61,16 @@ class YearSelectionWidget extends ConsumerWidget {
                       //   color: isSelected ? Colors.white : Colors.black87,
                       //   fontWeight: FontWeight.w600,
                       // ),
-                      style: AppTextStyle.current(isDark).titleBottomNav.copyWith(color: isSelected ? Colors.white : Colors.black87,),
+                      style:
+                          AppTextStyle.current(isDark).titleBottomNav.copyWith(
+                                color: isSelected
+                                    ? isDark
+                                        ? Colors.black
+                                        : Colors.white
+                                    : isDark
+                                        ? Colors.white
+                                        : Colors.black87,
+                              ),
                     ),
                   ),
                 ),

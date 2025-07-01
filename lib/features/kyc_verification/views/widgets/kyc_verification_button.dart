@@ -18,7 +18,7 @@ class KycVerificationButton extends ConsumerWidget {
             },
           ),
           ReusableSizedBox(height: 30,),
-          KycBottomText(),
+          KycBottomText(isDark: ref.watch(isDarkProvider),),
         ],
       ),
     );

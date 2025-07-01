@@ -74,6 +74,7 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
 
 
     return Scaffold(
+      backgroundColor: AppColors.current(isDark).background,
       appBar: const GrowkAppBar(
         title: 'Buy Gold Instantly',
         isBackBtnNeeded: true,
@@ -84,11 +85,11 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+               Row(
                 children: [
                   Icon(Icons.info_outline, color: Colors.orange),
                   SizedBox(width: 8),
-                  Text("Price Lock Countdown", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Price Lock Countdown", style: AppTextStyle.current(isDark).titleSmall),
                 ],
               ),
               const SizedBox(height: 8),
@@ -109,10 +110,10 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
                         "$countdown",
                         style: AppTextStyle(textColor: AppColors.current(isDark).text).headlineLarge,
                       ),
-                      const Text(
+                       Text(
                         "Seconds\nRemaining",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12),
+                        style:AppTextStyle.current(isDark).bodyKycSmall,
                       ),
                     ],
                   ),
@@ -170,7 +171,7 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
                 error: (err, stack) => Text('Error: $err'),
               ),
               const SizedBox(height: 35),
-              const Text("Review Your Purchase", style: TextStyle(fontWeight: FontWeight.w600)),
+              Text("Review Your Purchase", style:AppTextStyle.current(isDark).titleSmall),
               const SizedBox(height: 8),
               _buildRow("Gold Price", "${formatCurrency(goldPrice)}/g"),
               const SizedBox(height: 8),
@@ -268,6 +269,7 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
 
   Widget _buildRow(String label, String value, {bool isBold = false}) {
     final bool isGramValue = value.trim().toLowerCase().contains('g');
+    final isDark = ref.watch(isDarkProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -276,26 +278,17 @@ class _BuyGoldSummaryPageState extends ConsumerState<BuyGoldSummaryPage> {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.w900 : FontWeight.normal,
-              fontSize: 12,
-            ),
+            style: AppTextStyle.current(isDark).bodySmall.copyWith(fontWeight: isBold ? FontWeight.w900 : FontWeight.normal)
           ),
           isGramValue
               ? Text(
             value,
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: isBold ? 16 : 12,
-            ),
+            style: AppTextStyle.current(isDark).bodySmall.copyWith(fontWeight: FontWeight.w900,fontSize: isBold ? 16 : 12)
           )
               : SarAmountWidget(
             text: value,
             height: 12,
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: isBold ? 16 : 12,
-            ),
+            style:  AppTextStyle.current(isDark).bodySmall.copyWith(fontWeight: FontWeight.w900,fontSize: isBold ? 16 : 12)
           ),
         ],
       ),

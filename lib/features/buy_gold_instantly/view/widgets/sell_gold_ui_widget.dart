@@ -155,7 +155,7 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
                   },
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
-                    backgroundColor: isSelected ? Colors.teal : Colors.white,
+                    backgroundColor: isSelected ? Colors.teal : Colors.transparent,
                     foregroundColor: isSelected ? Colors.white : Colors.black,
                     side: BorderSide(color: Colors.grey.shade400),
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -166,7 +166,7 @@ class _SellGoldUIWidgetState extends ConsumerState<SellGoldUIWidget> {
                   child: Text(
                     "$value gram",
                     style: AppTextStyle.current(isDark).bodySmall.copyWith(
-                        color: isSelected ? Colors.white : Colors.black),
+                        color: isSelected ? Colors.white : isDark?Colors.white:Colors.black),
                   ),
                 ),
               ),

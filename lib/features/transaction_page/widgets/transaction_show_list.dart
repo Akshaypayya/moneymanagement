@@ -53,38 +53,38 @@ Widget transactionListBuilder(TransactionPaginationState state, bool isDark,
               ],
             ),
           ),
-        if (state.hasMore &&
-            !state.isLoadingMore &&
-            state.transactions.isNotEmpty)
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-            child: SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () {
-                  debugPrint("TRANSACTIONS PAGE: Load more button pressed");
-                  debugPrint(
-                      "TRANSACTIONS PAGE: Will load next ${state.itemsPerPage} items (${state.transactions.length + state.itemsPerPage} total)");
-                  ref
-                      .read(paginatedTransactionProvider.notifier)
-                      .loadMoreTransactions();
-                },
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-                child: Text(
-                  'Load Next ${state.itemsPerPage} Transactions',
-                  style: TextStyle(
-                    color: isDark ? Colors.white : Colors.black,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                  ),
-                ),
-              ),
-            ),
-          ),
+        // if (state.hasMore &&
+        //     !state.isLoadingMore &&
+        //     state.transactions.isNotEmpty)
+        //   Container(
+        //     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        //     child: SizedBox(
+        //       width: double.infinity,
+        //       child: OutlinedButton(
+        //         onPressed: () {
+        //           debugPrint("TRANSACTIONS PAGE: Load more button pressed");
+        //           debugPrint(
+        //               "TRANSACTIONS PAGE: Will load next ${state.itemsPerPage} items (${state.transactions.length + state.itemsPerPage} total)");
+        //           ref
+        //               .read(paginatedTransactionProvider.notifier)
+        //               .loadMoreTransactions();
+        //         },
+        //         style: OutlinedButton.styleFrom(
+        //           side: BorderSide(
+        //             color: isDark ? Colors.white : Colors.black,
+        //           ),
+        //           padding: const EdgeInsets.symmetric(vertical: 12),
+        //         ),
+        //         child: Text(
+        //           'Load Next ${state.itemsPerPage} Transactions',
+        //           style: TextStyle(
+        //             color: isDark ? Colors.white : Colors.black,
+        //             fontFamily: GoogleFonts.poppins().fontFamily,
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
         if (!state.hasMore && state.transactions.isNotEmpty)
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20),

@@ -1,3 +1,4 @@
+import 'package:growk_v2/core/notification/api/providers/add_fcm_token_providers.dart';
 import 'package:growk_v2/features/buy_gold_instantly/view/controller/buy_gold_instantly_screen_controller.dart';
 import 'package:growk_v2/features/wallet_page/provider/wallet_screen_providers.dart';
 
@@ -13,15 +14,19 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isFirstLoad = true;
 
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_isFirstLoad) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         ref.refresh(homeDetailsProvider);
         ref.refresh(getNewWalletBalanceProvider);
         ref.refresh(liveGoldPriceProvider);
+        final fcmToken = await ref.read(notificationProvider).getDeviceToken();
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          final fcmController = ref.read(fcmTokenControllerProvider.notifier);
+          await fcmController.sendFcmToken(context, fcmToken,ref);
+        }
       });
       _isFirstLoad = false;
     }
@@ -30,7 +35,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
-
 
     return ScalingFactor(
       child: CustomScaffold(

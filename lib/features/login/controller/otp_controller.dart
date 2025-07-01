@@ -6,7 +6,7 @@ class OtpController {
 
   OtpController(this.ref);
 
-  Future<void> validateOtp(BuildContext context) async {
+  Future<void> validateOtp(BuildContext context, WidgetRef ref) async {
     final cellNo = ref.read(phoneInputProvider);
     final enteredOtp = ref.read(otpInputProvider);
 
@@ -49,17 +49,24 @@ class OtpController {
 
           if (result.success) {
             ref.read(biometricEnabledProvider.notifier).toggleBiometric(true);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Biometric authentication enabled')),
-            );
+            if (context.mounted) {
+              showGrowkSnackBar(
+                context: context,
+                ref: ref,
+                message: 'Biometric authentication enabled',
+                type: SnackType.success,
+              );
+            }
           } else {
             ref.read(biometricEnabledProvider.notifier).toggleBiometric(false);
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content:
-                      Text('Failed to enable biometrics: ${result.message}')),
-            );
+            if (context.mounted) {
+              showGrowkSnackBar(
+                context: context,
+                ref: ref,
+                message: 'Failed to enable biometrics: ${result.message}',
+                type: SnackType.error,
+              );
+            }
           }
         }
         ref.read(isButtonLoadingProvider.notifier).state = false;
@@ -68,7 +75,6 @@ class OtpController {
           context,
           isNewUser ? AppRouter.applyReferralCode : AppRouter.mainScreen,
           (route) => false,
-
         );
       } else {
         ref.read(isButtonLoadingProvider.notifier).state = false;
@@ -91,11 +97,9 @@ class OtpController {
     final cellNo = ref.read(phoneInputProvider);
     final remainingTime = ref.read(otpTimerProvider);
 
-
     if (remainingTime > 0) return;
 
     ref.read(otpErrorProvider.notifier).state = null;
-
 
     try {
       final response = await ref.read(loginUseCaseProvider).call(cellNo);
@@ -110,6 +114,7 @@ class OtpController {
             response.message ?? "Failed to resend OTP";
       }
     } catch (e) {
+
       debugPrint("Resend OTP Error: $e");
       ref.read(otpErrorProvider.notifier).state =
           "Something went wrong while resending OTP";

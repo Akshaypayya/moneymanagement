@@ -41,9 +41,9 @@ class _EnhancedConnectivityOverlayState
   void initState() {
     super.initState();
 
-    // Future.microtask(() {
-    //   ref.read(connectivityKeeperProvider);
-    // });
+    Future.microtask(() {
+      ref.read(connectivityKeeperProvider);
+    });
 
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 400),

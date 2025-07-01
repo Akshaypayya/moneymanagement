@@ -64,6 +64,7 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
 
     return ScalingFactor(
       child: Scaffold(
+        backgroundColor: AppColors.current(isDark).background,
         appBar: const GrowkAppBar(
           title: 'Instant Gold Trade',
           isBackBtnNeeded: true,
@@ -76,7 +77,6 @@ class _BuyGoldPageState extends ConsumerState<BuyGoldPage> {
             double.parse((livePriceData.data?.buyRate ?? 0).toStringAsFixed(2));
             final String sellPricePerGramFormatted =
             (livePriceData.data?.sellRate?.toDouble() ?? 0).toStringAsFixed(2);
-
 
             if (!_isInitialized && goldPricePerGram > 0) {
               selectedAmount = (1 * goldPricePerGram).round();

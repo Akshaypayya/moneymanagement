@@ -29,7 +29,7 @@ class TrackYourSavingsWidget extends ConsumerWidget {
             ? Colors.green
             : Colors.red,
         'action': 'Buy/sell',
-        'invested': "${(wallet.goldBalance ?? 0).toStringAsFixed(3)}g",
+        'invested': "${(wallet.goldBalance ?? 0).toStringAsFixed(3)} gm ",
         'current': formatter.format(wallet.currentPrice ?? 0),
         'growth': (wallet.buyPrice ?? 0) != 0
             ? '${((((wallet.currentPrice ?? 0) - wallet.buyPrice!) / wallet.buyPrice!) * 100).toStringAsFixed(1)}%'
@@ -46,7 +46,7 @@ class TrackYourSavingsWidget extends ConsumerWidget {
             ? Colors.green
             : Colors.red,
         'action': 'Create New',
-        'invested': "${(goals.goldBalance ?? 0).toStringAsFixed(3)}g",
+        'invested': "${(goals.goldBalance ?? 0).toStringAsFixed(3)} gm ",
         'current': formatter.format(goals.currentPrice ?? 0),
         'growth': (goals.buyPrice ?? 0) != 0
             ? '${((((goals.currentPrice ?? 0) - goals.buyPrice!) / goals.buyPrice!) * 100).toStringAsFixed(1)}%'
@@ -63,7 +63,7 @@ class TrackYourSavingsWidget extends ConsumerWidget {
             ? Colors.green
             : Colors.red,
         'action': 'Invite Now',
-        'invested': "${formatter.format(referral.buyPrice ?? 0)} (${(referral.goldBalance ?? 0).toStringAsFixed(3)}g)",
+        'invested': "${formatter.format(referral.buyPrice ?? 0)} (${(referral.goldBalance ?? 0).toStringAsFixed(3)} gm )",
         'current': formatter.format(referral.currentPrice ?? 0),
         'growth': (referral.buyPrice ?? 0) != 0
             ? '${((((referral.currentPrice ?? 0) - referral.buyPrice!) / referral.buyPrice!) * 100).toStringAsFixed(1)}%'

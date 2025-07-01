@@ -444,7 +444,6 @@ class CreateGoalController {
         "duration": duration,
         "debitDate": debitDate,
         "transactionAmount": transactionAmount.round(),
-        // "transactionAmount": transactionAmount,
         "goldInvestment": autoDeposit ? "Y" : "N",
         "frequency": selectedFrequency,
         if (selectedIcon.isNotEmpty && selectedImage == null)

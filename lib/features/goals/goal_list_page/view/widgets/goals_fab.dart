@@ -3,6 +3,7 @@ import 'package:growk_v2/features/goals/goal_list_page/provider/goal_list_page_p
 import 'package:growk_v2/views.dart';
 
 FloatingActionButton goalsFab(BuildContext context, WidgetRef ref) {
+  final isDark = ref.watch(isDarkProvider);
   return FloatingActionButton(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(100),
@@ -16,7 +17,10 @@ FloatingActionButton goalsFab(BuildContext context, WidgetRef ref) {
         ref.read(goalListStateProvider.notifier).refreshGoals();
       }
     },
-    backgroundColor: Colors.black,
-    child: const Icon(Icons.add, color: Colors.white),
+    backgroundColor: isDark ? Colors.white : Colors.black,
+    child: Icon(
+      Icons.add,
+      color: isDark ? Colors.black : Colors.white,
+    ),
   );
 }

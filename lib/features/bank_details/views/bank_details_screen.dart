@@ -4,6 +4,7 @@ class BankDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
+    final isDark = ref.watch(isDarkProvider);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if(didPop){
@@ -11,6 +12,7 @@ class BankDetailsScreen extends ConsumerWidget {
         }
       },
       child: ScalingFactor(child: CustomScaffold(
+        backgroundColor: AppColors.current(isDark).background,
         appBar: GrowkAppBar(title: 'Bank Details',isBackBtnNeeded: true,),
         body: SingleChildScrollView(
           padding: EdgeInsets.only(left: 22,right: 22),

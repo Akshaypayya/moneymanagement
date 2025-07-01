@@ -6,6 +6,7 @@ class SavedAddressScreen extends ConsumerWidget {
   const SavedAddressScreen({super.key});
   @override
   Widget build(BuildContext context,WidgetRef ref) {
+    final isDark = ref.watch(isDarkProvider);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if(didPop){
@@ -14,6 +15,7 @@ class SavedAddressScreen extends ConsumerWidget {
       },
       child: ScalingFactor(
         child: CustomScaffold(
+          backgroundColor: AppColors.current(isDark).background,
           appBar: GrowkAppBar(
             title: 'Saved Address',
             isBackBtnNeeded: true,

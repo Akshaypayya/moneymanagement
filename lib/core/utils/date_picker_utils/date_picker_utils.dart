@@ -7,22 +7,32 @@ class DatePickerUtils {
     required DateTime initialDate,
     required DateTime firstDate,
     required DateTime lastDate,
+    required WidgetRef ref,
   }) async {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = ref.watch(isDarkProvider);
     final textStyle = AppTextStyle.current(isDark);
     final colorScheme = AppColors.current(isDark);
 
     return await showDatePicker(
       context: context,
       initialDate: initialDate,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
       firstDate: firstDate,
       lastDate: lastDate,
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme: isDark
+                ? ColorScheme.dark(
               primary: colorScheme.primary,
-              onPrimary: Colors.white,
+              onPrimary: colorScheme.background,
+              surface: colorScheme.background,
+              onSurface: colorScheme.text,
+            )
+                : ColorScheme.light(
+              primary: colorScheme.primary,
+              onPrimary: colorScheme.background,
+              surface: colorScheme.background,
               onSurface: colorScheme.text,
             ),
             dialogBackgroundColor: colorScheme.background,

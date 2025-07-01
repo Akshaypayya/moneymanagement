@@ -23,6 +23,7 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = ref.watch(isDarkProvider);
     final controller = ref.read(editUserControllerProvider);
     final imageFile = ref.watch(profilePictureFileProvider);
     final uploadState = ref.watch(profilePictureUploadStateProvider);
@@ -50,6 +51,7 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
           behavior: HitTestBehavior.translucent,
           onTap: () => FocusScope.of(context).unfocus(),
           child: CustomScaffold(
+            backgroundColor: AppColors.current(isDark).background,
             appBar: GrowkAppBar(
               title: 'Edit User Details',
               isBackBtnNeeded: hasProfileData,

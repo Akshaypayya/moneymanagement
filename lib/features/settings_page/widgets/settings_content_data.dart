@@ -69,8 +69,13 @@ class SettingsContent extends ConsumerWidget {
                 isEnabled: isDark,
                 onChanged: (value) {
                   ref.read(isDarkProvider.notifier).state = value;
+                  SharedPreferencesHelper.saveBool('isDark', value);
                   debugPrint('theme is:$value');
                 },
+                // onChanged: (value) {
+                //   ref.read(isDarkProvider.notifier).state = value;
+                //   debugPrint('theme is:$value');
+                // },
                 isDark: isDark,
               ),
               const BiometricSettingsTile(),

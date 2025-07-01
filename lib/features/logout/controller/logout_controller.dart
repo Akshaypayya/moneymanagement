@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:growk_v2/core/biometric/biometeric_setting_provider.dart';
+import 'package:growk_v2/core/notification/api/providers/delete_fcm_token_provider.dart';
 import 'package:growk_v2/core/services/data_clearing_service.dart';
 import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
@@ -42,13 +43,14 @@ class LogoutController {
         _showLoginMessage(scaffoldMessenger, isDark);
         return;
       }
-
+      final controller = ref.read(deleteFcmTokenControllerProvider.notifier);
+      await controller.deleteFcmToken(context,ref);
       final response =
           await ref.read(logoutRepoProvider).logoutUser(refreshToken, token);
-
       _clearUserData(ref);
 
       if (response.isSuccess) {
+
         debugPrint('Logout Success: ${response.message}');
       } else {
         debugPrint('Logout Failed: ${response.message}');

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 final isDarkProvider = StateProvider<bool>((ref) => false);
 
 class AppColors {
@@ -21,7 +22,6 @@ class AppColors {
     required this.scaffoldBackground,
   });
 
-  // Light mode instance
   static AppColors light = AppColors(
     scaffoldBackground: Color.fromRGBO(246, 240, 240, 1),
     resendBlue: Color.fromRGBO(58, 89, 185, 1),
@@ -32,8 +32,7 @@ class AppColors {
     primary: Colors.black,
   );
 
-  // Dark mode instance
-  static  AppColors dark = AppColors(
+  static AppColors dark = AppColors(
     resendBlue: Color.fromRGBO(58, 89, 185, 1),
     scaffoldBackground: Color(0xFF1C1C1C),
     dividerColor: Color.fromRGBO(185, 185, 185, 1),
@@ -43,6 +42,12 @@ class AppColors {
     primary: Colors.white,
   );
 
-  // 👇 Helper to get current theme colors
   static AppColors current(bool isDark) => isDark ? dark : light;
+}
+
+// ✅ Utility to detect and update system theme state
+void detectAndSetSystemTheme(BuildContext context, WidgetRef ref) {
+  final brightness = MediaQuery.of(context).platformBrightness;
+  final isDark = brightness == Brightness.dark;
+  ref.read(isDarkProvider.notifier).state = isDark;
 }

@@ -50,7 +50,7 @@ class PaginatedTransactionNotifier
 
         if (loadedTransactions.isEmpty && data.iTotalRecords > 0) {
           debugPrint(
-              'TRANSACTION PAGINATION: ⚠️ BACKEND ISSUE: iTotalRecords=${data.iTotalRecords} but received empty aaData');
+              'TRANSACTION PAGINATION: BACKEND ISSUE: iTotalRecords=${data.iTotalRecords} but received empty aaData');
           state = state.copyWith(
             isLoading: false,
             transactions: [],
@@ -97,14 +97,13 @@ class PaginatedTransactionNotifier
 
         final isEmpty = transactionModel.data?.aaData.isEmpty == true;
         state = state.copyWith(
-          isLoading: false,
-          transactions: [],
-          totalRecords: transactionModel.data?.iTotalRecords ?? 0,
-          hasMore: false,
-          errorMessage: isEmpty
-              ? 'No transactions found'
-              : 'Failed to load transactions: ${transactionModel.status}',
-        );
+            isLoading: false,
+            transactions: [],
+            totalRecords: transactionModel.data?.iTotalRecords ?? 0,
+            hasMore: false,
+            errorMessage: isEmpty
+                ? 'Failed to load transactions: ${transactionModel.status}'
+                : 'No transactions found');
       }
     } catch (e, stackTrace) {
       debugPrint('TRANSACTION PAGINATION ERROR: $e');

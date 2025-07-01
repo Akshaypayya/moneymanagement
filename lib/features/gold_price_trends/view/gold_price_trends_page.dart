@@ -62,7 +62,6 @@ class _GoldPriceTrendsPageState extends ConsumerState<GoldPriceTrendsPage> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16),
-                            color: Colors.white,
                           ),
                           padding: const EdgeInsets.all(10),
                           child: AnimatedSwitcher(
@@ -161,6 +160,7 @@ class _GoldPriceTrendsPageState extends ConsumerState<GoldPriceTrendsPage> {
       '3Y': 1095,
       '5Y': 1825,
     };
+
     final days = periodInDays[selectedPeriod] ?? 30;
     final today = DateTime.now();
     final startDate = today.subtract(Duration(days: days));
@@ -189,43 +189,51 @@ class _GoldPriceTrendsPageState extends ConsumerState<GoldPriceTrendsPage> {
               ),
             ),
           ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 50,
-              getTitlesWidget: (value, meta) {
-                final index = value.toInt();
-                final length = chartSpots.length;
-                if (length == 0 || index >= length) return const SizedBox.shrink();
+          bottomTitles:AxisTitles(
+          sideTitles: SideTitles(
+          showTitles: true,
+          reservedSize: 50,
+          getTitlesWidget: (value, meta) {
+            final index = value.toInt();
+            final length = chartSpots.length;
+            if (length == 0 || index >= length) return const SizedBox.shrink();
 
-                final start = 0;
-                final middle = length ~/ 2;
-                final end = length - 1;
+            final start = 0;
+            final middle = length ~/ 2;
+            final end = length - 1;
 
-                if (index == start || index == middle || index == end) {
-                  final date = startDate.add(Duration(days: index));
-                  final label = '${date.day.toString().padLeft(2, '0')} ${_monthName(date.month)}';
-                  final subLabel = '${date.year}';
+            // Calculate date for each index
+            DateTime date;
+            if (index == end) {
+              date = DateTime.now(); // set last label as today
+            } else {
+              date = startDate.add(Duration(days: index));
+            }
 
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: ReusableColumn(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(label, style: _labelStyle(isDark), textAlign: TextAlign.center),
-                        Text(subLabel, style: _labelStyle(isDark), textAlign: TextAlign.center),
-                      ],
-                    ),
-                  );
-                }
+            if (index == start || index == middle || index == end) {
+              final label = '${date.day.toString().padLeft(2, '0')} ${_monthName(date.month)}';
+              final subLabel = '${date.year}';
 
-                return const SizedBox.shrink();
-              },
-              interval: 1,
-            ),
-          ),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              return Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: ReusableColumn(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(label, style: _labelStyle(isDark), textAlign: TextAlign.center),
+                    Text(subLabel, style: _labelStyle(isDark), textAlign: TextAlign.center),
+                  ],
+                ),
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+          interval: 1,
+        ),
+      ),
+
+      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         borderData: FlBorderData(show: false),

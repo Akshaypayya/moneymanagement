@@ -119,7 +119,6 @@ class GoalData {
     );
   }
 
-
   Map<String, dynamic> toJson() {
     return {
       'goalName': goalName,

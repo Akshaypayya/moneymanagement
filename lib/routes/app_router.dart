@@ -12,6 +12,7 @@ import 'package:growk_v2/features/referral_rewards/view/referral_rewards_screen.
 import 'package:growk_v2/features/saved_address/view/saved_address_screen.dart';
 import 'package:growk_v2/features/settings_page/widgets/help_screen.dart';
 import 'package:growk_v2/features/settings_page/widgets/terms_and_condition.dart';
+import 'package:growk_v2/features/transaction_page/transactions_page.dart';
 import 'package:growk_v2/features/wallet_page/wallet_page.dart';
 import 'package:growk_v2/views.dart';
 
@@ -39,6 +40,7 @@ class AppRouter {
   static const String termsAndConditions = '/termsAndConditions';
   static const String help = '/help';
   static const String sellGoldSummaryPage = '/SellGoldSummaryPage';
+  static const String transactionScreen = '/transactionScreen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -120,6 +122,9 @@ class AppRouter {
       case sellGoldSummaryPage:
         return MaterialPageRoute(
             builder: (_) => const SellGoldSummaryPage(), settings: settings);
+      case transactionScreen:
+        return MaterialPageRoute(
+            builder: (_) => const TransactionsPage(), settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

@@ -18,7 +18,7 @@ Widget detailRowStndngInstrc(String label, String value, bool isDark) {
       ),
       const SizedBox(width: 12),
       Expanded(
-        flex: 3,
+        flex: 4,
         child: Text(
           value,
           style: TextStyle(
