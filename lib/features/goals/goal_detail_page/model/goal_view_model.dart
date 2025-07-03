@@ -83,7 +83,8 @@ class GoalData {
   factory GoalData.fromJson(Map<String, dynamic> json) {
     print('GOAL DETAIL PARSING: ${json['goalName']}');
     print('Available fields: ${json.keys.toList()}');
-    print('goalPic: ${json['goalPic'] != null ? "HAS_DATA(${json['goalPic'].toString().length} chars)" : "NULL"}');
+    print(
+        'goalPic: ${json['goalPic'] != null ? "HAS_DATA(${json['goalPic'].toString().length} chars)" : "NULL"}');
     print('goalPicExtension: ${json['goalPicExtension']}');
     print('goalPicContentType: ${json['goalPicContentType']}');
     print('iconName: ${json['iconName']}');
@@ -157,32 +158,17 @@ class GoalData {
   String get formattedProfit => profit.toStringAsFixed(2);
   String get formattedTransactionAmount => transactionAmount.toStringAsFixed(2);
 
-  // int get totalExpectedTransactions {
-  //   // final totalMonths = duration * 12;
-  //
-  //   final totalMonths = (targetYear - 2025) * 12;
-  //   switch (debitDate) {
-  //     case 1:
-  //       return totalMonths * 30;
-  //     case 7:
-  //       return totalMonths * 4;
-  //     case 5:
-  //     default:
-  //       return totalMonths;
-  //   }
-  // }
   int get totalExpectedTransactions {
     // final totalMonths = duration * 12;
 
     DateTime today = DateTime.now();
     DateTime futureDate = DateTime(targetYear, 12, 31);
 
-
     switch (debitDate) {
       case 1:
         return futureDate.difference(today).inDays;
       case 7:
-        return (futureDate.difference(today).inDays/7).toInt();
+        return (futureDate.difference(today).inDays / 7).toInt();
       case 5:
       default:
         int yearsDiff = futureDate.year - today.year;
@@ -190,7 +176,6 @@ class GoalData {
         return yearsDiff * 12 + monthsDiff;
     }
   }
-
 
   int get currentCompletedTransactions {
     if (transactionAmount <= 0) return 0;

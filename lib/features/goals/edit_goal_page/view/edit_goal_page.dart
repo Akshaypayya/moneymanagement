@@ -88,7 +88,8 @@ class _EditGoalPageState extends ConsumerState<EditGoalPage> {
                     width: sliderSectionWidth,
                     child: EditSavingAmountSlider(),
                   ),
-                  EditFrequencySelector(),
+                  EditFrequencySelector(
+                      investedAmount: widget.goalData?.investedAmount ?? 0.0),
                   EditAutoDeposit(),
                   UpdateGoalButton(
                     goalData: widget.goalData,

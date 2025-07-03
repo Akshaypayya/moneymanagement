@@ -51,7 +51,7 @@ Widget buildLoadAmountButton(
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    isDark ? Colors.black : Colors.white,
+                    isDark ? Colors.white : Colors.black,
                   ),
                 ),
               )

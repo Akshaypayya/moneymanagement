@@ -410,7 +410,6 @@ class CreateGoalController {
       double transactionAmount;
       int debitDate;
 
-
       switch (selectedFrequency) {
         case 'Daily':
           int days = futureDate.difference(today).inDays;
@@ -550,7 +549,6 @@ class CreateGoalController {
 
       if (result.isSuccess) {
         print('CONTROLLER: Goal created successfully');
-
         final selectedIcon = ref.read(selectedGoalIconProvider);
         if (selectedIcon.isNotEmpty) {
           IconMappingService.storeGoalIcon(goalName, selectedIcon);

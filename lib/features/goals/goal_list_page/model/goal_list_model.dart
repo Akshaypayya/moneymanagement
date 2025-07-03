@@ -159,30 +159,17 @@ class GoalListItem {
   double get profit => availableBalance - walletBalance;
   String get formattedProfit => profit.toStringAsFixed(2);
 
-  // int get totalExpectedTransactions {
-  //   final totalMonths = (targetYear - 2025) * 12;
-  //   switch (debitDate) {
-  //     case 1:
-  //       return totalMonths * 30;
-  //     case 7:
-  //       return totalMonths * 4;
-  //     case 5:
-  //     default:
-  //       return totalMonths;
-  //   }
-  // }
   int get totalExpectedTransactions {
     // final totalMonths = duration * 12;
 
     DateTime today = DateTime.now();
     DateTime futureDate = DateTime(targetYear, 12, 31);
 
-
     switch (debitDate) {
       case 1:
         return futureDate.difference(today).inDays;
       case 7:
-        return (futureDate.difference(today).inDays/7).toInt();
+        return (futureDate.difference(today).inDays / 7).toInt();
       case 5:
       default:
         int yearsDiff = futureDate.year - today.year;

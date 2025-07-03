@@ -28,7 +28,8 @@ final calculatedAmountProvider = Provider<double>((ref) {
 
 final calculatedYearProvider = Provider<int>((ref) {
   final yearValue = ref.watch(yearSliderProvider);
-  return 2025 + (yearValue * 25).round();
+  final currentYear = DateTime.now().year;
+  return currentYear + (yearValue * 25).round();
 });
 
 final networkServiceProvider = Provider<NetworkService>((ref) {

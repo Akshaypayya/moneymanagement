@@ -13,7 +13,8 @@ class TargetYearSlider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
     final yearValue = ref.watch(yearSliderProvider);
-    final int calculatedYear = 2025 + (yearValue * 25).round();
+    final currentYear = DateTime.now().year;
+    final int calculatedYear = currentYear + (yearValue * 25).round();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

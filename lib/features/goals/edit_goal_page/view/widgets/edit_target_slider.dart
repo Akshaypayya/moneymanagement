@@ -15,7 +15,8 @@ class _EditTargetYearSliderState extends ConsumerState<EditTargetYearSlider> {
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
     final yearValue = ref.watch(editYearSliderProvider);
-    final targetYear = 2025 + (yearValue * 25).round();
+    final currentYear = DateTime.now().year;
+    final targetYear = currentYear + (yearValue * 25).round();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
