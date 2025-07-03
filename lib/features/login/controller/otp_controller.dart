@@ -9,42 +9,38 @@ class OtpController {
   Future<void> validateOtp(BuildContext context, WidgetRef ref) async {
     final cellNo = ref.read(phoneInputProvider);
     final enteredOtp = ref.read(otpInputProvider);
+    final texts = ref.read(appTextsProvider);
 
     debugPrint('cellNo: $cellNo');
     debugPrint('enteredOtp: $enteredOtp');
 
     if (enteredOtp.length != 4) {
-      ref.read(otpErrorProvider.notifier).state = "Please enter full OTP";
+      ref.read(otpErrorProvider.notifier).state = texts.pleaseEnterFullOtp;
       return;
     }
 
     ref.read(isButtonLoadingProvider.notifier).state = true;
 
     try {
-      final response =
-          await ref.read(otpUseCaseProvider).call(cellNo, enteredOtp);
+      final response = await ref.read(otpUseCaseProvider).call(cellNo, enteredOtp);
 
       if (response.isSuccess) {
         ref.read(isButtonLoadingProvider.notifier).state = false;
 
         final data = response.data ?? {};
         final isNewUser = data['isNewUser'] ?? false;
-
         debugPrint('isNewUser: $isNewUser');
 
-        ref
-            .read(userDataProvider.notifier)
-            .setUserData(data, phoneNumber: cellNo);
+        ref.read(userDataProvider.notifier).setUserData(data, phoneNumber: cellNo);
         ref.read(otpErrorProvider.notifier).state = null;
 
-        // ✅ Enable Biometrics if supported and not yet enabled
         final isSupported = await ref.read(biometricSupportedProvider.future);
         final isAlreadyEnabled = ref.read(biometricEnabledProvider);
 
         if (isSupported) {
           final biometricService = ref.read(biometricServiceProvider);
           final result = await biometricService.authenticate(
-            'Authenticate to enable biometric login',
+            texts.authenticateBiometric,
           );
 
           if (result.success) {
@@ -53,7 +49,7 @@ class OtpController {
               showGrowkSnackBar(
                 context: context,
                 ref: ref,
-                message: 'Biometric authentication enabled',
+                message: texts.biometricEnabled,
                 type: SnackType.success,
               );
             }
@@ -63,30 +59,29 @@ class OtpController {
               showGrowkSnackBar(
                 context: context,
                 ref: ref,
-                message: 'Failed to enable biometrics: ${result.message}',
+                message: texts.biometricFailed(result.message??''),
                 type: SnackType.error,
               );
             }
           }
         }
+
         ref.read(isButtonLoadingProvider.notifier).state = false;
-        // ✅ Navigate after biometrics
+
         await Navigator.pushNamedAndRemoveUntil(
           context,
           isNewUser ? AppRouter.applyReferralCode : AppRouter.mainScreen,
-          (route) => false,
+              (route) => false,
         );
       } else {
         ref.read(isButtonLoadingProvider.notifier).state = false;
-
-        ref.read(otpErrorProvider.notifier).state =
-            response.message ?? 'OTP verification failed';
+        ref.read(otpErrorProvider.notifier).state = response.message ?? texts.otpVerificationFailed;
         ref.read(otpInputProvider.notifier).state = '';
       }
     } catch (e, stackTrace) {
       debugPrint('OTP Error: $e');
       debugPrint('Stack Trace:\n$stackTrace');
-      ref.read(otpErrorProvider.notifier).state = 'Something went wrong';
+      ref.read(otpErrorProvider.notifier).state = texts.somethingWentWrong;
       ref.read(isButtonLoadingProvider.notifier).state = false;
     } finally {
       ref.read(isButtonLoadingProvider.notifier).state = false;
@@ -96,6 +91,7 @@ class OtpController {
   Future<void> resendLoginOtp(BuildContext context) async {
     final cellNo = ref.read(phoneInputProvider);
     final remainingTime = ref.read(otpTimerProvider);
+    final texts = ref.read(appTextsProvider);
 
     if (remainingTime > 0) return;
 
@@ -106,18 +102,15 @@ class OtpController {
 
       if (response.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("OTP resent successfully")),
+          SnackBar(content: Text(texts.otpResentSuccessfully)),
         );
-        ref.read(otpTimerProvider.notifier).reset(); // Restart timer
+        ref.read(otpTimerProvider.notifier).reset();
       } else {
-        ref.read(otpErrorProvider.notifier).state =
-            response.message ?? "Failed to resend OTP";
+        ref.read(otpErrorProvider.notifier).state = response.message ?? texts.failedToResendOtp;
       }
     } catch (e) {
-
       debugPrint("Resend OTP Error: $e");
-      ref.read(otpErrorProvider.notifier).state =
-          "Something went wrong while resending OTP";
-    } finally {}
+      ref.read(otpErrorProvider.notifier).state = texts.somethingWentWrongWhileResendingOtp;
+    }
   }
 }

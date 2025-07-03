@@ -7,6 +7,7 @@ class ApplyReferalCodeScreen extends ConsumerWidget {
   Widget build(BuildContext context,WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
     return ScalingFactor(child: CustomScaffold(
+      backgroundColor: AppColors.current(isDark).background,
       body: SingleChildScrollView(
         padding: EdgeInsets.only(left: 22,right: 22),
         child: ReusableColumn(children: <Widget>[

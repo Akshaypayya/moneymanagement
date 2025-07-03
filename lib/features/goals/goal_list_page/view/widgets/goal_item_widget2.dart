@@ -19,7 +19,11 @@ Column goalItemRow2(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               fontFamily: GoogleFonts.poppins().fontFamily,
-              color: isDark ? Colors.grey[300] : Colors.grey[800],
+              color: goalStatus == "COMPLETED"
+                  ? Colors.black
+                  : isDark
+                      ? Colors.white
+                      : Colors.black,
             ),
           ),
           Text(
@@ -28,7 +32,11 @@ Column goalItemRow2(
               fontSize: 13,
               fontWeight: FontWeight.bold,
               fontFamily: GoogleFonts.poppins().fontFamily,
-              color: isDark ? Colors.grey[300] : Colors.grey[800],
+              color: goalStatus == "COMPLETED"
+                  ? Colors.black
+                  : isDark
+                      ? Colors.white
+                      : Colors.black,
             ),
           ),
         ],
@@ -45,13 +53,20 @@ Column goalItemRow2(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.grey[300] : Colors.grey[800],
+                  color: goalStatus == "COMPLETED"
+                      ? Colors.black
+                      : isDark
+                          ? Colors.white
+                          : Colors.black,
                 ),
               ),
               Image.asset(
                 AppImages.sarSymbol,
                 height: 13,
-                color: AppColors.current(isDark).primary,
+                // color: AppColors.current(isDark).primary,
+                color: goalStatus == "COMPLETED"
+                    ? Colors.black
+                    : AppColors.current(isDark).primary,
               ),
               Text(
                 ' $invested',
@@ -59,7 +74,11 @@ Column goalItemRow2(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.grey[300] : Colors.grey[800],
+                  color: goalStatus == "COMPLETED"
+                      ? Colors.black
+                      : isDark
+                          ? Colors.white
+                          : Colors.black,
                 ),
               ),
             ],
@@ -72,13 +91,19 @@ Column goalItemRow2(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.grey[300] : Colors.grey[800],
+                  color: goalStatus == "COMPLETED"
+                      ? Colors.black
+                      : isDark
+                          ? Colors.white
+                          : Colors.black,
                 ),
               ),
               Image.asset(
                 AppImages.sarSymbol,
                 height: 13,
-                color: AppColors.current(isDark).primary,
+                color: goalStatus == "COMPLETED"
+                    ? Colors.black
+                    : AppColors.current(isDark).primary,
               ),
               Text(
                 ' $target',
@@ -86,7 +111,11 @@ Column goalItemRow2(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.grey[300] : Colors.grey[800],
+                  color: goalStatus == "COMPLETED"
+                      ? Colors.black
+                      : isDark
+                          ? Colors.white
+                          : Colors.black,
                 ),
               ),
             ],
@@ -101,6 +130,11 @@ Column goalItemRow2(
           minHeight: 10,
           backgroundColor:
               goalStatus == "COMPLETED" ? Colors.white : Colors.grey[300],
+          // backgroundColor: goalStatus == "COMPLETED"
+          //     ? Colors.black
+          //     : isDark
+          //         ? Colors.white
+          //         : Colors.black,
           valueColor: const AlwaysStoppedAnimation<Color>(Colors.teal),
         ),
       ),
@@ -115,7 +149,11 @@ Column goalItemRow2(
               fontSize: 12,
               fontWeight: FontWeight.w400,
               fontFamily: GoogleFonts.poppins().fontFamily,
-              color: isDark ? Colors.white : Colors.black,
+              color: goalStatus == "COMPLETED"
+                  ? Colors.black
+                  : isDark
+                      ? Colors.white
+                      : Colors.black,
             ),
           ),
           Text(
@@ -124,7 +162,11 @@ Column goalItemRow2(
               fontSize: 12,
               fontWeight: FontWeight.bold,
               fontFamily: GoogleFonts.poppins().fontFamily,
-              color: isDark ? Colors.white : Colors.black,
+              color: goalStatus == "COMPLETED"
+                  ? Colors.black
+                  : isDark
+                      ? Colors.white
+                      : Colors.black,
             ),
           ),
         ],

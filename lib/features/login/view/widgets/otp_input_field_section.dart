@@ -8,14 +8,15 @@ class OtpInputFieldSection extends ConsumerWidget {
     final isDark = ref.watch(isDarkProvider);
     final timer = ref.watch(otpTimerProvider);
     final errorText = ref.watch(otpErrorProvider);
+    final texts = ref.watch(appTextsProvider);
+
     return ScalingFactor(
       child: ReusableColumn(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           ReusableText(
-            text: 'Enter OTP to verify and continue',
-            style: AppTextStyle(textColor: AppColors.current(isDark).text)
-                .labelSmall,
+            text: texts.enterOtpToVerify,
+            style: AppTextStyle(textColor: AppColors.current(isDark).text).labelSmall,
           ),
           const ReusableSizedBox(height: 30),
           OtpInputField(
@@ -24,11 +25,12 @@ class OtpInputFieldSection extends ConsumerWidget {
             },
           ),
           if (errorText != null)
+
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
                 errorText,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.red,
                   fontSize: 13,
                 ),
@@ -41,9 +43,9 @@ class OtpInputFieldSection extends ConsumerWidget {
             text: TextSpan(
               style: AppTextStyle(textColor: AppColors.current(isDark).text).labelSmall,
               children: [
-                const TextSpan(text: "Didn’t receive the OTP? "),
+                TextSpan(text: "${texts.didntReceiveOtp} "),
                 TextSpan(
-                  text: "Resend in $timer sec.",
+                  text: texts.resendIn(timer),
                   style: AppTextStyle(textColor: AppColors.current(isDark).resendBlue).titleSmall,
                 ),
               ],
@@ -56,14 +58,13 @@ class OtpInputFieldSection extends ConsumerWidget {
             child: RichText(
               text: TextSpan(
                 children: [
-                  TextSpan(text: "Didn’t receive the OTP? ",style: AppTextStyle(
-                textColor: AppColors.current(isDark).text,
-              ).bodySmall,),
                   TextSpan(
-                    text: "Resend now",
-                    style: AppTextStyle(
-                      textColor: AppColors.current(isDark).resendBlue,
-                    ).titleSmall,
+                    text: "${texts.didntReceiveOtp} ",
+                    style: AppTextStyle(textColor: AppColors.current(isDark).text).bodySmall,
+                  ),
+                  TextSpan(
+                    text: texts.resendNow,
+                    style: AppTextStyle(textColor: AppColors.current(isDark).resendBlue).titleSmall,
                   ),
                 ],
               ),

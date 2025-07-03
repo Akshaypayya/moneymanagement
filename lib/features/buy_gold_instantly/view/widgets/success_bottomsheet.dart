@@ -20,11 +20,12 @@ class SuccessBottomSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(isDarkProvider);
     return ScalingFactor(
       child: Container(
         padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: isDark?Colors.grey.shade900:Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(
@@ -36,13 +37,13 @@ class SuccessBottomSheet extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              style: AppTextStyle.current(isDark).titleSmall.copyWith(fontSize: 20),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
             Text(
               description,
-              style: const TextStyle(fontSize: 16, color: Colors.black54),
+              style: AppTextStyle.current(isDark).bodyKycSmall.copyWith(fontSize: 14),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -67,7 +68,7 @@ class SuccessBottomSheet extends ConsumerWidget {
                     Text(
                       key,
                       style:
-                          const TextStyle(fontSize: 14, color: Colors.black54),
+                         AppTextStyle.current(isDark).bodyKycSmall.copyWith(fontSize: 12),
                     ),
                     const SizedBox(height: 4),
                     // Check if value contains ₱ symbol
@@ -75,13 +76,11 @@ class SuccessBottomSheet extends ConsumerWidget {
                         ? SarAmountWidget(
                             text: value.replaceAll('₱', '').trim(),
                             height: 13,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
+                            style:AppTextStyle.current(isDark).bodyKycSmall.copyWith(fontSize: 14,fontWeight: FontWeight.w600),
                           )
                         : Text(
                             value,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                            style:AppTextStyle.current(isDark).bodyKycSmall.copyWith(fontSize: 14,fontWeight: FontWeight.bold)
                           ),
                   ],
                 );

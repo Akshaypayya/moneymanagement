@@ -129,3 +129,6 @@ export 'package:growk_v2/features/transaction_page/widgets/transaction_item_main
 export 'package:growk_v2/features/goals/goal_detail_page/view/widgets/gold_holding_sections.dart';
 export 'package:growk_v2/features/goals/goal_detail_page/view/widgets/gold_invest_section.dart';
 export 'package:growk_v2/features/goals/goal_detail_page/view/widgets/profit_section_builder.dart';
+export 'package:flutter_gen/gen_l10n/app_localizations.dart';
+export 'package:growk_v2/core/constants/common_providers.dart';
+

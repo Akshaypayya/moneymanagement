@@ -18,11 +18,32 @@ class FrequencySelector extends ConsumerWidget {
     final calculatedYear = ref.watch(calculatedYearProvider);
     final calculatedAmount = ref.watch(calculatedAmountProvider);
 
-    final duration = (calculatedYear - 2025) * 12;
+    DateTime today = DateTime.now();
+    DateTime futureDate = DateTime(calculatedYear, 12, 31);
 
-    final dailyAmount = calculatedAmount / (duration * 30);
-    final weeklyAmount = calculatedAmount / (duration * 4);
-    final monthlyAmount = calculatedAmount / duration;
+    // final duration = (calculatedYear - today.year) * 12;
+
+    int duration =
+        (futureDate.year - today.year) * 12 + (futureDate.month - today.month);
+    if (duration < 1) duration = 1;
+    // if (actualDurationInMonths < 1) actualDurationInMonths = 1;
+
+    // final dailyAmount = calculatedAmount / (duration * 30);
+    // final weeklyAmount = calculatedAmount / (duration * 4);
+    // final monthlyAmount = calculatedAmount / duration;
+    int totalDays = futureDate.difference(today).inDays;
+    if (totalDays < 1) totalDays = 1;
+
+    int totalWeeks = (totalDays / 7).toInt();
+    if (totalWeeks < 1) totalWeeks = 1;
+
+    int totalMonths =
+        (futureDate.year - today.year) * 12 + (futureDate.month - today.month);
+    if (totalMonths < 1) totalMonths = 1;
+
+    final dailyAmount = calculatedAmount / totalDays;
+    final weeklyAmount = calculatedAmount / totalWeeks;
+    final monthlyAmount = calculatedAmount / totalMonths;
 
     final highlightColor = Colors.teal;
     final textColor = isDark ? Colors.white : Colors.black;

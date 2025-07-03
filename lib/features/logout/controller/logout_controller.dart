@@ -44,13 +44,12 @@ class LogoutController {
         return;
       }
       final controller = ref.read(deleteFcmTokenControllerProvider.notifier);
-      await controller.deleteFcmToken(context,ref);
+      await controller.deleteFcmToken(context, ref);
       final response =
           await ref.read(logoutRepoProvider).logoutUser(refreshToken, token);
       _clearUserData(ref);
 
       if (response.isSuccess) {
-
         debugPrint('Logout Success: ${response.message}');
       } else {
         debugPrint('Logout Failed: ${response.message}');
@@ -134,7 +133,7 @@ class LogoutController {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: isDark ? Colors.grey[900] : Colors.white,
+          backgroundColor: isDark ? Colors.black : Colors.white,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

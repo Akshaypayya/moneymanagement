@@ -30,16 +30,47 @@ class SettingsContent extends ConsumerWidget {
                 ),
               ),
               GapSpace.height20,
-              SettingsItem(
-                onTap: () {},
-                img: !isDark
+              buildSettingsToggleTile(
+                context,
+                icon: !isDark
                     ? 'settings_notification_light.png'
                     : 'settings_notification_dark.png',
                 title: 'Notification',
-                subtitle:
-                    'Manage alerts and stay updated\non your savings progress.',
-                isSwitch: true,
-                itemType: 'notification',
+                subtitle: 'Manage alerts and stay updated\non your savings progress.',
+                isEnabled: ref.watch(notificationEnabledProvider),
+                onChanged: (value) async {
+                  ref.read(notificationEnabledProvider.notifier).state = value;
+                  await SharedPreferencesHelper.saveBool('notifications_enabled', value);
+                  final notificationService = ref.read(notificationProvider);
+
+                  if (value) {
+                    debugPrint('🔔 Notifications toggle ON: Enabling push notifications');
+
+                    await notificationService.requestPermission();
+                    await notificationService.initLocalNotifications(context, ref);
+                    notificationService.firebaseInit(context, ref);
+
+                    showGrowkSnackBar(
+                      context: context,
+                      ref: ref,
+                      message: 'Notifications enabled',
+                      type: SnackType.success,
+                    );
+                  } else {
+                    debugPrint('🔕 Notifications toggle OFF: Disabling push notifications');
+
+                    await FirebaseMessaging.instance.deleteToken();
+                    notificationService.stopForegroundNotifications();
+
+                    showGrowkSnackBar(
+                      context: context,
+                      ref: ref,
+                      message: 'Notifications disabled',
+                      type: SnackType.success,
+                    );
+                  }
+                },
+                isDark: isDark,
               ),
               SettingsItem(
                 onTap: () {},

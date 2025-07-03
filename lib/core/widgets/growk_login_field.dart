@@ -1,26 +1,41 @@
 import '../../views.dart';
+import 'package:growk_v2/core/constants/common_enums.dart';
 
 class GrowkPhoneField extends ConsumerWidget {
   final TextEditingController controller;
-  final String? errorText;
 
   const GrowkPhoneField({
     super.key,
     required this.controller,
-
-    this.errorText,
   });
 
   @override
-
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
+    final texts = ref.watch(appTextsProvider);
+    final validationError = ref.watch(phoneValidationProvider);
+
+    // Map enum to localized error text dynamically
+    String? errorText;
+    switch (validationError) {
+      case PhoneValidationError.required:
+        errorText = texts.mobileNumberRequired;
+        break;
+      case PhoneValidationError.invalid:
+        errorText = texts.invalidMobileNumber;
+        break;
+      case PhoneValidationError.apiError:
+        errorText = texts.invalidMobileNumber; // adjust if you have this
+        break;
+      default:
+        errorText = null;
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ReusableText(
-          text: "Enter your mobile number",
+          text: texts.enterYourMobileNumber,
           style: AppTextStyle(textColor: AppColors.current(isDark).text).titleSmallMedium,
         ),
         const SizedBox(height: 8),
@@ -32,13 +47,13 @@ class GrowkPhoneField extends ConsumerWidget {
           onChanged: (value) {
             ref.read(phoneInputProvider.notifier).state = value;
 
-            // Optionally clear validation error when typing
-            if (ref.read(phoneValidationProvider.notifier).state != null) {
-              ref.read(phoneValidationProvider.notifier).state = null;
+            // Clear error if user starts editing
+            if (ref.read(phoneValidationProvider) != PhoneValidationError.none) {
+              ref.read(phoneValidationProvider.notifier).state = PhoneValidationError.none;
             }
           },
           decoration: InputDecoration(
-            hintText: 'Mobile number',
+            hintText: texts.mobileNumberHint,
             hintStyle: AppTextStyle(textColor: AppColors.current(isDark).labelText).labelRegular,
             prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
             prefixIcon: Padding(

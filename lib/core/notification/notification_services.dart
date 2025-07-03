@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:growk_v2/features/settings_page/widgets/settings_item.dart';
 import 'package:growk_v2/main.dart';
-
 import '../../views.dart';
 
 class NotificationServices {
@@ -9,6 +10,9 @@ class NotificationServices {
 
   static const String androidChannelId = 'growk_channel';
   static const String androidChannelName = 'GrowK Notifications';
+
+  StreamSubscription<RemoteMessage>? _onMessageSubscription;
+  StreamSubscription<RemoteMessage>? _onMessageOpenedAppSubscription;
 
   Future<void> requestPermission() async {
     NotificationSettings settings = await messaging.requestPermission(
@@ -23,9 +27,7 @@ class NotificationServices {
     debugPrint('Notification permission status: ${settings.authorizationStatus}');
   }
 
-
-
-  Future<void> initLocalNotifications(BuildContext context,WidgetRef ref) async {
+  Future<void> initLocalNotifications(BuildContext context, WidgetRef ref) async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const iOS = DarwinInitializationSettings(
       requestSoundPermission: true,
@@ -40,7 +42,7 @@ class NotificationServices {
       onDidReceiveNotificationResponse: (response) {
         debugPrint('🔔 Notification tapped with payload: ${response.payload}');
         if (response.payload != null && response.payload!.isNotEmpty) {
-          _handleNotificationNavigation(response.payload!, ref); // <-- pass ref here
+          _handleNotificationNavigation(response.payload!, context,ref);
         }
       },
     );
@@ -56,8 +58,48 @@ class NotificationServices {
     );
   }
 
+  void firebaseInit(BuildContext context, WidgetRef ref) {
+    // Cancel existing subscriptions if any
+    _onMessageSubscription?.cancel();
+    _onMessageOpenedAppSubscription?.cancel();
+
+    final isEnabled = ref.read(notificationEnabledProvider);
+    if (!isEnabled) {
+      debugPrint('🔕 Notifications are disabled, skipping listener registration');
+      return;
+    }
+
+    _onMessageSubscription = FirebaseMessaging.onMessage.listen((message) {
+      debugPrint('📨 Foreground message received: ${message.data}');
+      showNotification(message);
+    });
+
+    _onMessageOpenedAppSubscription = FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      debugPrint('📲 App opened via notification: ${message.data}');
+      if (message.data.isNotEmpty) {
+        String payload = jsonEncode(message.data);
+        _handleNotificationNavigation(payload, context,ref);
+      }
+    });
+  }
+
+  void stopForegroundNotifications() {
+    _onMessageSubscription?.cancel();
+    _onMessageOpenedAppSubscription?.cancel();
+    _onMessageSubscription = null;
+    _onMessageOpenedAppSubscription = null;
+    debugPrint('🛑 Foreground notification listeners cancelled');
+  }
+
   Future<void> showNotification(RemoteMessage message) async {
     final notificationId = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+    final bigTextStyle = BigTextStyleInformation(
+      message.notification?.body ?? 'No Message Body',
+      contentTitle: message.notification?.title ?? 'No Title',
+      htmlFormatContent: true,
+      htmlFormatContentTitle: true,
+    );
 
     final androidDetails = AndroidNotificationDetails(
       androidChannelId,
@@ -65,6 +107,7 @@ class NotificationServices {
       channelDescription: 'Notifications from GrowK',
       importance: Importance.max,
       priority: Priority.high,
+      styleInformation: bigTextStyle, // ✅ Enable expanded text
       ticker: 'ticker',
     );
 
@@ -90,36 +133,22 @@ class NotificationServices {
     );
   }
 
-  void firebaseInit(BuildContext context, WidgetRef ref) { // <-- Add ref
-    FirebaseMessaging.onMessage.listen((message) {
-      debugPrint('📨 Foreground message received: ${message.data}');
-      showNotification(message);
-    });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      debugPrint('📲 App opened via notification: ${message.data}');
-      if (message.data.isNotEmpty) {
-        String payload = jsonEncode(message.data);
-        _handleNotificationNavigation(payload, ref); // <-- pass ref here
-      }
-    });
-  }
-  Future<void> handleInitialMessage(WidgetRef ref) async {
-    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  Future<void> handleInitialMessage(WidgetRef ref, BuildContext context) async {
+    RemoteMessage? initialMessage = await messaging.getInitialMessage();
 
     if (initialMessage != null) {
       debugPrint('📲 App opened from terminated state via notification: ${initialMessage.data}');
       String payload = jsonEncode(initialMessage.data);
-      _handleNotificationNavigation(payload, ref);
+      _handleNotificationNavigation(payload, context, ref);
     }
   }
 
-
-  void _handleNotificationNavigation(String payload, WidgetRef ref) {
+  void _handleNotificationNavigation(String payload, BuildContext context, WidgetRef ref) {
     try {
-      ref.read(notificationNavigationIndexProvider.notifier).state = 1; // Correctly set in live app scope
-
-      final data = jsonDecode(payload);
+      if (context.mounted) {
+        ref.read(notificationNavigationIndexProvider.notifier).state = 1;
+      }
 
       final nav = navigatorKey.currentState;
       if (nav == null) {
@@ -127,9 +156,7 @@ class NotificationServices {
         return;
       }
       nav.pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => const MainScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const MainScreen()),
             (route) => false,
       );
 
@@ -140,9 +167,6 @@ class NotificationServices {
   }
 
 
-
-
-
   Future<String?> getDeviceToken() async {
     final token = await messaging.getToken();
     debugPrint('🔑 FCM Token: $token');
@@ -150,8 +174,9 @@ class NotificationServices {
   }
 }
 
-// Riverpod Provider
+// Riverpod Providers
 final notificationProvider = Provider<NotificationServices>((ref) {
   return NotificationServices();
 });
+
 final notificationNavigationIndexProvider = StateProvider<int?>((ref) => null);

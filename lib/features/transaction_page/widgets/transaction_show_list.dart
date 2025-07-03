@@ -1,116 +1,96 @@
-import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/features/transaction_page/widgets/month_header.dart';
 import 'package:growk_v2/features/transaction_page/widgets/transaction_by_month.dart';
 import 'package:growk_v2/features/transaction_page/widgets/transaction_item.dart';
 import 'package:growk_v2/views.dart';
 
-Widget transactionListBuilder(TransactionPaginationState state, bool isDark,
-    ScrollController scrollController, WidgetRef ref) {
-  final groupedTransactions = groupTransactionsByMonth(state.transactions);
+class TransactionListBuilder extends ConsumerStatefulWidget {
+  TransactionPaginationState state;
+  bool isDark;
+  ScrollController scrollController;
+  TransactionListBuilder({
+    required this.state,
+    required this.isDark,
+    required this.scrollController,
+  });
 
-  return SingleChildScrollView(
-    controller: scrollController,
-    physics: const AlwaysScrollableScrollPhysics(),
-    child: Column(
-      children: [
-        if (groupedTransactions.isNotEmpty)
-          ...groupedTransactions.entries.map((entry) {
-            final monthYear = entry.key;
-            final transactions = entry.value;
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TransactionListBuilderState();
+}
 
-            return Column(
-              children: [
-                MonthHeader(
-                  year: monthYear['year']!,
-                  month: monthYear['month']!,
-                ),
-                ...transactions.map((transactionData) => TransactionItem(
-                      transactionData: transactionData,
-                    )),
-              ],
-            );
-          }),
-        if (state.isLoadingMore)
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              children: [
-                CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    isDark ? Colors.white : Colors.black,
+class _TransactionListBuilderState
+    extends ConsumerState<TransactionListBuilder> {
+  @override
+  Widget build(BuildContext context) {
+    final groupedTransactions =
+        groupTransactionsByMonth(widget.state.transactions);
+    return SingleChildScrollView(
+      controller: widget.scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          if (groupedTransactions.isNotEmpty)
+            ...groupedTransactions.entries.map((entry) {
+              final monthYear = entry.key;
+              final transactions = entry.value;
+
+              return Column(
+                children: [
+                  MonthHeader(
+                    year: monthYear['year']!,
+                    month: monthYear['month']!,
                   ),
-                ),
-                // const SizedBox(height: 12),
-                // Text(
-                //   // state.loadingMessage,
-                //   'Loading More Transactions',
-                //   style: TextStyle(
-                //     fontSize: 14,
-                //     color: isDark ? Colors.grey[400] : Colors.grey[600],
-                //     fontFamily: GoogleFonts.poppins().fontFamily,
-                //   ),
-                // ),
-              ],
-            ),
-          ),
-        // if (state.hasMore &&
-        //     !state.isLoadingMore &&
-        //     state.transactions.isNotEmpty)
-        //   Container(
-        //     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        //     child: SizedBox(
-        //       width: double.infinity,
-        //       child: OutlinedButton(
-        //         onPressed: () {
-        //           debugPrint("TRANSACTIONS PAGE: Load more button pressed");
-        //           debugPrint(
-        //               "TRANSACTIONS PAGE: Will load next ${state.itemsPerPage} items (${state.transactions.length + state.itemsPerPage} total)");
-        //           ref
-        //               .read(paginatedTransactionProvider.notifier)
-        //               .loadMoreTransactions();
-        //         },
-        //         style: OutlinedButton.styleFrom(
-        //           side: BorderSide(
-        //             color: isDark ? Colors.white : Colors.black,
-        //           ),
-        //           padding: const EdgeInsets.symmetric(vertical: 12),
-        //         ),
-        //         child: Text(
-        //           'Load Next ${state.itemsPerPage} Transactions',
-        //           style: TextStyle(
-        //             color: isDark ? Colors.white : Colors.black,
-        //             fontFamily: GoogleFonts.poppins().fontFamily,
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        if (!state.hasMore && state.transactions.isNotEmpty)
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.check_circle_outline,
-                  size: 32,
-                  color: isDark ? Colors.green[400] : Colors.green[600],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  // 'All ${state.totalRecords} transactions loaded',
-                  'All transactions loaded',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontStyle: FontStyle.italic,
+                  ...transactions.map((transactionData) => TransactionItem(
+                        transactionData: transactionData,
+                      )),
+                ],
+              );
+            }),
+          if (widget.state.isLoadingMore)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      widget.isDark ? Colors.white : Colors.black,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        const SizedBox(height: 40),
-      ],
-    ),
-  );
+          // if (widget.state.transactions.isNotEmpty)
+          if (widget.state.transactions.isNotEmpty && !widget.state.hasMore)
+            // if (widget.state.transactions.isNotEmpty &&
+            // widget.state.transactions.length == widget.state.totalRecords)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.check_circle_outline,
+                    size: 32,
+                    color:
+                        widget.isDark ? Colors.green[400] : Colors.green[600],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    // 'All ${state.totalRecords} transactions loaded',
+                    'All transactions loaded',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color:
+                          widget.isDark ? Colors.grey[400] : Colors.grey[600],
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
 }

@@ -25,5 +25,10 @@ Widget transactionContentBuilder(TransactionPaginationState state, bool isDark,
 
   debugPrint(
       "TRANSACTIONS PAGE: Displaying ${state.transactions.length} transactions");
-  return transactionListBuilder(state, isDark, scrollController, ref);
+  return TransactionListBuilder(
+    state: state,
+    isDark: isDark,
+    scrollController: scrollController,
+  );
+  // return transactionListBuilder(state, isDark, scrollController, ref);
 }

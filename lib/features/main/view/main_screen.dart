@@ -54,9 +54,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         final shouldExit = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            backgroundColor: Colors.white,
-            title: const Text("Exit App"),
-            content: const Text("Do you want to close the app?"),
+            backgroundColor: isDark?Colors.grey.shade900:Colors.white,
+            title:  Text("Exit App",style: AppTextStyle.current(isDark).titleLrg,),
+            content:  Text("Do you want to close the app?",style:AppTextStyle.current(isDark).bodyKycSmall),
             actions: [
               TextButton(
                 style: TextButton.styleFrom(
@@ -70,7 +70,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     backgroundColor: Colors.black
                 ),
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text("Yes",style: TextStyle(color: Colors.white),),
+                child:  Text("Yes",style: TextStyle(color: Colors.white),),
               ),
             ],
           ),

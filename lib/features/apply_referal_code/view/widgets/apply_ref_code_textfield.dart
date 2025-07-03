@@ -9,6 +9,7 @@ class ApplyRefCodeTextField extends ConsumerWidget {
     final controller = TextEditingController(
       text: ref.read(referralCodeProvider),
     );
+    final texts = ref.watch(appTextsProvider);
 
     return ScalingFactor(
       child: ReusableColumn(
@@ -16,7 +17,7 @@ class ApplyRefCodeTextField extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ReusableText(
-            text: "Enter Referral Code",
+            text: texts.enterReferralCodeLabel,
             style: AppTextStyle(textColor: AppColors.current(isDark).text)
                 .titleSmallMedium,
           ),
@@ -33,7 +34,7 @@ class ApplyRefCodeTextField extends ConsumerWidget {
               }
             },
             decoration: InputDecoration(
-              hintText: 'Referral Code',
+              hintText: texts.referralCodeHint,
               hintStyle:
               AppTextStyle(textColor: AppColors.current(isDark).labelText)
                   .labelRegular,

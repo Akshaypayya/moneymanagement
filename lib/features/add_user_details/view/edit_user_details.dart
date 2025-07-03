@@ -24,6 +24,7 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
   @override
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
+    final texts = ref.watch(appTextsProvider);
     final controller = ref.read(editUserControllerProvider);
     final imageFile = ref.watch(profilePictureFileProvider);
     final uploadState = ref.watch(profilePictureUploadStateProvider);
@@ -53,7 +54,7 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
           child: CustomScaffold(
             backgroundColor: AppColors.current(isDark).background,
             appBar: GrowkAppBar(
-              title: 'Edit User Details',
+              title: texts.editUserDetails,
               isBackBtnNeeded: hasProfileData,
             ),
             body: SingleChildScrollView(
@@ -94,7 +95,6 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                                     )
                                         : null,
                                   ),
-                                  // Replace blank Icon with default asset image:
                                   child: (imageFile == null && !hasProfilePictureFromApi)
                                       ? ClipOval(
                                     child: Image.asset(
@@ -152,11 +152,11 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                     /// Name Field
                     ReusableTextField(
                       isMandatory: true,
-                      label: 'Name',
+                      label: texts.nameLabel,
                       icon: Icons.person,
                       inputFormatters: AppInputFormatters.nameFormatter(),
                       controller: controller.nameController(ref),
-                      hintText: 'Enter your full name',
+                      hintText: texts.enterFullName,
                       errorText: ref.watch(nameErrorProvider),
                       onChanged: (value) {
                         if (ref.read(nameErrorProvider) != null) {
@@ -168,11 +168,11 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                     /// Email Field
                     ReusableTextField(
                       isMandatory: true,
-                      label: 'Email',
+                      label: texts.emailLabel,
                       icon: Icons.email,
                       inputFormatters: AppInputFormatters.emailFormatter(),
                       controller: controller.emailController(ref),
-                      hintText: 'Enter your email address',
+                      hintText: texts.enterEmail,
                       errorText: ref.watch(emailErrorProvider),
                       onChanged: (value) {
                         if (ref.read(emailErrorProvider) != null) {
@@ -184,15 +184,14 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                     /// Gender Selector
                     GrowkBottomSheetNavigator(
                       isMandatory: true,
-                      label: 'Gender',
+                      label: texts.genderLabel,
                       icon: Icons.male,
                       valueText: ref.watch(genderProvider).isEmpty
-                          ? 'Select gender'
+                          ? texts.selectGender
                           : ref.watch(genderProvider),
                       onTap: () {
-                        FocusScope.of(context).unfocus(); // 1. Unfocus all text fields
-                        Future.delayed(Duration(milliseconds: 100), () {
-                          // 2. Open the bottom sheet *after* keyboard is fully dismissed
+                        FocusScope.of(context).unfocus();
+                        Future.delayed(const Duration(milliseconds: 100), () {
                           controller.showGenderSheet(context, ref);
                         });
 
@@ -206,10 +205,10 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
                     /// DOB Selector
                     GrowkBottomSheetNavigator(
                       isMandatory: true,
-                      label: 'Date of Birth',
+                      label: texts.dobLabel,
                       icon: Icons.cake,
                       valueText: ref.watch(dobUiProvider).isEmpty
-                          ? 'Select your date of birth'
+                          ? texts.selectDob
                           : ref.watch(dobUiProvider),
                       onTap: () {
                         if (ref.read(dobErrorProvider) != null) {
@@ -224,7 +223,7 @@ class _EditUserDetailsState extends ConsumerState<EditUserDetails> {
 
                     /// Save Button
                     GrowkButton(
-                      title: 'Save',
+                      title: texts.saveButton,
                       onTap: () => controller.saveUserDetails(context, ref),
                     ),
                     const SizedBox(height: 40),

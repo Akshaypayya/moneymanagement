@@ -4,10 +4,14 @@ class PaginatedTransactionNotifier
     extends StateNotifier<TransactionPaginationState> {
   final Ref ref;
 
+  List<TransactionApiModel> _allTransactions = [];
+  int _currentDisplayIndex = 0;
+  static const int itemsPerScroll = 10;
+
   PaginatedTransactionNotifier(this.ref)
       : super(TransactionPaginationState(
           currentPage: 0,
-          itemsPerPage: 10,
+          itemsPerPage: itemsPerScroll,
           isLoading: false,
           hasMore: true,
           transactions: [],
@@ -16,8 +20,7 @@ class PaginatedTransactionNotifier
         ));
 
   Future<void> loadInitialTransactions() async {
-    debugPrint(
-        'TRANSACTION PAGINATION: Loading initial 10 transactions (iDisplayStart=0)');
+    debugPrint('CLIENT PAGINATION: Loading all transactions from backend');
 
     state = state.copyWith(
       isLoading: true,
@@ -33,81 +36,35 @@ class PaginatedTransactionNotifier
 
       final transactionModel = await repository.getAllTransactions(
         iDisplayStart: 0,
-        iDisplayLength: 10,
+        iDisplayLength: 1000,
       );
 
-      debugPrint('TRANSACTION PAGINATION: Initial API call completed');
-      debugPrint('TRANSACTION PAGINATION: Status: ${transactionModel.status}');
+      debugPrint('CLIENT PAGINATION: Backend response completed');
 
       if (transactionModel.isSuccess && transactionModel.data != null) {
         final data = transactionModel.data!;
-        final loadedTransactions = data.aaData;
+        _allTransactions = data.aaData;
 
         debugPrint(
-            'TRANSACTION PAGINATION: Received ${loadedTransactions.length} transactions');
+            'CLIENT PAGINATION: Loaded ${_allTransactions.length} total transactions');
         debugPrint(
-            'TRANSACTION PAGINATION: Total available: ${data.iTotalRecords}');
+            'CLIENT PAGINATION: Backend says total=${data.iTotalRecords}');
 
-        if (loadedTransactions.isEmpty && data.iTotalRecords > 0) {
-          debugPrint(
-              'TRANSACTION PAGINATION: BACKEND ISSUE: iTotalRecords=${data.iTotalRecords} but received empty aaData');
-          state = state.copyWith(
-            isLoading: false,
-            transactions: [],
-            totalRecords: data.iTotalRecords,
-            hasMore: false,
-            errorMessage:
-                'Backend issue: ${data.iTotalRecords} transactions available but none returned.',
-          );
-          return;
-        }
+        _currentDisplayIndex = 0;
 
-        if (loadedTransactions.isNotEmpty) {
-          final hasMore = loadedTransactions.length < data.iTotalRecords;
-
-          state = state.copyWith(
-            isLoading: false,
-            transactions: loadedTransactions,
-            totalRecords: data.iTotalRecords,
-            hasMore: hasMore,
-            currentPage: 1,
-            errorMessage: null,
-          );
-
-          debugPrint('TRANSACTION PAGINATION: Initial load complete');
-          debugPrint(
-              'TRANSACTION PAGINATION: Loaded ${loadedTransactions.length} items');
-          debugPrint('TRANSACTION PAGINATION: Has more: $hasMore');
-          debugPrint(
-              'TRANSACTION PAGINATION: Total records: ${data.iTotalRecords}');
-        } else {
-          state = state.copyWith(
-            isLoading: false,
-            transactions: [],
-            totalRecords: 0,
-            hasMore: false,
-            errorMessage: null,
-          );
-          debugPrint(
-              'TRANSACTION PAGINATION: No transactions available (legitimate empty state)');
-        }
+        _updateDisplayedTransactions();
       } else {
-        debugPrint(
-            'TRANSACTION PAGINATION: Initial load failed - ${transactionModel.status}');
-
-        final isEmpty = transactionModel.data?.aaData.isEmpty == true;
+        debugPrint('CLIENT PAGINATION: Failed to load transactions');
         state = state.copyWith(
-            isLoading: false,
-            transactions: [],
-            totalRecords: transactionModel.data?.iTotalRecords ?? 0,
-            hasMore: false,
-            errorMessage: isEmpty
-                ? 'Failed to load transactions: ${transactionModel.status}'
-                : 'No transactions found');
+          isLoading: false,
+          errorMessage:
+              'Failed to load transactions: ${transactionModel.status}',
+          hasMore: false,
+        );
       }
     } catch (e, stackTrace) {
-      debugPrint('TRANSACTION PAGINATION ERROR: $e');
-      debugPrint('TRANSACTION PAGINATION STACK: $stackTrace');
+      debugPrint('CLIENT PAGINATION ERROR: $e');
+      debugPrint('CLIENT PAGINATION STACK: $stackTrace');
 
       state = state.copyWith(
         isLoading: false,
@@ -118,148 +75,82 @@ class PaginatedTransactionNotifier
   }
 
   void onTransactionScroll(ScrollController scrollController) {
-    final state = ref.read(paginatedTransactionProvider);
+    final currentState = state;
 
     if (scrollController.position.pixels >=
         scrollController.position.maxScrollExtent - 200) {
-      if (state.hasMore && !state.isAnyLoading) {
+      if (currentState.hasMore && !currentState.isAnyLoading) {
+        debugPrint("CLIENT PAGINATION: Scroll triggered");
         debugPrint(
-            "TRANSACTIONS PAGE: Scroll triggered - loading next ${state.itemsPerPage} items");
-        debugPrint(
-            "TRANSACTIONS PAGE: Current items: ${state.transactions.length}/${state.totalRecords}");
-        debugPrint(
-            "TRANSACTIONS PAGE: Next request will be: iDisplayStart=${state.transactions.length}, iDisplayLength=${state.itemsPerPage}");
+            "CLIENT PAGINATION: Currently showing ${currentState.transactions.length}/${_allTransactions.length}");
 
-        ref.read(paginatedTransactionProvider.notifier).loadMoreTransactions();
-      } else {
-        if (!state.hasMore) {
-          debugPrint(
-              "TRANSACTIONS PAGE: All transactions loaded (${state.transactions.length}/${state.totalRecords})");
-        } else if (state.isAnyLoading) {
-          debugPrint(
-              "TRANSACTIONS PAGE: Already loading, skipping scroll trigger");
-        }
+        loadMoreTransactions();
       }
     }
   }
 
   Future<void> loadMoreTransactions() async {
     if (state.isLoading || state.isLoadingMore || !state.hasMore) {
-      debugPrint('TRANSACTION PAGINATION: Skipping loadMore - '
-          'isLoading: ${state.isLoading}, '
-          'isLoadingMore: ${state.isLoadingMore}, '
-          'hasMore: ${state.hasMore}');
       return;
     }
 
-    debugPrint('TRANSACTION PAGINATION: Loading more transactions');
-    debugPrint(
-        'TRANSACTION PAGINATION: Current loaded: ${state.transactions.length}');
-    debugPrint(
-        'TRANSACTION PAGINATION: Total available: ${state.totalRecords}');
-
-    final nextDisplayStart = state.currentPage;
-
-    debugPrint(
-        'TRANSACTION PAGINATION: Requesting next 10 items with iDisplayStart=$nextDisplayStart');
+    debugPrint('CLIENT PAGINATION: Loading next 10 transactions for display');
 
     state = state.copyWith(isLoadingMore: true);
 
-    try {
-      final repository = ref.read(transactionRepositoryProvider);
+    await Future.delayed(const Duration(milliseconds: 500));
 
-      final transactionModel = await repository.getAllTransactions(
-        iDisplayStart: nextDisplayStart,
-        iDisplayLength: 10,
-      );
+    _updateDisplayedTransactions();
+  }
 
-      debugPrint('TRANSACTION PAGINATION: LoadMore API call completed');
-      debugPrint('TRANSACTION PAGINATION: Status: ${transactionModel.status}');
+  void _updateDisplayedTransactions() {
+    final nextDisplayCount = _currentDisplayIndex + itemsPerScroll;
+    final endIndex = nextDisplayCount > _allTransactions.length
+        ? _allTransactions.length
+        : nextDisplayCount;
 
-      if (transactionModel.isSuccess && transactionModel.data != null) {
-        final data = transactionModel.data!;
-        final newTransactions = data.aaData;
+    final transactionsToShow = _allTransactions.take(endIndex).toList();
+    final hasMore = endIndex < _allTransactions.length;
 
-        debugPrint(
-            'TRANSACTION PAGINATION: Received ${newTransactions.length} more transactions');
+    _currentDisplayIndex = endIndex;
 
-        if (newTransactions.isEmpty) {
-          debugPrint(
-              'TRANSACTION PAGINATION: Received empty response - no more data');
-          state = state.copyWith(
-            isLoadingMore: false,
-            hasMore: false,
-            totalRecords: data.iTotalRecords,
-          );
-          return;
-        }
+    debugPrint(
+        'CLIENT PAGINATION: Now showing ${transactionsToShow.length}/${_allTransactions.length}');
+    debugPrint('CLIENT PAGINATION: Has more=$hasMore');
 
-        final allTransactions = [...state.transactions, ...newTransactions];
-
-        final hasMore = allTransactions.length < data.iTotalRecords;
-
-        state = state.copyWith(
-          isLoadingMore: false,
-          transactions: allTransactions,
-          totalRecords: data.iTotalRecords,
-          hasMore: hasMore,
-          currentPage: state.currentPage + 1,
-          errorMessage: null,
-        );
-
-        debugPrint('TRANSACTION PAGINATION: LoadMore complete');
-        debugPrint(
-            'TRANSACTION PAGINATION: Total loaded: ${allTransactions.length}');
-        debugPrint('TRANSACTION PAGINATION: Has more: $hasMore');
-        debugPrint(
-            'TRANSACTION PAGINATION: Next iDisplayStart will be: ${state.currentPage}');
-        debugPrint(
-            'TRANSACTION PAGINATION: Total available: ${data.iTotalRecords}');
-      } else {
-        debugPrint(
-            'TRANSACTION PAGINATION: LoadMore failed - ${transactionModel.status}');
-
-        state = state.copyWith(
-          isLoadingMore: false,
-          errorMessage:
-              'Failed to load more transactions: ${transactionModel.status}',
-        );
-      }
-    } catch (e, stackTrace) {
-      debugPrint('TRANSACTION PAGINATION ERROR in loadMore: $e');
-      debugPrint('TRANSACTION PAGINATION STACK: $stackTrace');
-
-      state = state.copyWith(
-        isLoadingMore: false,
-        errorMessage: 'Error loading more transactions: $e',
-      );
-    }
+    state = state.copyWith(
+      isLoading: false,
+      isLoadingMore: false,
+      transactions: transactionsToShow,
+      totalRecords: _allTransactions.length,
+      hasMore: hasMore,
+      currentPage: transactionsToShow.length,
+      errorMessage: null,
+    );
   }
 
   Future<void> refreshTransactions() async {
-    debugPrint(
-        'TRANSACTION PAGINATION: Refreshing transactions (clearing all data)');
+    debugPrint('CLIENT PAGINATION: Refreshing transactions');
+    _allTransactions.clear();
+    _currentDisplayIndex = 0;
     await loadInitialTransactions();
   }
 
   String get statusInfo {
-    if (state.totalRecords == 0) return 'No transactions';
-    if (state.transactions.length >= state.totalRecords) {
-      return 'Showing all ${state.totalRecords} transactions';
+    if (_allTransactions.isEmpty) return 'No transactions';
+    if (state.transactions.length >= _allTransactions.length) {
+      return 'Showing all ${_allTransactions.length} transactions';
     }
-    return 'Showing ${state.transactions.length} of ${state.totalRecords} transactions';
+    return 'Showing ${state.transactions.length} of ${_allTransactions.length} transactions';
   }
 
   void debugCurrentState() {
-    debugPrint('TRANSACTION STATE DEBUG:');
-    debugPrint('  - Current page: ${state.currentPage}');
-    debugPrint('  - Items per page: ${state.itemsPerPage}');
-    debugPrint('  - Loaded transactions: ${state.transactions.length}');
-    debugPrint('  - Total records: ${state.totalRecords}');
+    debugPrint('CLIENT PAGINATION DEBUG:');
+    debugPrint('  - Total loaded from backend: ${_allTransactions.length}');
+    debugPrint('  - Currently displayed: ${state.transactions.length}');
+    debugPrint('  - Current display index: $_currentDisplayIndex');
     debugPrint('  - Has more: ${state.hasMore}');
     debugPrint('  - Is loading: ${state.isLoading}');
     debugPrint('  - Is loading more: ${state.isLoadingMore}');
-    debugPrint('  - Error message: ${state.errorMessage}');
-    debugPrint('  - Next iDisplayStart will be: ${state.currentPage}');
   }
 }

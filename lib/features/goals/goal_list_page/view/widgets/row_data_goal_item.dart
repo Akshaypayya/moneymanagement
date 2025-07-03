@@ -83,12 +83,29 @@ Row goalItemDataRow(
                 style: TextStyle(
                   fontSize: 11,
                   fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: isDark ? Colors.grey[400] : Colors.grey[700],
+                  color: goalStatus == "COMPLETED"
+                      ? Colors.black
+                      : isDark
+                          ? Colors.white
+                          : Colors.black,
                 ),
               ),
-              ReusableText(
-                text: title,
-                style: AppTextStyle(textColor: textColor).titleMedium,
+              SizedBox(
+                width: 170,
+                child: ReusableText(
+                  text: title,
+                  style: TextStyle(
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: goalStatus == "COMPLETED"
+                        ? Colors.black
+                        : isDark
+                            ? Colors.white
+                            : Colors.black,
+                  ),
+                  //  AppTextStyle(textColor: textColor).titleMedium,
+                ),
               ),
             ],
           ),
@@ -99,12 +116,28 @@ Row goalItemDataRow(
         children: [
           Row(
             children: [
-              Image.asset(AppImages.sarSymbol,
-                  height: 16, color: AppColors.current(isDark).primary),
+              Image.asset(
+                AppImages.sarSymbol,
+                height: 16,
+                // color: AppColors.current(isDark).primary
+                color: goalStatus == "COMPLETED"
+                    ? Colors.black
+                    : AppColors.current(isDark).primary,
+              ),
               const SizedBox(width: 3),
               ReusableText(
                 text: amount,
-                style: AppTextStyle(textColor: textColor).titleRegular,
+                style: TextStyle(
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: goalStatus == "COMPLETED"
+                      ? Colors.black
+                      : isDark
+                          ? Colors.white
+                          : Colors.black,
+                ),
+                // AppTextStyle(textColor: textColor).titleRegular,
               ),
             ],
           ),
@@ -114,7 +147,17 @@ Row goalItemDataRow(
                   children: [
                     ReusableText(
                       text: '(Profit: ',
-                      style: AppTextStyle(textColor: textColor).bodyRegular,
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        color: goalStatus == "COMPLETED"
+                            ? Colors.black
+                            : isDark
+                                ? Colors.white
+                                : Colors.black,
+                      ),
+                      // AppTextStyle(textColor: textColor).bodyRegular,
                     ),
                     Image.asset(
                       AppImages.sarSymbol,
@@ -136,7 +179,17 @@ Row goalItemDataRow(
                     ),
                     ReusableText(
                       text: ')',
-                      style: AppTextStyle(textColor: textColor).bodyRegular,
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        color: goalStatus == "COMPLETED"
+                            ? Colors.black
+                            : isDark
+                                ? Colors.white
+                                : Colors.black,
+                      ),
+                      //  AppTextStyle(textColor: textColor).bodyRegular,
                     ),
                   ],
                 )

@@ -1,15 +1,14 @@
 import 'dart:io';
-
 import 'package:flutter/services.dart';
+import 'package:growk_v2/core/constants/app_texts_string.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/internet_checker/ui/monitor_connection_view.dart';
 import 'package:growk_v2/core/theme/theme_service.dart';
+import 'package:growk_v2/features/settings_page/widgets/settings_item.dart';
 import 'package:growk_v2/views.dart'; // include your app's common views
 import 'firebase_options.dart';
-import 'package:growk_v2/core/internet_checker/utils/enhanced_internet.dart';
-// import 'package:growk_v2/core/internet_checker/view/internet_checker_ui.dart';
-import 'package:growk_v2/views.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// final GlobalKey _providerScopeKey = GlobalKey();
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -17,26 +16,39 @@ class MyHttpOverrides extends HttpOverrides {
       ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
-  WidgetsFlutterBinding.ensureInitialized();
+
+  ScaledWidgetsFlutterBinding.ensureInitialized(
+    scaleFactor: (deviceSize) {
+      const double widthOfDesign = 435;
+      return deviceSize.width / widthOfDesign;
+    },
+  );
 
   await SharedPreferencesHelper.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // LOCK ORIENTATION TO PORTRAIT
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-    // DeviceOrientation.portraitDown, // optionally add this if you want upside-down portrait
   ]);
+
   final isDark = await ThemeService.loadTheme();
-  runApp(ProviderScope(
+  final isNotificationsEnabled = SharedPreferencesHelper.getBool('notifications_enabled') ?? true;
+
+  runApp(
+    ProviderScope(
       overrides: [
         isDarkProvider.overrideWith((ref) => isDark),
+        notificationEnabledProvider.overrideWith((ref) => isNotificationsEnabled),
+        appTextsProvider.overrideWith((ref) => AppTextsString.empty()),
       ],
-      child: MyApp()));
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends ConsumerStatefulWidget {
@@ -50,23 +62,43 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
+
     final notificationService = ref.read(notificationProvider);
-    notificationService.requestPermission();
-    notificationService.firebaseInit(context,ref);
-    notificationService.initLocalNotifications(context,ref);
-    notificationService.getDeviceToken().then((token) {
-      debugPrint('FCM Token: $token');
-      SharedPreferencesHelper.saveString('fcm_token', token ?? '');
-    });
-    Future.microtask(() {
-      ref.read(notificationProvider).handleInitialMessage(ref);
-    });
+    final isNotificationEnabled = ref.read(notificationEnabledProvider);
+
+    if (isNotificationEnabled) {
+      debugPrint('🔔 Notifications are enabled. Initializing Firebase services.');
+      notificationService.requestPermission();
+      notificationService.initLocalNotifications(context, ref);
+      notificationService.firebaseInit(context, ref);
+      notificationService.getDeviceToken().then((token) {
+        debugPrint('🔑 FCM Token: $token');
+        SharedPreferencesHelper.saveString('fcm_token', token ?? '');
+      });
+      Future.microtask(() {
+        notificationService.handleInitialMessage(ref, context);
+      });
+    } else {
+      debugPrint('🔕 Notifications are disabled. Skipping Firebase initialization.');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(localeProvider);
     return ScalingFactor(
       child: MaterialApp(
+        locale: locale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localeResolutionCallback: (locale, supportedLocales) {
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale?.languageCode) {
+              return supportedLocale;
+            }
+          }
+          return supportedLocales.first;
+        },
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'GrowK',
@@ -76,14 +108,16 @@ class _MyAppState extends ConsumerState<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors.light.primary),
         ),
         onGenerateRoute: AppRouter.generateRoute,
-        // builder: (context, child) => EnhancedConnectivityOverlay(
-        //   reconnectedDisplayDuration: Duration(milliseconds: 2000),
-        //   showConnectionType: true,
-        //   showPulseAnimation: true,
-        //   child: child ?? const SizedBox(),
-        // ),
-        builder: (context, child) =>
-            MonitorConnectionView(child: child ?? SizedBox()),
+        builder: (context, child) {
+          final localizations = AppLocalizations.of(context)!;
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(appTextsProvider.notifier).state = AppTextsString(localizations);
+          });
+
+          return MonitorConnectionView(child: child ?? const SizedBox());
+        },
+
       ),
     );
   }

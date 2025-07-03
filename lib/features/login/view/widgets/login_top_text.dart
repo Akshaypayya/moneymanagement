@@ -6,20 +6,21 @@ class LoginTopText extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
+    final texts = ref.watch(appTextsProvider);
 
     return ReusableSizedBox(
       child: ReusableColumn(
         children: <Widget>[
           Center(
             child: Text(
-              'Welcome Back',
+              texts.welcomeBack,
               style: AppTextStyle.current(isDark).titleMedium,
             ),
           ),
           ReusableSizedBox(height: 20,),
           Center(
             child: Text(
-              'Create your account or sign in security using OTP verification \nEnjoy a seamless and secure experience with Growk!',
+              texts.loginTopDescription,
               style: AppTextStyle.current(isDark).labelSmall,
               textAlign: TextAlign.center,
             ),

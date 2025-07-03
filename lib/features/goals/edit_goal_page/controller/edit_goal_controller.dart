@@ -41,8 +41,11 @@ class EditGoalController {
 
     ref.read(editGoalNameProvider.notifier).state = goalData.goalName;
 
-    final yearSliderValue =
-        goalData.targetYear > 2025 ? (goalData.targetYear - 2025) / 25.0 : 0.0;
+    DateTime today = DateTime.now();
+
+    final yearSliderValue = goalData.targetYear > today.year
+        ? (goalData.targetYear - today.year) / 25.0
+        : 0.0;
     ref.read(editYearSliderProvider.notifier).state =
         yearSliderValue < 1.0 ? yearSliderValue : 1.0;
 
@@ -502,8 +505,8 @@ class EditGoalController {
       print('EDIT CONTROLLER: Auto deposit: $autoDeposit');
       print('EDIT CONTROLLER: Selected icon: $selectedIcon');
       print('EDIT CONTROLLER: Has custom image: ${selectedImage != null}');
-
-      final targetYear = 2025 + (yearValue * 25).round();
+      DateTime today = DateTime.now();
+      final targetYear = today.year + (yearValue * 25).round();
       final minAmount = 10000.0;
       final maxAmount = 1000000.0;
       final targetAmount =
@@ -513,7 +516,7 @@ class EditGoalController {
       print('EDIT CONTROLLER: Target year: $targetYear');
       print('EDIT CONTROLLER: Target amount: $targetAmount');
 
-      final durationInYears = (targetYear - 2025);
+      final durationInYears = (targetYear - today.year);
       final duration = durationInYears > 3 ? 3 : durationInYears;
       final actualDurationInMonths = duration * 12;
 

@@ -17,8 +17,8 @@ class GrowkRefreshIndicator extends ConsumerWidget {
     final isDark = ref.watch(isDarkProvider);
 
     return RefreshIndicator(
-      color: AppColors.current(isDark).primary,
-      backgroundColor: Colors.white,
+      color: isDark?Colors.white:Colors.black,
+      backgroundColor: isDark?Colors.grey.shade900:Colors.white,
       displacement: 60,
       strokeWidth: 2.5,
       edgeOffset: 10,

@@ -38,6 +38,7 @@ Widget buildGoldHoldingsSection(
           Image.asset(
             AppImages.sarSymbol,
             height: 13,
+            color: AppColors.current(isDark).primary,
           ),
           GapSpace.width5,
           Text(

@@ -82,13 +82,13 @@ class SettingsController {
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
+              backgroundColor: isDark ? Colors.white : Colors.black,
             ),
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
               style: TextStyle(
-                color: isDark ? Colors.white : Colors.black,
+                color: isDark ? Colors.black : Colors.white,
                 fontSize: 14,
                 fontFamily: GoogleFonts.poppins().fontFamily,
               ),

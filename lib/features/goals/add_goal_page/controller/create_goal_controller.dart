@@ -393,26 +393,43 @@ class CreateGoalController {
       print('CONTROLLER: Auto deposit (will send): ${autoDeposit ? "Y" : "N"}');
       print('CONTROLLER: Selected icon: $selectedIcon');
       print('CONTROLLER: Has custom image: ${selectedImage != null}');
+      DateTime today = DateTime.now();
+      DateTime futureDate = DateTime(targetYear, 12, 31);
 
-      final durationInYears = (targetYear - 2025);
+      final durationInYears = (targetYear - today.year);
       final duration = durationInYears > 3 ? 3 : durationInYears;
-      final actualDurationInMonths = duration * 12;
+      // final actualDurationInMonths = duration * 12;
+      //  int yearsDiff = futureDate.year - today.year;
+      //   int monthsDiff = futureDate.month - today.month;
+      //   return yearsDiff * 12 + monthsDiff;
+
+      int actualDurationInMonths = (futureDate.year - today.year) * 12 +
+          (futureDate.month - today.month);
+      if (actualDurationInMonths < 1) actualDurationInMonths = 1;
 
       double transactionAmount;
       int debitDate;
 
+
       switch (selectedFrequency) {
         case 'Daily':
-          transactionAmount = targetAmount / (actualDurationInMonths * 30);
+          int days = futureDate.difference(today).inDays;
+          if (days < 1) days = 1;
+          transactionAmount = targetAmount / days;
           debitDate = 1;
           break;
         case 'Weekly':
-          transactionAmount = targetAmount / (actualDurationInMonths * 4);
+          int weeks = (futureDate.difference(today).inDays / 7).toInt();
+          if (weeks < 1) weeks = 1;
+          transactionAmount = targetAmount / weeks;
           debitDate = 7;
           break;
         case 'Monthly':
         default:
-          transactionAmount = targetAmount / actualDurationInMonths;
+          int months = (futureDate.year - today.year) * 12 +
+              (futureDate.month - today.month);
+          if (months < 1) months = 1;
+          transactionAmount = targetAmount / months;
           debitDate = 5;
           break;
       }
@@ -443,7 +460,7 @@ class CreateGoalController {
         "targetAmount": targetAmount,
         "duration": duration,
         "debitDate": debitDate,
-        "transactionAmount": transactionAmount.round(),
+        "transactionAmount": transactionAmount.toStringAsFixed(2),
         "goldInvestment": autoDeposit ? "Y" : "N",
         "frequency": selectedFrequency,
         if (selectedIcon.isNotEmpty && selectedImage == null)
