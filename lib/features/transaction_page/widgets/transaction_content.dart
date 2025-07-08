@@ -8,7 +8,7 @@ Widget transactionContentBuilder(TransactionPaginationState state, bool isDark,
     ScrollController scrollController, BuildContext context, WidgetRef ref) {
   if (state.transactions.isEmpty && state.isLoading) {
     debugPrint("TRANSACTIONS PAGE: Displaying initial loading state");
-    return transactionLoadingState(isDark);
+    return transactionLoadingState(isDark, ref);
   }
 
   if (state.transactions.isEmpty && state.errorMessage != null) {
@@ -20,7 +20,7 @@ Widget transactionContentBuilder(TransactionPaginationState state, bool isDark,
 
   if (state.transactions.isEmpty && !state.isLoading) {
     debugPrint("TRANSACTIONS PAGE: Displaying empty state");
-    return transactionEmptyState(isDark, context);
+    return transactionEmptyState(isDark, context, ref);
   }
 
   debugPrint(

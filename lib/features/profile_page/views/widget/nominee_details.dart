@@ -6,34 +6,35 @@ Widget nomineeDetails({required WidgetRef ref, required BuildContext context}) {
   final profileState = ref.watch(userProfileStateProvider);
   final nomineeData = profileState.nomineeDetails;
   final userData = profileState.userData;
+  final texts = ref.watch(appTextsProvider);
   return nomineeData == null
       ? ProfileNavigationItem(
-          label: 'Nominee Details',
-          value1: 'Tap to add Nominee Details',
+          label: texts.nomineeDetails,
+          value1: texts.tapToAddNominee,
           isValue2Needed: false,
           isValue3Needed: false,
           onTap: userData?.kycVerified == false
               ? () => showGrowkSnackBar(
                     context: context,
                     ref: ref,
-                    message: 'Please verify your KYC details first',
+                    message: texts.verifyKycFirst,
                     type: SnackType.error,
                   )
               : () =>
                   Navigator.pushNamed(context, AppRouter.nomineeDetailsScreen),
         )
       : ProfileNavigationItem(
-          label: 'Nominee Details',
+          label: texts.nomineeDetails,
           value1:
               '${nomineeData.nomineeName}, ${nomineeData.nomineeRelation}, ${profileFormatDate(nomineeData.nomineeDob)}' ??
-                  "no nominee details found",
+                  texts.noNomineeDetailsFound,
           isValue2Needed: false,
           isValue3Needed: false,
           onTap: userData?.kycVerified == false
               ? () => showGrowkSnackBar(
                     context: context,
                     ref: ref,
-                    message: 'Please verify your KYC details first',
+                    message: texts.verifyKycFirst,
                     type: SnackType.error,
                   )
               : () =>

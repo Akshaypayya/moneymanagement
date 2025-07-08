@@ -5,25 +5,26 @@ Widget savedAddress({required WidgetRef ref, required BuildContext context}) {
   final profileState = ref.watch(userProfileStateProvider);
   final addressData = profileState.savedAddress;
   final userData = profileState.userData;
+  final texts = ref.watch(appTextsProvider);
   return addressData == null
       ? ProfileNavigationItem(
-          label: 'Saved Address',
-          value1: 'Tap to add Address',
+          label: texts.savedAddress,
+          value1: texts.tapToAddAddress,
           isValue2Needed: false,
           isValue3Needed: false,
           onTap: userData?.kycVerified == false
               ? () => showGrowkSnackBar(
                     context: context,
                     ref: ref,
-                    message: 'Please verify your KYC details first',
+                    message: texts.verifyKycFirst,
                     type: SnackType.error,
                   )
               : () =>
                   Navigator.pushNamed(context, AppRouter.savedAddressScreen),
         )
       : ProfileNavigationItem(
-          label: 'Saved Address',
-          value1: addressData.streetAddress1 ?? 'Tap to add Address',
+          label: texts.savedAddress,
+          value1: addressData.streetAddress1 ?? texts.tapToAddAddress,
           value2: addressData.streetAddress1 == null ||
                   addressData.streetAddress2 == null
               ? ''
@@ -34,7 +35,7 @@ Widget savedAddress({required WidgetRef ref, required BuildContext context}) {
               ? () => showGrowkSnackBar(
                     context: context,
                     ref: ref,
-                    message: 'Please verify your KYC details first',
+                    message: texts.verifyKycFirst,
                     type: SnackType.error,
                   )
               : () =>

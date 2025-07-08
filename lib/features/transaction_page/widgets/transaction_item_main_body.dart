@@ -1,5 +1,6 @@
 import 'package:growk_v2/features/transaction_page/widgets/transctn_fns.dart';
 import 'package:growk_v2/views.dart';
+import 'package:translator/translator.dart';
 
 class TransactionItemMainBody extends ConsumerWidget {
   final TransactionApiModel transactionData;
@@ -14,6 +15,10 @@ class TransactionItemMainBody extends ConsumerWidget {
     Color amountColor = isDark ? Colors.white : Colors.black;
     Color sarSymbolColor = AppColors.current(isDark).primary;
     String amountSign = '';
+    final texts = ref.watch(appTextsProvider);
+    final translator = GoogleTranslator();
+    // final locale = Localizations.localeOf(context).languageCode;
+    final locale = ref.watch(localeProvider);
 
     if (transactionData.isCredit) {
       amountColor = Colors.green;
@@ -101,7 +106,7 @@ class TransactionItemMainBody extends ConsumerWidget {
                   ReusableText(
                     // text: transactionData.formattedAmount,
                     text: transactionData.currencyCode == "XAU"
-                        ? "${transactionData.amount.toStringAsFixed(2)} gm"
+                        ? "${transactionData.amount.toStringAsFixed(2)} ${texts.gm}"
                         : transactionData.amount.toStringAsFixed(2),
                     style: AppTextStyle(textColor: amountColor).titleRegular,
                   ),

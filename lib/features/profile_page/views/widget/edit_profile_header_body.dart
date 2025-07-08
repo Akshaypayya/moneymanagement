@@ -13,6 +13,7 @@ class _EditProfileHeaderBodyState extends ConsumerState<EditProfileHeaderBody> {
   @override
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
+    final texts = ref.watch(appTextsProvider);
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, AppRouter.editUserDetailsScreen);
@@ -31,7 +32,7 @@ class _EditProfileHeaderBodyState extends ConsumerState<EditProfileHeaderBody> {
             ),
             const SizedBox(width: 7),
             Text(
-              'Edit Profile',
+              texts.editProfile,
               style: TextStyle(
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontSize: 14,

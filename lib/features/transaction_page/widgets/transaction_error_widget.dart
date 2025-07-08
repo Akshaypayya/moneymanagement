@@ -3,6 +3,7 @@ import 'package:growk_v2/views.dart';
 
 Widget buildTransactionErrorState(
     String errorMessage, bool isDark, BuildContext context, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return SingleChildScrollView(
     physics: const AlwaysScrollableScrollPhysics(),
     child: SizedBox(
@@ -27,7 +28,7 @@ Widget buildTransactionErrorState(
               ),
               const SizedBox(height: 20),
               ReusableText(
-                text: 'Something went wrong',
+                text: texts.somethingWentWrong,
                 style: AppTextStyle(textColor: AppColors.current(isDark).text)
                     .titleLrg,
               ),
@@ -45,7 +46,7 @@ Widget buildTransactionErrorState(
               ),
               const SizedBox(height: 16),
               GrowkButton(
-                title: 'Retry',
+                title: texts.retry,
                 onTap: () {
                   debugPrint("TRANSACTIONS PAGE: Retry button pressed");
                   ref

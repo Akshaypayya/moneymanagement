@@ -21,13 +21,20 @@ class _EditFrequencySelectorState extends ConsumerState<EditFrequencySelector> {
     final selectedFrequency = ref.watch(editFrequencyProvider);
     final highlightColor = Colors.teal;
 
-    // final yearValue = ref.watch(calculatedYearProvider);
-    // final amountValue = ref.watch(calculatedAmountProvider);
+    final yearSliderValue = ref.watch(editYearSliderProvider);
+    final amountSliderValue = ref.watch(editAmountSliderProvider);
 
-    final yearValue = 2029;
-    final amountValue = 100090.0;
+    final DateTime today = DateTime.now();
+    final targetYear = today.year + (yearSliderValue * 25).round();
 
-    DateTime today = DateTime.now();
+    final minAmount = 10000.0;
+    final maxAmount = 1000000.0;
+    final targetAmount =
+        minAmount + (amountSliderValue * (maxAmount - minAmount));
+
+    final yearValue = targetYear;
+    final amountValue = targetAmount;
+
     DateTime futureDate = DateTime(yearValue.toInt(), 12, 31);
 
     final investedAmount = widget.investedAmount;
@@ -47,15 +54,24 @@ class _EditFrequencySelectorState extends ConsumerState<EditFrequencySelector> {
     final weeklyAmount = (newAmountValue / totalWeeks);
     final monthlyAmount = (newAmountValue / totalMonths);
 
-    // final safeDailyAmount = dailyAmount < 0 ? 0.0 : dailyAmount;
-    // final safeWeeklyAmount = weeklyAmount < 0 ? 0.0 : weeklyAmount;
-    // final safeMonthlyAmount = monthlyAmount < 0 ? 0.0 : monthlyAmount;
     debugPrint('''
-  Daily: $dailyAmount, Weekly: $weeklyAmount, Monthly: $monthlyAmount
-  yearValue: $yearValue, amountValue: $amountValue, newAmountValue: $newAmountValue
-  today: $today, futureDate: $futureDate
-  Invested Amount: $investedAmount, New Amount Value: $newAmountValue
-  Total Days: $totalDays, Total Weeks: $totalWeeks, Total Months: $totalMonths
+  EditFrequencySelector - Target Values:
+  Target Year: $targetYear (from slider: $yearSliderValue)
+  Target Amount: ${targetAmount.toStringAsFixed(2)} (from slider: $amountSliderValue)
+  Invested Amount: $investedAmount
+  New Amount Value: $newAmountValue
+  
+  Frequency Calculations:
+  Daily: ${dailyAmount.toStringAsFixed(2)}
+  Weekly: ${weeklyAmount.toStringAsFixed(2)}
+  Monthly: ${monthlyAmount.toStringAsFixed(2)}
+  
+  Time Calculations:
+  Today: $today
+  Future Date: $futureDate
+  Total Days: $totalDays
+  Total Weeks: $totalWeeks
+  Total Months: $totalMonths
   ''');
 
     return Column(

@@ -13,14 +13,14 @@ class BiometricSettingsTile extends ConsumerWidget {
     return isBiometricSupportedAsync.when(
       data: (isSupported) {
         if (!isSupported) {
-          return biometricUnsupportedTileBuilder(isDark);
+          return biometricUnsupportedTileBuilder(isDark, ref);
         }
 
         return biomtricToggleTileBuilder(
             context, ref, isDark, isBiometricEnabled);
       },
-      loading: () => biomtricLoadingTile(isDark),
-      error: (_, __) => biometricUnsupportedTileBuilder(isDark),
+      loading: () => biomtricLoadingTile(isDark, ref),
+      error: (_, __) => biometricUnsupportedTileBuilder(isDark, ref),
     );
   }
 }

@@ -22,7 +22,8 @@ class OtpController {
     ref.read(isButtonLoadingProvider.notifier).state = true;
 
     try {
-      final response = await ref.read(otpUseCaseProvider).call(cellNo, enteredOtp);
+      final response =
+          await ref.read(otpUseCaseProvider).call(cellNo, enteredOtp);
 
       if (response.isSuccess) {
         ref.read(isButtonLoadingProvider.notifier).state = false;
@@ -31,7 +32,9 @@ class OtpController {
         final isNewUser = data['isNewUser'] ?? false;
         debugPrint('isNewUser: $isNewUser');
 
-        ref.read(userDataProvider.notifier).setUserData(data, phoneNumber: cellNo);
+        ref
+            .read(userDataProvider.notifier)
+            .setUserData(data, phoneNumber: cellNo);
         ref.read(otpErrorProvider.notifier).state = null;
 
         final isSupported = await ref.read(biometricSupportedProvider.future);
@@ -59,7 +62,7 @@ class OtpController {
               showGrowkSnackBar(
                 context: context,
                 ref: ref,
-                message: texts.biometricFailed(result.message??''),
+                message: '${texts.biometricFailed} ${result.message ?? ''}',
                 type: SnackType.error,
               );
             }
@@ -71,11 +74,12 @@ class OtpController {
         await Navigator.pushNamedAndRemoveUntil(
           context,
           isNewUser ? AppRouter.applyReferralCode : AppRouter.mainScreen,
-              (route) => false,
+          (route) => false,
         );
       } else {
         ref.read(isButtonLoadingProvider.notifier).state = false;
-        ref.read(otpErrorProvider.notifier).state = response.message ?? texts.otpVerificationFailed;
+        ref.read(otpErrorProvider.notifier).state =
+            response.message ?? texts.otpVerificationFailed;
         ref.read(otpInputProvider.notifier).state = '';
       }
     } catch (e, stackTrace) {
@@ -106,11 +110,13 @@ class OtpController {
         );
         ref.read(otpTimerProvider.notifier).reset();
       } else {
-        ref.read(otpErrorProvider.notifier).state = response.message ?? texts.failedToResendOtp;
+        ref.read(otpErrorProvider.notifier).state =
+            response.message ?? texts.failedToResendOtp;
       }
     } catch (e) {
       debugPrint("Resend OTP Error: $e");
-      ref.read(otpErrorProvider.notifier).state = texts.somethingWentWrongWhileResendingOtp;
+      ref.read(otpErrorProvider.notifier).state =
+          texts.somethingWentWrongWhileResendingOtp;
     }
   }
 }

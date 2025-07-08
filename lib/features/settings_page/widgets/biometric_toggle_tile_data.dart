@@ -5,11 +5,10 @@ import '../../../core/biometric/biometric_provider.dart';
 Widget biomtricToggleTileBuilder(
     BuildContext context, WidgetRef ref, bool isDark, bool isEnabled) {
   final biometricTypesAsync = ref.watch(biometricTypesProvider);
-
+  final texts = ref.watch(appTextsProvider);
   return biometricTypesAsync.when(
     data: (types) {
-      final biometricName =
-          types.isNotEmpty ? types.first : 'Biometric Authentication';
+      final biometricName = types.isNotEmpty ? types.first : texts.bioAuth;
 
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -38,7 +37,7 @@ Widget biomtricToggleTileBuilder(
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Unlock the app using your biometrics',
+                      texts.fingerprintSubtitle,
                       style: TextStyle(
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontSize: 12,
@@ -66,7 +65,7 @@ Widget biomtricToggleTileBuilder(
                       showGrowkSnackBar(
                         context: context,
                         ref: ref,
-                        message: 'Biometric authentication enabled',
+                        message: texts.biometricEnabled,
                         type: SnackType.success,
                       );
                     }
@@ -74,7 +73,8 @@ Widget biomtricToggleTileBuilder(
                     showGrowkSnackBar(
                       context: context,
                       ref: ref,
-                      message: 'Failed to enable biometrics: ${result.message}',
+                      message:
+                          '${texts.enableBiometricFailed} ${result.message}',
                       type: SnackType.error,
                     );
                   }
@@ -85,7 +85,7 @@ Widget biomtricToggleTileBuilder(
                   showGrowkSnackBar(
                     context: context,
                     ref: ref,
-                    message: 'Biometric authentication disabled',
+                    message: texts.biometricDisabled,
                     type: SnackType.error,
                   );
                 }
@@ -101,7 +101,7 @@ Widget biomtricToggleTileBuilder(
         ),
       );
     },
-    loading: () => biomtricLoadingTile(isDark),
-    error: (_, __) => biometricUnsupportedTileBuilder(isDark),
+    loading: () => biomtricLoadingTile(isDark, ref),
+    error: (_, __) => biometricUnsupportedTileBuilder(isDark, ref),
   );
 }

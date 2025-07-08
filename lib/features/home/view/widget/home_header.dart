@@ -3,19 +3,22 @@ import 'package:growk_v2/features/home/view/widget/gold_price_display.dart';
 import 'package:growk_v2/features/wallet_page/provider/wallet_screen_providers.dart';
 import '../../../../views.dart';
 import 'package:intl/intl.dart';
+
 class HomeHeader extends ConsumerWidget {
   const HomeHeader({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
+    final texts = ref.watch(appTextsProvider);
     final totalSavings = ref.watch(totalSavingsProvider) ?? '0.00';
     final goldWeight = ref.watch(goldWeightProvider) ?? '0.000';
     final walletAsync = ref.watch(getNewWalletBalanceProvider);
     final livePriceAsync = ref.watch(liveGoldPriceProvider);
+
     final formatter = NumberFormat.currency(
-      locale: 'en_IN', // or 'en_US' if preferred
-      symbol: '',      // No currency symbol, since you're showing SAR separately
+      locale: 'en_IN',
+      symbol: '',
       decimalDigits: 2,
     );
     final savingsDate = DateFormat('d MMM yyyy').format(DateTime.now());
@@ -23,8 +26,6 @@ class HomeHeader extends ConsumerWidget {
 
     final textColor = AppColors.current(isDark).text;
     final primaryColor = AppColors.current(isDark).primary;
-
-
 
     return ScalingFactor(
       child: ReusableWhiteContainerWithPadding(
@@ -45,7 +46,7 @@ class HomeHeader extends ConsumerWidget {
                     currency: 'SAR',
                   ),
                   error: (err, _) => const GoldPriceDisplay(
-                    goldPrice: 0.00, // fallback on error
+                    goldPrice: 0.00,
                     currency: 'SAR',
                   ),
                 ),
@@ -69,7 +70,7 @@ class HomeHeader extends ConsumerWidget {
 
             const SizedBox(height: 10),
             ReusableText(
-              text: 'Total Savings',
+              text: texts.totalSavings,
               style: AppTextStyle(textColor: textColor).titleSmallMedium,
             ),
             const SizedBox(height: 6),
@@ -97,8 +98,8 @@ class HomeHeader extends ConsumerWidget {
                   Navigator.pushNamed(context, AppRouter.walletPage);
                 } catch (e) {
                   final errorMessage = e.toString().contains('KYC')
-                      ? 'KYC not verified. Please complete KYC to access this feature.'
-                      : 'Something went wrong. Please try again later.';
+                      ? texts.kycNotVerified
+                      : texts.genericError;
                   showGrowkSnackBar(
                     context: context,
                     ref: ref,
@@ -111,7 +112,7 @@ class HomeHeader extends ConsumerWidget {
               child: ReusableRow(
                 children: [
                   ReusableText(
-                    text: 'Wallet Balance:',
+                    text: '${texts.walletBalance}:',
                     style: AppTextStyle(textColor: textColor).labelSmall,
                   ),
                   const SizedBox(width: 6),
@@ -125,10 +126,11 @@ class HomeHeader extends ConsumerWidget {
                       style: AppTextStyle(textColor: textColor).titleSmall,
                     ),
                     error: (_, __) => ReusableText(
-                      text: 'Error',
+                      text: texts.error,
                       style: AppTextStyle(textColor: textColor).titleSmall,
                     ),
                   ),
+
                 ],
               ),
             ),
@@ -138,7 +140,7 @@ class HomeHeader extends ConsumerWidget {
             ReusableRow(
               children: [
                 ReusableText(
-                  text: 'Gold savings as of $savingsDate:',
+                  text: '${texts.goldSavingsAsOf} $savingsDate:',
                   style: AppTextStyle(textColor: textColor).labelSmall,
                 ),
                 const SizedBox(width: 6),
@@ -153,7 +155,6 @@ class HomeHeader extends ConsumerWidget {
       ),
     );
   }
-
 
   Widget _iconButton({required String asset, required Color color, required VoidCallback onTap}) {
     return GestureDetector(

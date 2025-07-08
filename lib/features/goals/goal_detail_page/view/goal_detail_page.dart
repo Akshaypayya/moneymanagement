@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:growk_v2/core/constants/app_space.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_app_bar.dart';
@@ -39,23 +40,24 @@ class GoalDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
     final goalDetailState = ref.watch(goalDetailStateProvider(goalName));
+    final texts = ref.watch(appTextsProvider);
 
     final popupMenuActions = [
       PopupMenuAction(
-        title: 'Edit Goal',
-        subtitle: 'Modify goal details and settings',
+        title: texts.editGoal,
+        subtitle: texts.editGoalSubtitle,
         icon: Icons.edit,
         onTap: () => _handleEditGoal(context, ref, goalDetailState),
       ),
       PopupMenuAction(
-        title: 'Load Funds',
-        subtitle: 'Transfer money to this goal',
+        title: texts.loadFunds,
+        subtitle: texts.loadFundsSubtitle,
         icon: Icons.wallet,
         onTap: () => _handleLoadFunds(context, ref),
       ),
       PopupMenuAction(
-        title: 'Sell Gold',
-        subtitle: 'Terminate goal and transfer to wallet',
+        title: texts.sellGold,
+        subtitle: texts.sellGoldSubtitle,
         icon: Icons.sell,
         iconColor: Colors.orange,
         onTap: () => _handleSellGold(context, ref),
@@ -66,7 +68,7 @@ class GoalDetailPage extends ConsumerWidget {
       child: Scaffold(
         backgroundColor: isDark ? Colors.black : Colors.white,
         appBar: GrowkAppBar(
-          title: 'Goal Details',
+          title: texts.goalDetails,
           isBackBtnNeeded: true,
           showPopupMenu: goalStatus == "COMPLETED" ? false : true,
           popupMenuActions: popupMenuActions,

@@ -23,7 +23,9 @@ class _TransactionListBuilderState
   @override
   Widget build(BuildContext context) {
     final groupedTransactions =
-        groupTransactionsByMonth(widget.state.transactions);
+        groupTransactionsByMonth(widget.state.transactions, ref);
+    final texts = ref.watch(appTextsProvider);
+
     return SingleChildScrollView(
       controller: widget.scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -76,7 +78,7 @@ class _TransactionListBuilderState
                   const SizedBox(height: 8),
                   Text(
                     // 'All ${state.totalRecords} transactions loaded',
-                    'All transactions loaded',
+                    texts.allTransactionsLoaded,
                     style: TextStyle(
                       fontSize: 14,
                       color:

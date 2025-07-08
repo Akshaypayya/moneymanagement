@@ -1,7 +1,8 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/views.dart';
 
-Widget transactionEmptyState(bool isDark, BuildContext context) {
+Widget transactionEmptyState(bool isDark, BuildContext context, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return SingleChildScrollView(
     physics: const AlwaysScrollableScrollPhysics(),
     child: SizedBox(
@@ -19,7 +20,7 @@ Widget transactionEmptyState(bool isDark, BuildContext context) {
               ),
               const SizedBox(height: 20),
               Text(
-                'No Transactions Yet',
+                texts.noTransactionsYet,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -30,7 +31,7 @@ Widget transactionEmptyState(bool isDark, BuildContext context) {
               ),
               const SizedBox(height: 10),
               Text(
-                'Your transaction history will appear here once you start investing in goals and making transactions.',
+                texts.transactionHistoryHint,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,

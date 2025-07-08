@@ -16,6 +16,7 @@ class _UserHeaderDetailsState extends ConsumerState<UserHeaderDetails> {
     final profileState = ref.watch(userProfileStateProvider);
     final userData = profileState.userData;
     final isLoading = profileState.status == UserProfileStatus.loading;
+    final texts = ref.watch(appTextsProvider);
 
     return Center(
       child: Padding(
@@ -33,7 +34,7 @@ class _UserHeaderDetailsState extends ConsumerState<UserHeaderDetails> {
             //       )
             //     :
             Text(
-              userData?.userName ?? 'User Name',
+              userData?.userName ?? texts.userName,
               style: TextStyle(
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontSize: 22,
@@ -53,7 +54,7 @@ class _UserHeaderDetailsState extends ConsumerState<UserHeaderDetails> {
             //       )
             //     :
             Text(
-              userData?.emailId ?? 'email@gmail.com',
+              userData?.emailId ?? 'email@example.com',
               style: TextStyle(
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontSize: 13,

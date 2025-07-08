@@ -6,6 +6,7 @@ PreferredSizeWidget profileAppBar({
   VoidCallback? onTap,
 }) {
   final isDark = ref.watch(isDarkProvider);
+  final texts = ref.watch(appTextsProvider);
 
   return GrowkAppBar(
     title: '',
@@ -31,7 +32,7 @@ PreferredSizeWidget profileAppBar({
               ),
               const SizedBox(width: 7),
               Text(
-                'Edit Profile',
+                texts.editProfile,
                 style: TextStyle(
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontSize: 14,

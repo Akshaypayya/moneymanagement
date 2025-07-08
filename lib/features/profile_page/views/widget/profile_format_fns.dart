@@ -12,18 +12,19 @@ String profileFormatDate(String? dateStr) {
   }
 }
 
-String profileFormatGender(String? gender) {
+String profileFormatGender(String? gender, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   if (gender == null || gender.isEmpty) return 'Not specified';
 
   switch (gender.toUpperCase()) {
     case 'M':
-      return 'Male';
+      return texts.male;
     case 'F':
-      return 'Female';
+      return texts.female;
     case 'T':
-      return 'Other';
+      return texts.other;
     default:
-      return gender;
+      return texts.gender;
   }
 }
 

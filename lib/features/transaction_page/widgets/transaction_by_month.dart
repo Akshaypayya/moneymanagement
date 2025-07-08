@@ -2,7 +2,7 @@ import 'package:growk_v2/features/transaction_page/widgets/month_data.dart';
 import 'package:growk_v2/views.dart';
 
 Map<Map<String, String>, List<TransactionApiModel>> groupTransactionsByMonth(
-    List<TransactionApiModel> transactions) {
+    List<TransactionApiModel> transactions, WidgetRef ref) {
   final Map<Map<String, String>, List<TransactionApiModel>> grouped = {};
 
   final sortedTransactions = List<TransactionApiModel>.from(transactions);
@@ -21,7 +21,7 @@ Map<Map<String, String>, List<TransactionApiModel>> groupTransactionsByMonth(
       final date = DateTime.parse(transaction.transactionDate);
       final monthYear = {
         'year': date.year.toString(),
-        'month': getTransactionMonthName(date.month),
+        'month': getTransactionMonthName(date.month, ref),
       };
 
       Map<String, String>? existingKey;

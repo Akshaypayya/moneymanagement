@@ -20,6 +20,7 @@ class _UserOtherDetailsState extends ConsumerState<UserOtherDetails> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(userProfileStateProvider);
     final userData = profileState.userData;
+    final texts = ref.watch(appTextsProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
@@ -27,13 +28,13 @@ class _UserOtherDetailsState extends ConsumerState<UserOtherDetails> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ProfileDetailItem(
-            label: 'Gender',
-            value: profileFormatGender(userData?.gender),
+            label: texts.gender,
+            value: profileFormatGender(userData?.gender, ref),
             isSuffixIconNeeded: false,
           ),
           GapSpace.height30,
           ProfileDetailItem(
-            label: 'Date of Birth',
+            label: texts.dateOfBirth,
             value: profileFormatDate(userData?.dob),
             isSuffixIconNeeded: false,
           ),

@@ -7,7 +7,6 @@ class LoginScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
-
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
@@ -17,8 +16,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final isDark = ref.watch(isDarkProvider);
     final texts = ref.watch(appTextsProvider);
 
-    // Dynamically map error enums to localized strings
     String? errorText;
+
     switch (validationError) {
       case PhoneValidationError.required:
         errorText = texts.mobileNumberRequired;
@@ -42,7 +41,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ref.read(localeProvider.notifier).state = const Locale('en');
       }
     }
-
     return ScalingFactor(
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),

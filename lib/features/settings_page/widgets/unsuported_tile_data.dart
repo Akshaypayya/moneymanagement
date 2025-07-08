@@ -1,6 +1,7 @@
 import 'package:growk_v2/views.dart';
 
-Widget biometricUnsupportedTileBuilder(bool isDark) {
+Widget biometricUnsupportedTileBuilder(bool isDark, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
     decoration: BoxDecoration(
@@ -25,7 +26,7 @@ Widget biometricUnsupportedTileBuilder(bool isDark) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Biometric Authentication',
+                texts.bioAuth,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -35,7 +36,7 @@ Widget biometricUnsupportedTileBuilder(bool isDark) {
               ),
               const SizedBox(height: 4),
               Text(
-                'Not available on this device',
+                texts.bioNotAvail,
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: GoogleFonts.poppins().fontFamily,

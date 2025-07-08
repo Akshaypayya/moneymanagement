@@ -14,6 +14,8 @@ class SettingsContent extends ConsumerWidget {
     final isLoggingOut = ref.watch(isLogoutLoadingProvider);
     final textColor = AppColors.current(isDark).text;
     final settingsController = SettingsController();
+    final texts = ref.watch(appTextsProvider);
+
     return Container(
       color: isDark ? Colors.black : Colors.white,
       child: SafeArea(
@@ -25,7 +27,7 @@ class SettingsContent extends ConsumerWidget {
               GapSpace.height12,
               Center(
                 child: ReusableText(
-                  text: 'Settings',
+                  text: texts.settings,
                   style: AppTextStyle(textColor: textColor).titleRegular,
                 ),
               ),
@@ -35,29 +37,33 @@ class SettingsContent extends ConsumerWidget {
                 icon: !isDark
                     ? 'settings_notification_light.png'
                     : 'settings_notification_dark.png',
-                title: 'Notification',
-                subtitle: 'Manage alerts and stay updated\non your savings progress.',
+                title: texts.notification,
+                subtitle: texts.notificationSubtitle,
                 isEnabled: ref.watch(notificationEnabledProvider),
                 onChanged: (value) async {
                   ref.read(notificationEnabledProvider.notifier).state = value;
-                  await SharedPreferencesHelper.saveBool('notifications_enabled', value);
+                  await SharedPreferencesHelper.saveBool(
+                      'notifications_enabled', value);
                   final notificationService = ref.read(notificationProvider);
 
                   if (value) {
-                    debugPrint('🔔 Notifications toggle ON: Enabling push notifications');
+                    debugPrint(
+                        'Notifications toggle ON: Enabling push notifications');
 
                     await notificationService.requestPermission();
-                    await notificationService.initLocalNotifications(context, ref);
+                    await notificationService.initLocalNotifications(
+                        context, ref);
                     notificationService.firebaseInit(context, ref);
 
                     showGrowkSnackBar(
                       context: context,
                       ref: ref,
-                      message: 'Notifications enabled',
+                      message: texts.notificationsEnabled,
                       type: SnackType.success,
                     );
                   } else {
-                    debugPrint('🔕 Notifications toggle OFF: Disabling push notifications');
+                    debugPrint(
+                        'Notifications toggle OFF: Disabling push notifications');
 
                     await FirebaseMessaging.instance.deleteToken();
                     notificationService.stopForegroundNotifications();
@@ -73,15 +79,19 @@ class SettingsContent extends ConsumerWidget {
                 isDark: isDark,
               ),
               SettingsItem(
-                onTap: () {},
+                onTap: () {
+                  settingsController.showLanguageSheet(context, ref);
+                },
                 img: !isDark
                     ? 'settings_language_light.png'
                     : 'settings_language_dark.png',
-                title: 'Language',
-                subtitle:
-                    'Select your preferred language\nfor anbetter experience.',
+                title: texts.language,
+                subtitle: texts.languageSubtitle,
                 trailing: Text(
-                  'English',
+                  ref.watch(languageNameProvider),
+                  // ref.watch(localeProvider).languageCode == 'en'
+                  //     ? texts.english
+                  //     : texts.arabic,
                   style: TextStyle(
                     fontFamily: GoogleFonts.poppins().fontFamily,
                     fontSize: 14,
@@ -95,8 +105,8 @@ class SettingsContent extends ConsumerWidget {
                 icon: !isDark
                     ? 'settings_theme_light.png'
                     : 'settings_theme_dark.png',
-                title: 'Theme',
-                subtitle: 'Customize the app\'s look to\nmatch your style.',
+                title: texts.theme,
+                subtitle: texts.themeSubtitle,
                 isEnabled: isDark,
                 onChanged: (value) {
                   ref.read(isDarkProvider.notifier).state = value;
@@ -117,9 +127,8 @@ class SettingsContent extends ConsumerWidget {
                 img: !isDark
                     ? 'settings_help_light.png'
                     : 'settings_help_dark.png',
-                title: 'FAQ',
-                subtitle:
-                    'Need assistance? Find answers to your questions here.',
+                title: texts.faq,
+                subtitle: texts.faqSubtitle,
               ),
               SettingsItem(
                 onTap: () {
@@ -128,17 +137,16 @@ class SettingsContent extends ConsumerWidget {
                 img: !isDark
                     ? 'settings_terms_light.png'
                     : 'settings_terms_dark.png',
-                title: 'Terms and Conditions',
-                subtitle:
-                    'Review the guidelines and policies of using this app.',
+                title: texts.termsAndConditions,
+                subtitle: texts.termsSubtitle,
               ),
               buildSettingsNavigationTile(
                 context,
                 icon: Icons.info_outline,
-                title: 'About',
-                subtitle: 'App version and information',
+                title: texts.about,
+                subtitle: texts.aboutSubtitle,
                 onTap: () {
-                  settingsController.showGrowkAboutDialog(context, isDark);
+                  settingsController.showGrowkAboutDialog(context, isDark, ref);
                 },
                 isDark: isDark,
               ),
@@ -150,8 +158,8 @@ class SettingsContent extends ConsumerWidget {
                 img: !isDark
                     ? 'settings_logout_light.png'
                     : 'settings_logout_dark.png',
-                title: 'Logout',
-                subtitle: 'Sign out securely from your account.',
+                title: texts.logout,
+                subtitle: texts.logoutSubtitle,
               ),
               const SizedBox(height: 130),
             ],

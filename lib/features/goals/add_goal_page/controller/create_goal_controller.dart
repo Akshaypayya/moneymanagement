@@ -402,7 +402,6 @@ class CreateGoalController {
       //  int yearsDiff = futureDate.year - today.year;
       //   int monthsDiff = futureDate.month - today.month;
       //   return yearsDiff * 12 + monthsDiff;
-
       int actualDurationInMonths = (futureDate.year - today.year) * 12 +
           (futureDate.month - today.month);
       if (actualDurationInMonths < 1) actualDurationInMonths = 1;

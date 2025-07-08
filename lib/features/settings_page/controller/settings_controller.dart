@@ -1,9 +1,13 @@
 import 'package:growk_v2/features/logout/provider/logout_provider.dart';
 import 'package:growk_v2/views.dart';
 
+final languageNameProvider = StateProvider<String>((ref) => 'English');
+
 class SettingsController {
-  void showGrowkAboutDialog(BuildContext context, bool isDark) {
+  void showGrowkAboutDialog(BuildContext context, bool isDark, WidgetRef ref) {
     final logoPath = isDark ? AppImages.appLogoWhite : AppImages.appLogoBlack;
+
+    final texts = ref.watch(appTextsProvider);
     showDialog(
       context: context,
       builder: (context) {
@@ -22,7 +26,7 @@ class SettingsController {
                   height: 60,
                 ),
                 Text(
-                  'v 1.0.0',
+                  texts.growkVersion,
                   style: TextStyle(
                       color: isDark ? Colors.white70 : Colors.black87,
                       fontFamily: GoogleFonts.poppins().fontFamily,
@@ -30,7 +34,7 @@ class SettingsController {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '© 2025 GrowK. All rights reserved.',
+                  texts.growkVersionSubtitle,
                   style: TextStyle(
                     fontFamily: GoogleFonts.poppins().fontFamily,
                     color: isDark ? Colors.white70 : Colors.black54,
@@ -38,7 +42,7 @@ class SettingsController {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Start Saving in 24K Digital Gold - From Just 100 SAR or 1 Gram. Turn everyday savings into lasting wealth. With GrowK, you can automate your gold investments starting with as little as 100 SAR.',
+                  texts.growkDescription,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: GoogleFonts.poppins().fontFamily,
@@ -51,6 +55,30 @@ class SettingsController {
           ),
         );
       },
+    );
+  }
+
+  void showLanguageSheet(BuildContext context, WidgetRef ref) {
+    FocusScope.of(context).unfocus();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => CommonBottomSheet(
+        showSearch: false,
+        title: 'Select Language',
+        options: ['English', 'Arabic'],
+        onSelected: (value) {
+          if (value == 'English') {
+            ref.read(localeProvider.notifier).state = const Locale('en');
+            ref.read(languageNameProvider.notifier).state = 'English';
+          } else if (value == 'Arabic') {
+            ref.read(localeProvider.notifier).state = const Locale('ar');
+            ref.read(languageNameProvider.notifier).state = 'Arabic';
+          }
+        },
+      ),
     );
   }
 

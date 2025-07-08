@@ -6,17 +6,18 @@ Widget bankDetails({required WidgetRef ref, required BuildContext context}) {
   final profileState = ref.watch(userProfileStateProvider);
   final bankData = profileState.bankDetails;
   final userData = profileState.userData;
+  final texts = ref.watch(appTextsProvider);
   return bankData == null
       ? ProfileNavigationItem(
-          label: 'Bank Details',
-          value1: 'Tap to add Bank Details',
+          label: texts.bankDetails,
+          value1: texts.tapToAddBankDetails,
           isValue2Needed: false,
           isValue3Needed: false,
           onTap: userData?.kycVerified == false
               ? () => showGrowkSnackBar(
                     context: context,
                     ref: ref,
-                    message: 'Please verify your KYC details first',
+                    message: texts.verifyKycFirst,
                     type: SnackType.error,
                   )
               : () => Navigator.pushNamed(context, AppRouter.bankDetailsScreen),
@@ -25,7 +26,7 @@ Widget bankDetails({required WidgetRef ref, required BuildContext context}) {
           children: [
             GapSpace.height10,
             ProfileNavigationItem(
-              label: 'Bank Details',
+              label: texts.bankDetails,
               value1: '${bankData.nameOnAcc}, ${bankData.accNo.toString()}',
               value2:
                   '${bankData.ifsc}, ${bankData.nameOnAcc}, ${bankData.status}',
@@ -33,7 +34,7 @@ Widget bankDetails({required WidgetRef ref, required BuildContext context}) {
                   ? () => showGrowkSnackBar(
                         context: context,
                         ref: ref,
-                        message: 'Please verify your KYC details first',
+                        message: texts.verifyKycFirst,
                         type: SnackType.error,
                       )
                   : () =>
