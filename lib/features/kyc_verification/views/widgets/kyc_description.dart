@@ -1,17 +1,18 @@
 import 'package:growk_v2/views.dart';
 
-class KycDescription extends StatelessWidget {
+class KycDescription extends ConsumerWidget {
   final bool isDark;
   const KycDescription({super.key, required this.isDark});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final texts = ref.watch(appTextsProvider);
+
     return ReusableText(
-      text:
-      'To proceed, please enter your Saudi National ID or Iqama Number. We use Nafath Authenticator to securely verify your identity as required by Saudi regulations. Your personal information is encrypted and securely transmitted.',
+      text: texts.kycDescription,
       style: AppTextStyle(
-        textColor: isDark?Colors.white:Colors.black.withOpacity(0.7),
-      ).labelSmall, // 12pt, w400, muted color
+        textColor: isDark ? Colors.white : Colors.black.withOpacity(0.7),
+      ).labelSmall,
       maxLines: 4,
       textAlign: TextAlign.justify,
     );

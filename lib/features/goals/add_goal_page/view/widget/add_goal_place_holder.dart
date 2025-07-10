@@ -1,6 +1,7 @@
 import 'package:growk_v2/views.dart';
 
-Widget buildPlaceholder(bool isDark) {
+Widget buildPlaceholder(bool isDark, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: [
@@ -11,7 +12,7 @@ Widget buildPlaceholder(bool isDark) {
       ),
       const SizedBox(height: 4),
       Text(
-        'Add Icon',
+        texts.addIcon,
         style: TextStyle(
           fontSize: 12,
           color: isDark ? Colors.white : Colors.grey[700],

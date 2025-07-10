@@ -37,13 +37,14 @@ class StandingInstructionBottomSheet extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          stndgInstrctnTitle(isDark),
+          stndgInstrctnTitle(isDark, ref),
           GapSpace.height20,
-          sngInstrctnTextSpan(isDark, transactionAmount, frequency, goalName),
+          sngInstrctnTextSpan(
+              isDark, transactionAmount, frequency, goalName, ref),
           GapSpace.height20,
-          stndgInstrctnContainer(isDark, virtualAccount),
+          stndgInstrctnContainer(isDark, virtualAccount, ref),
           GapSpace.height20,
-          closeStngInstrctn(context, onClose, isDark),
+          closeStngInstrctn(context, onClose, isDark, ref),
           const SizedBox(height: 16),
         ],
       ),

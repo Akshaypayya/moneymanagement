@@ -60,6 +60,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
             },
             child: transactionContentBuilder(
                 transactionState, isDark, _scrollController, context, ref),
+
           ),
         ),
       ),

@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-
 import '../../../../views.dart';
 
 class SavingsRowWidget extends ConsumerStatefulWidget {
@@ -15,9 +14,9 @@ class SavingsRowWidget extends ConsumerStatefulWidget {
   final bool? received;
   final bool? goldSavings;
   final int index;
-  final String ?goldAmount;
+  final String? goldAmount;
 
-  const SavingsRowWidget( {
+  const SavingsRowWidget({
     super.key,
     required this.emoji,
     required this.title,
@@ -40,17 +39,12 @@ class SavingsRowWidget extends ConsumerStatefulWidget {
 
 class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
   bool _isNavigating = false;
-  final formatter = NumberFormat.currency(
-    locale: 'en_IN', // or 'en_US' if preferred
-    symbol: '',      // No currency symbol, since you're showing SAR separately
-    decimalDigits: 2,
-  );
+  final formatter = NumberFormat.currency(locale: 'en_IN', symbol: '', decimalDigits: 2);
 
   Future<void> _handleTap() async {
     if (_isNavigating) return;
 
     setState(() => _isNavigating = true);
-
     try {
       await ref.refresh(homeDetailsProvider.future);
 
@@ -62,9 +56,10 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
         await Navigator.pushNamed(context, AppRouter.referralRewards);
       }
     } catch (e) {
+      final texts = ref.read(appTextsProvider);
       final errorMessage = e.toString().contains('KYC not completed')
-          ? 'KYC not verified. Please complete KYC to access this feature.'
-          : 'Something went wrong. Please try again later.';
+          ? texts.kycNotVerifiedError
+          : texts.genericError;
 
       showGrowkSnackBar(
         context: context,
@@ -82,10 +77,12 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
   @override
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
-    print('Growth value for "${widget.title}": ${widget.growth}');
+    final texts = ref.watch(appTextsProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        /// Header Row with Emoji + Title + Action
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -104,8 +101,7 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
             GestureDetector(
               onTap: _handleTap,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.current(isDark).primary,
                   borderRadius: BorderRadius.circular(6),
@@ -114,11 +110,14 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(widget.actionIcon,
-                        height: 15, color: isDark?Colors.black:Colors.white),
+                        height: 15,
+                        color: isDark ? Colors.black : Colors.white),
                     const SizedBox(width: 5),
                     ReusableText(
                       text: widget.action,
-                      style: AppTextStyle(textColor:isDark?Colors.black:Colors.white).labelSmall,
+                      style: AppTextStyle(
+                          textColor: isDark ? Colors.black : Colors.white)
+                          .labelSmall,
                     ),
                   ],
                 ),
@@ -126,26 +125,27 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
             ),
           ],
         ),
+
         const SizedBox(height: 8),
+
+        /// Profit + Growth
         ReusableColumn(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 ReusableColumn(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ReusableText(
-                      text: 'Profit',
+                      text: texts.profit,
                       style: AppTextStyle(
                         textColor: AppColors.current(isDark).text,
                       ).labelSmall,
                     ),
                     Row(
                       children: [
-                       Image.asset(AppImages.sarSymbol,
+                        Image.asset(AppImages.sarSymbol,
                             color: widget.profitColor, height: 15),
                         const SizedBox(width: 2),
                         ReusableText(
@@ -164,11 +164,13 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                 Row(
                   children: [
                     Transform.rotate(
-                      angle: widget.growth.trim().startsWith('-') ? 3.14 : 0, // rotate 180 degrees if negative
+                      angle: widget.growth.trim().startsWith('-') ? 3.14 : 0,
                       child: Image.asset(
                         AppImages.upGreen,
                         height: 10,
-                        color: widget.growth.trim().startsWith('-') ? Colors.red : Colors.green,
+                        color: widget.growth.trim().startsWith('-')
+                            ? Colors.red
+                            : Colors.green,
                       ),
                     ),
                     const SizedBox(width: 2),
@@ -182,12 +184,14 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                     ),
                   ],
                 ),
-
               ],
             ),
           ],
         ),
+
         const SizedBox(height: 4),
+
+        /// Invested / Received / Gold + Current
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -195,16 +199,18 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
               children: [
                 Text(
                   widget.received == true
-                      ? 'Received: '
+                      ? '${texts.received}: '
                       : widget.goldSavings == true
-                          ? 'Gold:'
-                          : 'Invested: ',
+                      ? '${texts.goldLabel}: '
+                      : '${texts.invested}: ',
                   style: TextStyle(
                     fontSize: 13,
                     color: AppColors.current(isDark).text,
                   ),
                 ),
-                widget.goldSavings==true?ReusableSizedBox():Image.asset(AppImages.sarSymbol,
+                widget.goldSavings == true
+                    ? ReusableSizedBox()
+                    : Image.asset(AppImages.sarSymbol,
                     color: AppColors.current(isDark).text, height: 10),
                 const SizedBox(width: 2),
                 Text(
@@ -214,38 +220,30 @@ class _SavingsRowWidgetState extends ConsumerState<SavingsRowWidget> {
                     color: AppColors.current(isDark).text,
                   ),
                 ),
-                if(widget.goldSavings==true)Row(
-                  children: [
-                    Text(
-                      '(',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.current(isDark).text,
-                      ),
-                    ),
-                    Image.asset(AppImages.sarSymbol,
-                        color: AppColors.current(isDark).text, height: 10),
-                    ReusableSizedBox(width: 3,),
-                    Text(
-                      '${widget.goldAmount}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.current(isDark).text,
-                      ),
-                    ),
-                    Text(
-                      ')',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.current(isDark).text,
-                      ),
-                    ),
-                  ],
-                ),
+                if (widget.goldSavings == true)
+                  Row(
+                    children: [
+                      Text('(',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.current(isDark).text)),
+                      Image.asset(AppImages.sarSymbol,
+                          color: AppColors.current(isDark).text, height: 10),
+                      const ReusableSizedBox(width: 3),
+                      Text('${widget.goldAmount}',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.current(isDark).text)),
+                      Text(')',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.current(isDark).text)),
+                    ],
+                  ),
               ],
             ),
             Text(
-              'Current: ${widget.current}',
+              '${texts.current}: ${widget.current}',
               style: TextStyle(
                 fontSize: 13,
                 color: AppColors.current(isDark).text,

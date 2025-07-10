@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/custom_slider.dart';
@@ -15,11 +16,12 @@ class TargetYearSlider extends ConsumerWidget {
     final yearValue = ref.watch(yearSliderProvider);
     final currentYear = DateTime.now().year;
     final int calculatedYear = currentYear + (yearValue * 25).round();
+    final texts = ref.watch(appTextsProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Select Your Target Year',
+          texts.selectYourTargetYear,
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.bold,
@@ -63,7 +65,7 @@ class TargetYearSlider extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.only(top: 5.0),
             child: Text(
-              'Completion Year: $calculatedYear',
+              '${texts.completionYear} $calculatedYear',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,

@@ -1,13 +1,14 @@
 import 'package:growk_v2/views.dart';
 
 Widget buildGoldHoldingsSection(
-    bool isDark, String currentGold, String currentGoldPrice) {
+    bool isDark, String currentGold, String currentGoldPrice, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return Row(
     crossAxisAlignment: CrossAxisAlignment.end,
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
       Text(
-        'Current Gold Holdings: ',
+        texts.currentGoldHoldings,
         style: TextStyle(
           fontSize: 14,
           fontFamily: GoogleFonts.poppins().fontFamily,

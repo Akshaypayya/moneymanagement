@@ -1,35 +1,31 @@
-import 'package:flutter/material.dart';
-import 'package:growk_v2/core/widgets/growk_app_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../../../views.dart';
 
-class HelpScreenWeb extends StatefulWidget {
+class HelpScreenWeb extends ConsumerStatefulWidget {
   const HelpScreenWeb({super.key});
 
   @override
-  State<HelpScreenWeb> createState() => _HelpScreenWebState();
+  ConsumerState<HelpScreenWeb> createState() => _HelpScreenWebState();
 }
 
-class _HelpScreenWebState extends State<HelpScreenWeb> {
-  late final WebViewController _controller;
+class _HelpScreenWebState extends ConsumerState<HelpScreenWeb> {
+  WebViewController? _controller;
   int _progress = 0;
 
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = WebViewController()
+  WebViewController _createWebViewController(bool isDark) {
+    final controller = WebViewController();
+    controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
-            // Progress is from 0 to 100
             setState(() {
               _progress = progress;
             });
           },
           onPageFinished: (String url) {
             setState(() {
-              _progress = 100; // Ensure progress is 100 when done
+              _progress = 100;
             });
           },
           onWebResourceError: (WebResourceError error) {
@@ -37,19 +33,31 @@ class _HelpScreenWebState extends State<HelpScreenWeb> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://growk.io/faq_m.html'));
+      ..loadRequest(
+        Uri.parse(
+          isDark
+              ? "https://www.growk.io/faq_md.html"
+              : "https://growk.io/faq_m.html",
+        ),
+      );
+    return controller;
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = ref.watch(isDarkProvider);
+
+    _controller ??= _createWebViewController(isDark);
+
     return Scaffold(
+      backgroundColor: AppColors.current(isDark).background,
       appBar: GrowkAppBar(title: 'Frequently asked Questions', isBackBtnNeeded: true),
       body: Column(
         children: [
           if (_progress < 100)
             LinearProgressIndicator(value: _progress / 100),
           Expanded(
-            child: WebViewWidget(controller: _controller),
+            child: WebViewWidget(controller: _controller!),
           ),
         ],
       ),

@@ -32,7 +32,7 @@ class GoalIconPicker extends ConsumerWidget {
               ),
               child: Center(
                 child: addGoalBuildIconOrImage(
-                    selectedIcon, selectedImage, isDark),
+                    selectedIcon, selectedImage, isDark, ref),
               ),
             ),
           ),

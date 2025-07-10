@@ -31,7 +31,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       default:
         errorText = null;
     }
-
     void toggleLanguage() {
       final currentLocale = ref.read(localeProvider);
 

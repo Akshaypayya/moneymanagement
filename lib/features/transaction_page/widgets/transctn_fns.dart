@@ -9,7 +9,7 @@ getTransactionFormattedDate(TransactionApiModel transactionData) {
   String dateStr = transactionData.transactionDate;
   DateTime utcTime = DateTime.parse(dateStr);
   DateTime localTime = utcTime.toLocal();
-  String formatted = DateFormat('dd MMM yyyy – hh:mm a').format(localTime);
+  String formatted = DateFormat('dd MMM yyyy - hh:mm:ss a').format(localTime);
   return formatted;
 }
 
@@ -43,20 +43,43 @@ String getTransactionIconAsset(TransactionApiModel transactionData) {
   }
 }
 
-IconData getTransactionIconData(TransactionApiModel transactionData) {
+// IconData getTransactionIconData(TransactionApiModel transactionData) {
+//   if (transactionData.currencyCode == 'XAU') {
+//     return Icons.stars;
+//   }
+//   switch (transactionData.paymentMode.toLowerCase()) {
+//     case 'bank transfer':
+//       return Icons.account_balance_wallet;
+//     case 'bank':
+//     case 'netbanking':
+//       return Icons.account_balance;
+//     case 'gold':
+//       return Icons.stars;
+//     default:
+//       return Icons.payment;
+//   }
+// }
+Widget getTransactionIconData(TransactionApiModel transactionData) {
   if (transactionData.currencyCode == 'XAU') {
-    return Icons.stars;
+    return Icon(Icons.stars, size: 24, color: Colors.grey);
   }
   switch (transactionData.paymentMode.toLowerCase()) {
     case 'bank transfer':
-      return Icons.account_balance_wallet;
+      return Icon(Icons.account_balance_wallet, size: 24, color: Colors.grey);
     case 'bank':
     case 'netbanking':
-      return Icons.account_balance;
+      return Icon(Icons.account_balance, size: 24, color: Colors.grey);
     case 'gold':
-      return Icons.stars;
+      return Icon(Icons.stars, size: 24, color: Colors.grey);
     default:
-      return Icons.payment;
+      return Image.asset(
+        'assets/customgoals.png',
+        width: 24,
+        height: 24,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(Icons.help_outline, size: 24, color: Colors.grey);
+        },
+      );
   }
 }
 
@@ -82,11 +105,12 @@ Widget buildTransactionIcon(TransactionApiModel transactionData) {
   return Image.asset(
     iconAsset,
     errorBuilder: (context, error, stackTrace) {
-      return Icon(
-        getTransactionIconData(transactionData),
-        size: 24,
-        color: Colors.grey,
-      );
+      // return Icon(
+      //   getTransactionIconData(transactionData),
+      //   size: 24,
+      //   color: Colors.grey,
+      // );
+      return getTransactionIconData(transactionData);
     },
   );
 }

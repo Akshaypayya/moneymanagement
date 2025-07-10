@@ -8,13 +8,15 @@ Column goalItemRow2(
   double progressPercent,
   String goalStatus,
   bool isDark,
+  WidgetRef ref,
 ) {
+  final texts = ref.watch(appTextsProvider);
   return Column(
     children: [
       Row(
         children: [
           Text(
-            'Current Gold Holdings: ',
+            texts.currentGoldHoldings,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -48,7 +50,7 @@ Column goalItemRow2(
           Row(
             children: [
               Text(
-                'Invested: ',
+                texts.invested,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
@@ -86,7 +88,7 @@ Column goalItemRow2(
           Row(
             children: [
               Text(
-                'Target: ',
+                texts.target,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
@@ -144,7 +146,7 @@ Column goalItemRow2(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Text(
-            'Progress: ',
+            texts.progress,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w400,

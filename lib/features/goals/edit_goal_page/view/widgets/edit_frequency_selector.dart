@@ -43,7 +43,7 @@ class _EditFrequencySelectorState extends ConsumerState<EditFrequencySelector> {
     int totalDays = futureDate.difference(today).inDays;
     if (totalDays < 1) totalDays = 1;
 
-    int totalWeeks = (totalDays / 7).toInt();
+    int totalWeeks = (totalDays / 7).ceil();
     if (totalWeeks < 1) totalWeeks = 1;
 
     int totalMonths =

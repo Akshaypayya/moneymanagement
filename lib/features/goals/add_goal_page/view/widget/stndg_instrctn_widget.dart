@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:growk_v2/core/constants/app_images.dart';
-import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/detail_row_stndng_instrn.dart';
+import 'package:growk_v2/views.dart';
 
-Widget stndgInstrctnTitle(bool isDark) {
+Widget stndgInstrctnTitle(bool isDark, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return Center(
     child: Text(
-      'Set Standing Instruction',
+      texts.setStandingInstruction,
       style: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
@@ -18,7 +16,9 @@ Widget stndgInstrctnTitle(bool isDark) {
   );
 }
 
-Container stndgInstrctnContainer(bool isDark, String virtualAccount) {
+Container stndgInstrctnContainer(
+    bool isDark, String virtualAccount, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
@@ -32,18 +32,21 @@ Container stndgInstrctnContainer(bool isDark, String virtualAccount) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        detailRowStndngInstrc('Bank ID', 'Arab National Bank', isDark),
+        detailRowStndngInstrc(texts.bankID, texts.arabNationalBank, isDark),
         const SizedBox(height: 5),
-        detailRowStndngInstrc('IBAN Account Number', virtualAccount, isDark),
+        detailRowStndngInstrc(
+            texts.iBANAccountNumberID, virtualAccount, isDark),
         const SizedBox(height: 5),
-        detailRowStndngInstrc('Account Name', 'Nexus Global Limited', isDark),
+        detailRowStndngInstrc(
+            texts.accountName, texts.nexusGlobalLimited, isDark),
       ],
     ),
   );
 }
 
-Widget closeStngInstrctn(
-    BuildContext context, final VoidCallback? onClose, bool isDark) {
+Widget closeStngInstrctn(BuildContext context, final VoidCallback? onClose,
+    bool isDark, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return Center(
     child: SizedBox(
       height: 45,
@@ -66,7 +69,7 @@ Widget closeStngInstrctn(
           elevation: 0,
         ),
         child: Text(
-          'Close',
+          texts.close,
           style: TextStyle(
             fontFamily: GoogleFonts.poppins().fontFamily,
             fontSize: 16,
@@ -78,19 +81,19 @@ Widget closeStngInstrctn(
   );
 }
 
-Widget sngInstrctnTextSpan(
-    bool isDark, double transactionAmount, String frequency, String goalName) {
+Widget sngInstrctnTextSpan(bool isDark, double transactionAmount,
+    String frequency, String goalName, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return RichText(
     text: TextSpan(
       style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        fontFamily: GoogleFonts.poppins().fontFamily,
-        color: isDark ? Colors.grey[300] : Colors.grey[700],
-        height: 1.5,
-      ),
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          color: isDark ? Colors.grey[300] : Colors.grey[700],
+          height: 1.5),
       children: [
-        const TextSpan(text: 'Please define a standing instruction of '),
+        TextSpan(text: texts.plsDefineStndInst),
         WidgetSpan(
           child: Image.asset(
             AppImages.sarSymbol,
@@ -103,18 +106,17 @@ Widget sngInstrctnTextSpan(
           text: ' ${transactionAmount.toStringAsFixed(2)}',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        const TextSpan(text: ' amount in each '),
+        TextSpan(text: texts.amountInEach),
         TextSpan(
           text: frequency,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        const TextSpan(
-            text: ' from your online bank to top up your wallet for the "'),
+        TextSpan(text: texts.bnkToWalet),
         TextSpan(
           text: goalName,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        const TextSpan(text: '" gold purchase'),
+        TextSpan(text: texts.goldpurchase),
       ],
     ),
   );

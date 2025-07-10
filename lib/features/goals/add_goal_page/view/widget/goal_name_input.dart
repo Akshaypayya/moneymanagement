@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart';
 
@@ -11,7 +12,7 @@ class GoalNameInput extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
     final goalName = ref.watch(goalNameProvider);
-
+    final texts = ref.watch(appTextsProvider);
     return Center(
       child: SizedBox(
         width: 250,
@@ -22,7 +23,7 @@ class GoalNameInput extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Enter Goal Name',
+                  texts.enterGoalName,
                   style: TextStyle(
                     color: isDark ? Colors.white : Colors.black,
                     fontFamily: GoogleFonts.poppins().fontFamily,
@@ -58,7 +59,7 @@ class GoalNameInput extends ConsumerWidget {
               textAlign: TextAlign.center,
               cursorColor: isDark ? Colors.white : Colors.black,
               decoration: InputDecoration(
-                hintText: 'Eg: Education, Home, Wedding',
+                hintText: texts.egEducationHomeWedding,
                 errorText: ref.watch(goalNameErrorProvider),
                 errorStyle: const TextStyle(
                   fontSize: 12,

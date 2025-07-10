@@ -15,6 +15,7 @@ class _EditAutoDepositState extends ConsumerState<EditAutoDeposit> {
   Widget build(BuildContext context) {
     final isDark = ref.watch(isDarkProvider);
     final autoDeposit = ref.watch(editAutoDepositProvider);
+    final texts = ref.watch(appTextsProvider);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -65,7 +66,7 @@ class _EditAutoDepositState extends ConsumerState<EditAutoDeposit> {
               children: [
                 Expanded(
                   child: Text(
-                    'Enable automatic gold deposit when your investment amount reaches SAR 300',
+                    texts.autodepositAt300,
                     style: TextStyle(
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       fontSize: 13,

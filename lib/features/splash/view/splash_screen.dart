@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growk_v2/core/check_rooted_device/blocked_app.dart';
+import 'package:growk_v2/core/check_rooted_device/check_rooted_device.dart';
+import 'package:growk_v2/core/check_rooted_device/root_guard.dart';
 import 'package:growk_v2/core/constants/app_images.dart';
 import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
 import 'package:growk_v2/core/storage/shared_preference/shared_preference_service.dart';
@@ -49,6 +52,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   Future<void> _navigateToNextScreen() async {
     await Future.delayed(const Duration(milliseconds: 2000));
+
+    // // Read the secure state from provider
+    // final isSecureAsync = ref.read(isDeviceSecureProvider);
+
+    // // Wait for the async value to resolve
+    // final isSecure = await ref.read(isDeviceSecureProvider.future);
+
+    // if (!isSecure) {
+    //   if (!mounted) return;
+    //   Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(builder: (_) => const BlockedApp()),
+    //   );
+    //   return;
+    // }
 
     if (!mounted) return;
 

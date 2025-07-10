@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart';
 import 'package:growk_v2/features/goals/add_goal_page/view/widget/freq_conditn.dart';
@@ -34,7 +35,7 @@ class FrequencySelector extends ConsumerWidget {
     int totalDays = futureDate.difference(today).inDays;
     if (totalDays < 1) totalDays = 1;
 
-    int totalWeeks = (totalDays / 7).toInt();
+    int totalWeeks = (totalDays / 7).ceil();
     if (totalWeeks < 1) totalWeeks = 1;
 
     int totalMonths =
@@ -47,12 +48,13 @@ class FrequencySelector extends ConsumerWidget {
 
     final highlightColor = Colors.teal;
     final textColor = isDark ? Colors.white : Colors.black;
+    final texts = ref.watch(appTextsProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         freqTitle(
-          'Choose Your Investment Frequency',
+          texts.chooseInvestmentFrequency,
           textColor,
         ),
         const SizedBox(height: 15),

@@ -417,7 +417,7 @@ class CreateGoalController {
           debitDate = 1;
           break;
         case 'Weekly':
-          int weeks = (futureDate.difference(today).inDays / 7).toInt();
+          int weeks = (futureDate.difference(today).inDays / 7).ceil();
           if (weeks < 1) weeks = 1;
           transactionAmount = targetAmount / weeks;
           debitDate = 7;

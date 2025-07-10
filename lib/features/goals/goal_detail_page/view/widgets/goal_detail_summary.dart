@@ -62,7 +62,7 @@ class GoalSummary extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 8),
-          buildGoldHoldingsSection(isDark, currentGold, currentGoldPrice),
+          buildGoldHoldingsSection(isDark, currentGold, currentGoldPrice, ref),
           const SizedBox(height: 8),
           buildGoalInvestmentSection(isDark, goldInvestmentStatus),
           // _buildVirtualAccountSection(context, ref, isDark, controller),

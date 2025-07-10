@@ -1,3 +1,5 @@
+import 'package:growk_v2/core/constants/app_texts_string.dart';
+
 import '../../../../views.dart';
 
 class HomeSavingsOverviewWidget extends ConsumerWidget {
@@ -7,6 +9,7 @@ class HomeSavingsOverviewWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
     final homeDataAsync = ref.watch(homeDetailsProvider);
+    final texts = ref.watch(appTextsProvider);
 
     return ScalingFactor(
       child: ReusableWhiteContainerWithPadding(
@@ -17,6 +20,7 @@ class HomeSavingsOverviewWidget extends ConsumerWidget {
             isDark: isDark,
             wallet: 0,
             gold: 0,
+            texts: texts,
           ),
           data: (data) {
             final wallet = (data.data?.summary?.walletBalance ?? 0).toDouble();
@@ -26,6 +30,7 @@ class HomeSavingsOverviewWidget extends ConsumerWidget {
               isDark: isDark,
               wallet: wallet,
               gold: gold,
+              texts: texts,
             );
           },
         ),
@@ -34,11 +39,12 @@ class HomeSavingsOverviewWidget extends ConsumerWidget {
   }
 
   Widget _buildSavingsOverview(
-      BuildContext context, {
-        required bool isDark,
-        required double wallet,
-        required double gold,
-      }) {
+    BuildContext context, {
+    required bool isDark,
+    required double wallet,
+    required double gold,
+    required AppTextsString texts,
+  }) {
     final total = wallet + gold;
 
     double walletPercent = 0;
@@ -57,7 +63,7 @@ class HomeSavingsOverviewWidget extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ReusableText(
-          text: 'Savings Overview',
+          text: texts.savingsOverview,
           style: AppTextStyle(textColor: AppColors.current(isDark).text)
               .titleRegular,
         ),
@@ -68,10 +74,12 @@ class HomeSavingsOverviewWidget extends ConsumerWidget {
           children: [
             ReusableRow(
               children: [
-                const CircleAvatar(radius: 6, backgroundColor: Color(0xFFB7A6FF)),
+                const CircleAvatar(
+                    radius: 6, backgroundColor: Color(0xFFB7A6FF)),
                 const SizedBox(width: 6),
                 ReusableText(
-                  text: "Wallet (${walletPercent.toStringAsFixed(0)}%)",
+                  text:
+                      "${texts.wallet} (${walletPercent.toStringAsFixed(0)}%)",
                   style: AppTextStyle(textColor: AppColors.current(isDark).text)
                       .labelSmall,
                 ),
@@ -80,10 +88,11 @@ class HomeSavingsOverviewWidget extends ConsumerWidget {
             const SizedBox(height: 15),
             ReusableRow(
               children: [
-                const CircleAvatar(radius: 6, backgroundColor: Color(0xFFFFE168)),
+                const CircleAvatar(
+                    radius: 6, backgroundColor: Color(0xFFFFE168)),
                 const SizedBox(width: 6),
                 ReusableText(
-                  text: "Gold (${goldPercent.toStringAsFixed(0)}%)",
+                  text: "${texts.gold} (${goldPercent.toStringAsFixed(0)}%)",
                   style: AppTextStyle(textColor: AppColors.current(isDark).text)
                       .labelSmall,
                 ),

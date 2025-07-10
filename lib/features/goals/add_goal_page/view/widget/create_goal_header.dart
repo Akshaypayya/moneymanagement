@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 
 class CreateGoalHeader extends ConsumerWidget {
@@ -9,6 +10,7 @@ class CreateGoalHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
+    final texts = ref.watch(appTextsProvider);
 
     return Padding(
       padding: const EdgeInsets.only(top: 20.0, bottom: 30.0),
@@ -24,7 +26,7 @@ class CreateGoalHeader extends ConsumerWidget {
           Expanded(
             child: Center(
               child: Text(
-                'Create Goal',
+                texts.createGoal,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,

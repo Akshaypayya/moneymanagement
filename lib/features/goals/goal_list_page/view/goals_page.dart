@@ -6,12 +6,13 @@ class GoalsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
+    final texts = ref.watch(appTextsProvider);
 
     return ScalingFactor(
       child: Scaffold(
           backgroundColor: AppColors.current(isDark).scaffoldBackground,
           appBar: GrowkAppBar(
-            title: 'Your Savings Goals',
+            title: texts.yourSavingGoals,
             isBackBtnNeeded: false,
           ),
           floatingActionButton: goalsFab(context, ref),

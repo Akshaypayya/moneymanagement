@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 
 class GoalsHeader extends ConsumerWidget {
@@ -9,6 +10,7 @@ class GoalsHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
+    final texts = ref.watch(appTextsProvider);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
@@ -16,7 +18,7 @@ class GoalsHeader extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'Stay on track with your financial dreams by keeping an eye on your savings goals. Every contribution, big or small, brings you closer to achieving what matters most to you.',
+            texts.goalPageDis,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,

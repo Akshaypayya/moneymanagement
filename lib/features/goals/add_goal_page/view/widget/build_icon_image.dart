@@ -4,7 +4,8 @@ import 'package:growk_v2/features/goals/add_goal_page/view/widget/add_goal_place
 import 'package:growk_v2/views.dart';
 
 Widget addGoalBuildIconOrImage(
-    String selectedIcon, selectedImage, bool isDark) {
+    String selectedIcon, selectedImage, bool isDark, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   if (selectedImage == null && selectedIcon.isEmpty) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -16,7 +17,7 @@ Widget addGoalBuildIconOrImage(
         ),
         const SizedBox(height: 4),
         Text(
-          'Add Icon',
+          texts.addIcon,
           style: TextStyle(
             fontSize: 12,
             color: isDark ? Colors.white : Colors.grey[700],
@@ -34,7 +35,7 @@ Widget addGoalBuildIconOrImage(
         height: 90,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          return buildPlaceholder(isDark);
+          return buildPlaceholder(isDark, ref);
         },
       ),
     );
@@ -44,10 +45,10 @@ Widget addGoalBuildIconOrImage(
       width: 60,
       height: 60,
       errorBuilder: (context, error, stackTrace) {
-        return buildPlaceholder(isDark);
+        return buildPlaceholder(isDark, ref);
       },
     );
   } else {
-    return buildPlaceholder(isDark);
+    return buildPlaceholder(isDark, ref);
   }
 }

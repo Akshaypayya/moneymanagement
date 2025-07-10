@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart';
 import 'package:growk_v2/features/goals/add_goal_page/controller/saving_slider_controller.dart';
@@ -62,13 +63,10 @@ class _SavingsAmountSliderState extends ConsumerState<SavingsAmountSlider> {
       }
     });
 
-    final amountDisplay = amntDispRow(
-      isDark,
-      controller,
-    );
-
+    final amountDisplay = amntDispRow(isDark, controller, ref);
+    final texts = ref.watch(appTextsProvider);
     return CustomSliderWrapper(
-      title: 'Set Your Savings Goal',
+      title: texts.setYourSavingsGoal,
       leftLabel: '10K',
       rightLabel: '1M',
       value: amountValue,

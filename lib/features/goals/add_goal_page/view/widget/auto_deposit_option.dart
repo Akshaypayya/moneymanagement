@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growk_v2/core/constants/app_images.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/features/goals/add_goal_page/provider/add_goal_provider.dart'; // Import the main provider file
 
@@ -12,6 +13,7 @@ class AutoDepositOption extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(isDarkProvider);
     final isChecked = ref.watch(autoDepositProvider);
+    final texts = ref.watch(appTextsProvider);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,9 +58,8 @@ class AutoDepositOption extends ConsumerWidget {
                         color: isDark ? Colors.white : Colors.black,
                       ),
                       children: [
-                        const TextSpan(
-                          text:
-                              'Enable automatic gold deposit when your investment amount reaches ',
+                        TextSpan(
+                          text: texts.autoDepositEnabled,
                         ),
                         WidgetSpan(
                           child: Image.asset(

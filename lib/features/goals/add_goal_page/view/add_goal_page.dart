@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/scaling_factor/scale_factor.dart';
 import 'package:growk_v2/core/theme/app_theme.dart';
 import 'package:growk_v2/core/widgets/growk_app_bar.dart';
@@ -40,12 +41,13 @@ class _CreateGoalPageState extends ConsumerState<CreateGoalPage> {
     final isDark = ref.watch(isDarkProvider);
     final controller = ref.read(createGoalControllerProvider);
     final double sliderSectionWidth = MediaQuery.of(context).size.width - 40;
+    final texts = ref.watch(appTextsProvider);
     return ScalingFactor(
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
           backgroundColor: isDark ? Colors.black : Colors.white,
-          appBar: GrowkAppBar(title: 'Create Goal', isBackBtnNeeded: true),
+          appBar: GrowkAppBar(title: texts.createGoal, isBackBtnNeeded: true),
           body: SafeArea(
             child: SingleChildScrollView(
               child: Padding(
@@ -70,7 +72,7 @@ class _CreateGoalPageState extends ConsumerState<CreateGoalPage> {
                       const FrequencySelector(),
                       const AutoDepositOption(),
                       ActionButton(
-                        label: 'Let\'s start planning',
+                        label: texts.letsStartPlanning,
                         onPressed: () => controller.createGoal(context, ref),
                       ),
 

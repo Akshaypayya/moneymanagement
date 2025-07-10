@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:growk_v2/core/constants/app_texts_string.dart';
 import 'package:growk_v2/core/constants/common_providers.dart';
 import 'package:growk_v2/core/internet_checker/ui/monitor_connection_view.dart';
+import 'package:growk_v2/core/screenshot_prevention/screenshot_prevention.dart';
 import 'package:growk_v2/core/theme/theme_service.dart';
 import 'package:growk_v2/features/settings_page/widgets/settings_item.dart';
 import 'package:growk_v2/views.dart'; // include your app's common views
@@ -62,7 +63,10 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
-
+    //screenshot disabling code
+    // Future.microtask(() {
+    //   ref.read(screenProtectorProvider.notifier).enableProtection();
+    // });
     final notificationService = ref.read(notificationProvider);
     final isNotificationEnabled = ref.read(notificationEnabledProvider);
 

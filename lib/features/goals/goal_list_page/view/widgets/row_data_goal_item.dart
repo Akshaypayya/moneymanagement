@@ -11,6 +11,7 @@ Row goalItemDataRow(
   Color textColor,
 ) {
   final isDark = ref.watch(isDarkProvider);
+  final texts = ref.watch(appTextsProvider);
 
   double getProfitVal(String amount, String invested) {
     double val1 = double.tryParse(amount) ?? 0;
@@ -79,7 +80,7 @@ Row goalItemDataRow(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Saving for',
+                texts.savingfor,
                 style: TextStyle(
                   fontSize: 11,
                   fontFamily: GoogleFonts.poppins().fontFamily,
@@ -146,7 +147,7 @@ Row goalItemDataRow(
               : ReusableRow(
                   children: [
                     ReusableText(
-                      text: '(Profit: ',
+                      text: '(${texts.profit}',
                       style: TextStyle(
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontSize: 14,

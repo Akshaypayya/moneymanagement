@@ -2,12 +2,14 @@ import 'package:flutter/services.dart';
 import 'package:growk_v2/features/goals/add_goal_page/controller/saving_slider_controller.dart';
 import 'package:growk_v2/views.dart';
 
-Widget amntDispRow(bool isDark, SavingAmountSliderController controller) {
+Widget amntDispRow(
+    bool isDark, SavingAmountSliderController controller, WidgetRef ref) {
+  final texts = ref.watch(appTextsProvider);
   return Row(
     mainAxisSize: MainAxisSize.min,
     children: [
       Text(
-        'Target Amount: ',
+        texts.targtAmnt,
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.bold,

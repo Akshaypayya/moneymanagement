@@ -33,7 +33,7 @@ Widget goalItemBodyData(
                 goalStatus, textColor),
             const SizedBox(height: 15),
             goalItemRow2(currentGold, invested, target, progress,
-                progressPercent, goalStatus, isDark)
+                progressPercent, goalStatus, isDark, ref)
           ],
         ),
       ),
